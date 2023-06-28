@@ -1,0 +1,151 @@
+name: Node com typescript e testes
+
+on: 
+  workflow_dispatch:
+  push:
+    # executar no branch
+    branches: [main]
+  pull_request: 
+    # executar quando o pull request for no branch
+    branches: [main]
+  release:
+    types: [published]
+#   schedule:
+#     - cron: '31 7 * * 3'
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  cache_node_modules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache node modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+
+  dump_contexts_to_log:
+    needs: cache_node_modules
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo $GITHUB_CONTEXT
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo $JOB_CONTEXT
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo $STEPS_CONTEXT
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo $RUNNER_CONTEXT
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo $STRATEGY_CONTEXT
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo $MATRIX_CONTEXT
+
+#   pre-build:
+#     name: Job de análise, antes do build
+    
+#     # rodar em um docker ubuntu-latest
+#     runs-on: ubuntu-latest
+
+#     permissions:
+#       actions: read
+#       contents: read
+#       security-events: write
+
+#     # configurações
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         language: [ 'TypeScript' ]
+#         nome_projeto: ['base para projetos']
+
+#     # execução:
+#     steps:
+#       - name: Checkout repo
+#         uses: actions/checkout@v3
+      
+#       # Initializes the CodeQL tools for scanning.
+#       - name: Initialize CodeQL
+#         uses: github/codeql-action/init@v2
+#         with:
+#           languages: ${{ matrix.language }}
+#           source-root: src
+          
+#       # Autobuild 
+#       - name: Autobuild
+#         uses: github/codeql-action/autobuild@v2
+
+#       # executa a análise
+#       - name: Perform CodeQL Analysis
+#         uses: github/codeql-action/analyze@v2
+
+  build:
+    # precisa do anterior para rodar este? Naaahhh
+    needs: dump_contexts_to_log
+    
+    # rodar em um docker ubuntu-latest
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    # configurações
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'TypeScript' ]
+        nome_projeto: ['base para projetos']
+
+    # execução:
+    steps:
+      # iniciando o script do pipeline
+      - name: Iniciando o workflow
+        run: |
+          echo "Início do pipeline do github Actions"
+          echo ""
+          echo "..."
+
+      # clona o repositório
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      
+      # instala o node
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      
+      # instala os pacotes
+      - name: Precisa instalar antes os pacotes npm
+        run: npm ci
+      
+      # se tiver build, então builda
+      - name: se tiver um script build, então execute
+        run: npm run build --if-present
+      
+      # executa os testes
+      - name: tem obrigatoriamente que executar os testes
+        run: npm test
