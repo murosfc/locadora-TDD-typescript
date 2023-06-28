@@ -1,0 +1,19 @@
+mkdir aula02_2023_06_06
+cd aula02_2023_06_06
+git init .
+touch .gitignore
+echo node_modules/ > .gitignore
+
+ git remote remove origin
+ git branch -M main
+ git remote add origin git remote add origin https://gitlab.com/flcs/aula02_2023_06_06.git
+ git add .
+ git commit -m 'inicio'
+ git push -u origin main
+
+
+npx tsc --init
+npx jest --init
+usando babel
+preset : 'ts-jest"
+
