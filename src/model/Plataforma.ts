@@ -1,6 +1,6 @@
 export class Plataforma{
-    private id: number;
-    private titulo: string;
+    private _id: number;    
+    private _titulo: string;    
 
     constructor(id: number, titulo: string){
         if (id <= 0) throw new Error('Id inválido')
@@ -9,19 +9,17 @@ export class Plataforma{
         this.titulo = titulo;
     }
 
-    getId(): number{    
-        return this.id;
+    public get id(): number {
+        return this._id;
     }
-
-    getTitulo(): string{    
-        return this.titulo;
+    public set id(value: number) {
+        this._id = value;
     }
-
-    setId(id: number): void{    
-        this.id = id;
+    public get titulo(): string {
+        return this._titulo;
     }
-
-    setTitulo(titulo: string): void{
-        this.titulo = titulo;
+    public set titulo(value: string) {
+        this._titulo = value;
     }
+    
 }
