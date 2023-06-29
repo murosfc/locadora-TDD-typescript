@@ -1,28 +1,21 @@
 import { Plataforma } from "./Plataforma";
 
-export class Jogo{
-    private _id: number;    
+export class Jogo{       
     private _titulo: string;    
     private _plataformas: Plataforma[];    
-    private _urlImagem: string;   
+    private _urlImagem: string;  
+    private _valor: number;     
     DEFAULT_IMAGE_URL = 'https://www.ongames.com.br/imagens/default.jpg';
 
-    constructor(id: number, titulo: string, plataformas: Plataforma[], urlImagem: string){
-        if (id <= 0) throw new Error('Id inválido')
-        this.id = id;
+    constructor(titulo: string, plataformas: Plataforma[], valor: number, urlImagem: string){        
         if (titulo.length === 0) throw new Error('Título inválido')
         this.titulo = titulo;
-        if (plataformas.length === 0) throw new Error('Necessário pelo menos uma plataforma')
+        if (plataformas.length === 0) throw new Error('Necessário vincular pelo menos uma plataforma')
         this.plataformas = plataformas; 
+        if(valor <= 0) throw new Error('Valor inválido')
+        this.valor = valor;
         if (urlImagem.length === 0) urlImagem = this.DEFAULT_IMAGE_URL       
         this.urlImagem = urlImagem;
-    }
-
-    public get id(): number {
-        return this._id;
-    }
-    public set id(value: number) {
-        this._id = value;
     }
 
     public get titulo(): string {
@@ -37,6 +30,13 @@ export class Jogo{
     }
     public set plataformas(value: Plataforma[]) {
         this._plataformas = value;
+    }
+
+    public get valor(): number {
+        return this._valor;
+    }
+    public set valor(value: number) {
+        this._valor = value;
     }
 
     public get urlImagem(): string {

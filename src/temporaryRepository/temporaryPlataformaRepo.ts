@@ -25,12 +25,21 @@ export class listaPlataformas implements PlataformaRepositoryInterface{
         throw new Error('Plataforma não encontrada'); 
     }
 
-    save(plataforma: Plataforma): Plataforma {
+    save(plataforma: Plataforma): Plataforma { 
+        const tempPlat = this.lista.find(p => p.titulo === plataforma.titulo);      
+        if (tempPlat instanceof Plataforma){            
+            throw new Error('Plataforma já cadastrada');
+        }
+        if (plataforma.id !== undefined) throw new Error('Id em uso');
+        plataforma.id = this.getNewId();
         this.lista.push(plataforma);
         return plataforma;       
     }
 
     update(plataforma: Plataforma): Plataforma {
+        if (this.lista.find(p => p.id === plataforma.id) === undefined){
+            throw new Error('Plataforma não encontrada');
+        }
         this.lista.push(plataforma);
         return plataforma; 
     }
@@ -44,19 +53,12 @@ export class listaPlataformas implements PlataformaRepositoryInterface{
         return false;        
     }
 
-    add(plataforma: Plataforma): Plataforma{        
-        if (this.lista.find(p => p.id === plataforma.id) !== undefined){
-            throw new Error('Id em uso');
-        }
-        if (this.lista.find(p => p.titulo === plataforma.titulo) !== undefined){
-            throw new Error('Plataforma já cadastrada');
-        }
-        this.lista.push(plataforma);
-        return plataforma;
-    }
-
     findAll(): Plataforma[]{
         return this.lista;
+    }
+
+    private getNewId(): number{
+        return this.lista.length + 1;
     }
 
 }
