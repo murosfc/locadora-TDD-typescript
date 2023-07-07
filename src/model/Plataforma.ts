@@ -1,9 +1,10 @@
-export class Plataforma{  
-    private _id: number;  
-   
+import { DomainObject } from "./DomainObject";
+
+export class Plataforma extends DomainObject{       
     private _titulo: string;    
 
-    constructor(titulo: string){       
+    constructor(titulo: string){  
+        super();     
         if (titulo.length === 0) throw new Error('Título inválido')
         this.titulo = titulo;
     }  
@@ -13,12 +14,5 @@ export class Plataforma{
     }
     public set titulo(value: string) {
         this._titulo = value;
-    }
-
-    public get id(): number {
-        return this._id;
-    }
-    public set id(value: number) {
-        this._id = value;
     }    
 }

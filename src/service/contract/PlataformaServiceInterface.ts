@@ -1,6 +1,4 @@
-import { Plataforma } from "../model/Plataforma";
-
-export interface PlataformaRepositoryInterface{
+export interface PlataformaServiceInterface <Plataforma>{
     findAll(): Plataforma[];
     findById(id: number): Plataforma;
     findByTitulo(titulo: string): Plataforma;

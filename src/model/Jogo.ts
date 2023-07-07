@@ -1,13 +1,15 @@
+import { DomainObject } from "./DomainObject";
 import { Plataforma } from "./Plataforma";
 
-export class Jogo{       
+export class Jogo extends DomainObject{       
     private _titulo: string;    
     private _plataformas: Plataforma[];    
     private _urlImagem: string;  
     private _valor: number;     
     DEFAULT_IMAGE_URL = 'https://www.ongames.com.br/imagens/default.jpg';
 
-    constructor(titulo: string, plataformas: Plataforma[], valor: number, urlImagem: string){        
+    constructor(titulo: string, plataformas: Plataforma[], valor: number, urlImagem: string){     
+        super();   
         if (titulo.length === 0) throw new Error('Título inválido')
         this.titulo = titulo;
         if (plataformas.length === 0) throw new Error('Necessário vincular pelo menos uma plataforma')
