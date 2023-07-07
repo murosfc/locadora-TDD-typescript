@@ -1,22 +1,18 @@
 import { PlataformaRepositoryInterface } from "../src/repositories/contracts/PlataformaRepositoryInterface";
 import { Plataforma } from "../src/model/Plataforma";
-import { listaPlataformas } from "../src/repositories/InMemoryRepository/PlataformaRepo";
+import { PlataformaRepo } from "../src/repositories/InMemoryRepository/PlataformaRepo";
 import { PlataformaService } from "../src/service/PlataformaService";
 
 function cria_sut() {
-    const repo: PlataformaRepositoryInterface = new listaPlataformas();
+    const repo = PlataformaRepo.getInstance();
     const sut = new PlataformaService(repo);
     return { repo, sut };
 }
 
 describe('Testes da endidade Plataforma', () => {
     it('Deve Criar plataforma', () => {
-    const sut = new Plataforma('PS4');    
-    expect(sut.titulo).toBe('PS4');
-    })
-
-    it('Deve gerar erro ao tentar criar plataforma sem título', () => {
-        expect(() => new Plataforma('')).toThrowError('Título inválido');
+    const plat = new Plataforma('PS4');    
+    expect(plat.titulo).toBe('PS4');
     })
 })
 
@@ -24,9 +20,10 @@ describe('Testes do Use Case Plataforma', () => {
     const { sut, repo } = cria_sut();
 
     it('Deve adicionar plataforma no repositorio', () => {
-        const plat = new Plataforma('PS4');        
-        expect(sut.save(plat).titulo).toEqual(plat.titulo);
-        expect(sut.findById(1).titulo).toBe(plat.titulo);
+        const plat = new Plataforma('PS4');  
+        const savedPlataforma = sut.save(plat);          
+        expect(savedPlataforma.id).toEqual(1);
+        expect(savedPlataforma.titulo).toBe(plat.titulo);
     })
 
     it('Deve gerar erro ao adicionar plataforma no repositorio com título duplicado', () => {
@@ -34,13 +31,17 @@ describe('Testes do Use Case Plataforma', () => {
         expect(() => sut.save(plat)).toThrowError('Plataforma já cadastrada');
     })
 
+    it('Deve gerar erro ao adicionar plataforma no repositorio com título inválido', () => {        
+        expect(() => sut.save(new Plataforma(''))).toThrowError('Título inválido');
+    })    
+
     it('Deve gerar erro ao tentar forçar adição de plataforma com id repetido', () => {
         var plat = new Plataforma('NSwitch');    
         plat.id = 1;
-        expect(() => sut.save(plat)).toThrowError('Id em uso');
+        expect(() => sut.save(plat)).toThrowError('Plataforma já cadastrada');
     })
 
-    it('Deve eeceber todas plataformas cadastradas', () => {    
+    it('Deve receber todas plataformas cadastradas', () => {    
         var plat1 = sut.findById(1);
         var plat2 = sut.save(new Plataforma('XBOX'));
         var plat3 = sut.save(new Plataforma('PC'));        
@@ -63,6 +64,10 @@ describe('Testes do Use Case Plataforma', () => {
 
     it('Deve deletar uma plataforma cadastrada', () => {
         expect(sut.delete(1)).toBe(true);
+    })
+
+    it('Deve retornar false ao tentar deletar uma plataforma não cadastrada', () => {
+        expect(sut.delete(32)).toBe(false);
     })
 
     it('Deve retornar false ao tentar deletar uma plataforma inexistente', () => {

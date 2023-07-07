@@ -22,6 +22,7 @@ Pré-condições
 o usuário que cadastra precisa ser administrador;
 O título não pode ser duplicado;
 Pelo menos uma plataforma precisa ser vinculada ao jogo;
+O valor do jogo deve ser informado no cadastro;
 Fluxo principal
 O usuário informa o título do jogo;
 O usuário vincula pelo menos uma plataforma;

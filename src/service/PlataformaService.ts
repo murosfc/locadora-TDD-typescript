@@ -1,8 +1,7 @@
 import { PlataformaRepositoryInterface } from "src/repositories/contracts/PlataformaRepositoryInterface";
 import { Plataforma } from "../model/Plataforma";
-import { PlataformaServiceInterface } from "./contract/PlataformaServiceInterface";
 
-export class PlataformaService implements PlataformaServiceInterface<Plataforma>{
+export class PlataformaService implements PlataformaRepositoryInterface{
     private repo: PlataformaRepositoryInterface;
 
     constructor(repo: PlataformaRepositoryInterface){
@@ -10,7 +9,7 @@ export class PlataformaService implements PlataformaServiceInterface<Plataforma>
     }
 
     findAll(): Plataforma[] {        
-        return this.repo.findAll();
+        return this.repo.findAll() as Plataforma[];
     }
 
     findById(id: number): Plataforma {
@@ -18,7 +17,7 @@ export class PlataformaService implements PlataformaServiceInterface<Plataforma>
         if (plat instanceof Plataforma){
             return plat;
         }
-        throw plat.message;
+        throw new Error("Plataforma não encontrada");
     }
 
     findByTitulo(titulo: string): Plataforma{        
@@ -26,24 +25,30 @@ export class PlataformaService implements PlataformaServiceInterface<Plataforma>
         if (plat instanceof Plataforma){
             return plat;
         }
-        throw plat.message;
+        throw new Error("Plataforma não encontrada");
     }
-    save(plataforma: Plataforma): Plataforma {
-        const plat =  this.repo.save(plataforma);
-        if (plat instanceof Plataforma){
-            return plat;
-        }
-        throw plat.message;
+
+    save(entity: Plataforma): Plataforma {
+        this.validaPlataforma(entity, true);
+        return this.repo.save(entity) as Plataforma;        
     }
-    update(plataforma: Plataforma): Plataforma {
-        const plat =  this.repo.update(plataforma);
-        if (plat instanceof Plataforma){
-            return plat;
-        }
-        throw plat.message;
+
+    update(entity: Plataforma): Plataforma {
+        this.validaPlataforma(entity, false);
+        return this.repo.update(entity) as Plataforma;
     }
-    delete(id: number): boolean {
+
+    delete(id: number): boolean {        
         return this.repo.delete(id);
     }  
 
+    private validaPlataforma(entity: Plataforma, save: boolean){        
+        if (entity.titulo.length <=0 ) throw new Error("Título inválido");
+        if (save) {
+            if (this.repo.findByTitulo(entity.titulo) || this.repo.findById(entity.id)) throw new Error("Plataforma já cadastrada");
+        }
+        else if (!this.repo.findById(entity.id)) throw new Error("Plataforma não encontrada");
+    }
+
 }
+

@@ -4,8 +4,7 @@ export class Plataforma extends DomainObject{
     private _titulo: string;    
 
     constructor(titulo: string){  
-        super();     
-        if (titulo.length === 0) throw new Error('Título inválido')
+        super();        
         this.titulo = titulo;
     }  
       
