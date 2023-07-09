@@ -58,3 +58,5 @@ O sistema encerra o aluguel ao fim do prazo e atribui uma nova senha para a cont
 Fluxo alternativo
 O sistema não exibe os jogos que não tem conta disponível para aluguel na plataforma desejada;
 O sistema confirma o aluguel e o envio do e-mail com os dados da conta.
+Um aluguel persistido não pode ser editado.
+

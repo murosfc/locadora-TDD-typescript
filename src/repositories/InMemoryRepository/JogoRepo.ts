@@ -3,15 +3,15 @@ import { JogoRepositoryInterface } from "../contracts/JogoRepositoryInterface";
 import { Plataforma } from "src/model/Plataforma";
 
 
-export class JogoRepo implements JogoRepositoryInterface {
+export class JogoRepo implements JogoRepositoryInterface {  
     private lista: Jogo[];
-    private soleInstance: JogoRepo;
+    static soleInstance: JogoRepo;
 
     private constructor() {
         this.lista = [];
     }
 
-    getInstance(): JogoRepositoryInterface {
+    static getInstance(): JogoRepositoryInterface {
         if (!this.soleInstance) {
             this.soleInstance = new JogoRepo();
         }
