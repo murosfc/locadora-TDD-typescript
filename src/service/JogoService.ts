@@ -1,5 +1,5 @@
 import { Jogo } from "../model/Jogo";
-import { JogoServiceInterface } from "./contract/JogoServiceInterface";
+import { JogoServiceInterface } from "./contracts/JogoServiceInterface";
 import { DomainObject } from "../model/DomainObject";
 import { PlataformaDTO } from "./PlataformaService";
 import { NotFoundException } from "../error/NotFoundException";

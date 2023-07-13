@@ -1,4 +1,3 @@
-import e from "express";
 import { Plataforma } from "../src/model/Plataforma";
 import { PlataformaRepo } from "../src/repositories/InMemoryRepository/PlataformaRepo";
 import { PlataformaDTO, PlataformaService } from "../src/service/PlataformaService";

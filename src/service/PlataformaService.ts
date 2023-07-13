@@ -1,4 +1,4 @@
-import {PlataformaServiceInterface} from "./contract/PlataformaServiceInterface";
+import {PlataformaServiceInterface} from "./contracts/PlataformaServiceInterface";
 import { Plataforma } from "../model/Plataforma";
 import { PlataformaRepositoryInterface } from "src/repositories/contracts/PlataformaRepositoryInterface";
 import { NotFoundException } from "../error/NotFoundException";
