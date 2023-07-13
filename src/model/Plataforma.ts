@@ -1,3 +1,4 @@
+import { InvalidTitleException } from "../error/InvalidTitleException";
 import { DomainObject } from "./DomainObject";
 
 export class Plataforma extends DomainObject{       
@@ -5,6 +6,9 @@ export class Plataforma extends DomainObject{
 
     constructor(titulo: string){  
         super();        
+        if (titulo == '') {
+            throw new InvalidTitleException('Título inválido');
+        }
         this.titulo = titulo;
     }  
       

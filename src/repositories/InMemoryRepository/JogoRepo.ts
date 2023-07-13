@@ -26,16 +26,13 @@ export class JogoRepo implements JogoRepositoryInterface {
         return this.lista.find(j => j.titulo === titulo) as Jogo;
     }
 
-    findByPlataforma(plataforma: Plataforma): Jogo[] {
+    findByPlataforma(plataforma: Object): Jogo[] {
+        const plat = plataforma as Plataforma;
         var jogos: Jogo[] = [];
-        for (let i = 0; i < this.lista.length; i++) {
-            for (let j = 0; j < this.lista[i].plataformas.length; j++) {
-                if (this.lista[i].plataformas[j] === plataforma) {
-                    jogos.push(this.lista[i]);
-                    j = this.lista[i].plataformas.length;
-                }
-            }
-        }
+        this.lista.forEach(jogo => {
+            if (jogo.plataformas.find(p => p.titulo === plat.titulo)) {
+                jogos.push(jogo);
+            }}) 
         return jogos;
     }
 

@@ -1,5 +1,7 @@
+import { InvalidTitleException } from "../error/InvalidTitleException";
 import { DomainObject } from "./DomainObject";
 import { Plataforma } from "./Plataforma";
+import { NotAllowedException } from "../error/NotAllowedException";
 
 export class Jogo extends DomainObject{       
     private _titulo: string;    
@@ -10,14 +12,13 @@ export class Jogo extends DomainObject{
 
     constructor(titulo: string, plataformas: Plataforma[], valor: number, urlImagem: string){     
         super();   
-        if (titulo.length === 0) throw new Error('Título inválido')
+        if (titulo.length === 0) throw new InvalidTitleException('Título inválido')
         this.titulo = titulo;
-        if (plataformas.length === 0) throw new Error('Necessário vincular pelo menos uma plataforma')
+        if (plataformas.length === 0) throw new NotAllowedException('Necessário vincular pelo menos uma plataforma')
         this.plataformas = plataformas; 
-        if(valor <= 0) throw new Error('Valor inválido')
+        if(valor <= 0) throw new NotAllowedException('Valor deve ser maior que zero')
         this.valor = valor;
-        if (urlImagem.length === 0) urlImagem = this.DEFAULT_IMAGE_URL       
-        this.urlImagem = urlImagem;
+        this.urlImagem = urlImagem.length == 0 ? this.DEFAULT_IMAGE_URL : urlImagem;
     }
 
     public get titulo(): string {
