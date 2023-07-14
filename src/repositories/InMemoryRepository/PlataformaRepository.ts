@@ -1,17 +1,17 @@
 import { Plataforma } from "../../model/Plataforma";
 import { PlataformaRepositoryInterface } from "../contracts/PlataformaRepositoryInterface";
 
-export class PlataformaRepo implements PlataformaRepositoryInterface {
+export class PlataformaRepository implements PlataformaRepositoryInterface {
     private lista: Plataforma[];
-    static soleInstance: PlataformaRepo;
+    static soleInstance: PlataformaRepository;
 
     private constructor() {
         this.lista = [];
     }
 
-    static getInstance(): PlataformaRepo {
+    static getInstance(): PlataformaRepository {
         if (!this.soleInstance) {
-            this.soleInstance = new PlataformaRepo();            
+            this.soleInstance = new PlataformaRepository();            
         }
         return this.soleInstance;
     }

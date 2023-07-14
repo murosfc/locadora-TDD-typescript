@@ -3,9 +3,9 @@ import { JogoRepositoryInterface } from "../contracts/JogoRepositoryInterface";
 import { Plataforma } from "src/model/Plataforma";
 
 
-export class JogoRepo implements JogoRepositoryInterface {  
+export class JogoRepository implements JogoRepositoryInterface {  
     private lista: Jogo[];
-    static soleInstance: JogoRepo;
+    static soleInstance: JogoRepository;
 
     private constructor() {
         this.lista = [];
@@ -13,7 +13,7 @@ export class JogoRepo implements JogoRepositoryInterface {
 
     static getInstance(): JogoRepositoryInterface {
         if (!this.soleInstance) {
-            this.soleInstance = new JogoRepo();
+            this.soleInstance = new JogoRepository();
         }
         return this.soleInstance;
     }

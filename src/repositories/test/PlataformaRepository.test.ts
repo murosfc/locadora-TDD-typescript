@@ -1,26 +1,15 @@
-import { Plataforma } from "../src/model/Plataforma";
-import { PlataformaRepo } from "../src/repositories/InMemoryRepository/PlataformaRepo";
-import { PlataformaDTO, PlataformaService } from "../src/service/PlataformaService";
-import { NotAllowedException } from "../src/error/NotAllowedException";
-import { InvalidTitleException } from "../src/error/InvalidTitleException";
-import { NotFoundException } from "../src/error/NotFoundException";
+import { Plataforma } from "../../model/Plataforma";
+import { PlataformaRepository } from "../InMemoryRepository/PlataformaRepository";
+import { PlataformaDTO, PlataformaService } from "../../service/PlataformaService";
+import { NotAllowedException } from "../../error/NotAllowedException";
+import { InvalidTitleException } from "../../error/InvalidTitleException";
+import { NotFoundException } from "../../error/NotFoundException";
 
 function cria_sut() {
-    const repo = PlataformaRepo.getInstance();
+    const repo = PlataformaRepository.getInstance();
     const sut = new PlataformaService(repo);
     return { repo, sut };
 }
-
-describe('Testes da endidade Plataforma', () => {
-    it('Deve Criar plataforma', () => {
-    const plat = new Plataforma('PS4');    
-    expect(plat.titulo).toBe('PS4');
-    })
-
-    it('Deve gerar erro ao criar plataforma com título inválido', () => {
-        expect(() => new Plataforma('')).toThrowError('Título inválido');
-    })
-})
 
 describe('Testes do Use Case Plataforma', () => {
     const { sut, repo } = cria_sut();

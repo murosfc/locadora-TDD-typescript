@@ -82,8 +82,8 @@ export class PlataformaService implements PlataformaServiceInterface<PlataformaD
         return this.repo.delete(id);
     }  
 
-    private validaPlataforma(entity: PlataformaDTO, save: boolean){        
-        if (entity.titulo.length <=0 ) throw new InvalidTitleException("Título inválido");
+    private validaPlataforma(entity: PlataformaDTO, save: boolean){          
+        if (entity.titulo.length <=0 || entity.titulo == undefined) throw new InvalidTitleException("Título inválido");
         if (save) {
             if (this.repo.findByTitulo(entity.titulo) || this.repo.findById(entity.id)) throw new NotAllowedException("Plataforma já cadastrada");
         }
