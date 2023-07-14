@@ -2,9 +2,6 @@ import { PlataformaDTO } from "../service/PlataformaService";
 import { PlataformaControllerInterface } from "./contracts/PlataformaControllerInterface";
 import { PlataformaServiceInterface } from "../service/contracts/PlataformaServiceInterface";
 import { Request, Response } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
-import { ParsedQs } from "qs";
-import { json } from "stream/consumers";
 
 export class PlataformaController implements PlataformaControllerInterface{
     private service: PlataformaServiceInterface<PlataformaDTO>;

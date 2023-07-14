@@ -68,7 +68,7 @@ export class JogoRepository implements JogoRepositoryInterface {
     }
     
     delete (id: number): boolean {
-        if (id < 0 || id > this.lista.length) return false;
+        if (id <= 0 || id > this.lista.length) return false;
         this.lista.splice(id, 1);
         return true;
     }   

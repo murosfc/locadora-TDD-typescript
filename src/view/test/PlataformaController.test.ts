@@ -1,8 +1,7 @@
-import { json } from "stream/consumers";
 import { PlataformaRepository } from "../../repositories/InMemoryRepository/PlataformaRepository";
 import { PlataformaDTO, PlataformaService } from "../../service/PlataformaService";
 import { PlataformaController } from "../PlataformaController";
-import { Response } from "express";
+
 
 function cria_sut() {
     const repo = PlataformaRepository.getInstance();
