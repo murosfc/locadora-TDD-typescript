@@ -26,5 +26,22 @@ describe('Teste da entidade Usuario', () => {
     
     it('Deve lançar uma exceção to tipo InvalidAttributeException quando o cpf for vazio', () => {
         expect(() => new Usuario('João', 'joao@gmail.com', '123456', '')).toThrowError('CPF inválido');
+    });  
+
+    it('Deve testar todos os getters and setters', () => {
+        var usuario = new Usuario('João', 'joao@gmail.com', '123456', '12345678910');
+        expect(usuario.nome).toBe('João');
+        expect(usuario.email).toBe('joao@gmail.com');
+        expect(usuario.senha).toBe('123456');
+        expect(usuario.cpf).toBe('12345678910');
+        usuario.nome = 'Maria';
+        usuario.email = 'mm@gmail.com';
+        usuario.senha = '0000000';
+        usuario.cpf = '00000000000';
+        expect(usuario.nome).toBe('Maria');
+        expect(usuario.email).toBe('mm@gmail.com');
+        expect(usuario.senha).toBe('0000000');
+        expect(usuario.cpf).toBe('00000000000');
     });
+
 });

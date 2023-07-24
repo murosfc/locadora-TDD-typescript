@@ -1,6 +1,6 @@
-import { Usuario } from "src/model/Usuario";
+import { Usuario } from "../../model/Usuario";
 import { UsuarioRepositoryInterface } from "../contracts/UsuarioRepositoryInterface";
-import { NotAllowedException } from "src/error/NotAllowedException";
+import { NotAllowedException } from "../../error/NotAllowedException";
 
 export class UsuarioRepository implements UsuarioRepositoryInterface{
     private static soleInstance: UsuarioRepository;
@@ -56,11 +56,11 @@ export class UsuarioRepository implements UsuarioRepositoryInterface{
     }
 
     update(usuario: Usuario): Usuario {
-        const usuarioEmMemoria = this.findById(usuario.id);
-        if (usuarioEmMemoria.cpf !== usuario.cpf){
+        const usuarioEmMemoria = this.findById(usuario.id);         
+        if (usuarioEmMemoria.cpf != usuario.cpf){
             throw new NotAllowedException("CPF não pode ser alterado");
         }
-        if (usuarioEmMemoria.email !== usuario.email){
+        if (usuarioEmMemoria.email != usuario.email){
             if (this.findByEmail(usuario.email)){
                 throw new NotAllowedException("Novo e-mail já está em uso por outra conta");
             }
