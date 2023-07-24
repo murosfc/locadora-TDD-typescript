@@ -1,3 +1,5 @@
+import { InvalidAttributeException } from "../../error/InvalidAttributeException";
+import { NotAllowedException } from "../../error/NotAllowedException";
 import { Plataforma } from "../../model/Plataforma";
 import { PlataformaRepositoryInterface } from "../contracts/PlataformaRepositoryInterface";
 
@@ -35,7 +37,12 @@ export class PlataformaRepository implements PlataformaRepositoryInterface {
     }
 
     update(plataforma: Plataforma): Plataforma {
-        const plat = this.lista.find(p => p.id === plataforma.id);
+        const plat = this.findById(plataforma.id);      
+        if (plat.titulo !== plataforma.titulo) {
+            if (this.findByTitulo(plataforma.titulo)) {
+                throw new NotAllowedException("Título de plataforma já cadastrado");
+            }
+        }
         return this.lista[this.lista.findIndex(p => p.id === plataforma.id)] = plataforma;
     }
 

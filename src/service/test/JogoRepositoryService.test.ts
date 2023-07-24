@@ -1,7 +1,7 @@
-import { JogoRepository } from '../InMemoryRepository/JogoRepository';
-import { JogoDTO, JogoService } from '../../service/JogoService';
+import { JogoRepository } from '../../repositories/InMemoryRepository/JogoRepository';
+import { JogoDTO, JogoService } from '../JogoService';
 import { Jogo } from '../../model/Jogo';
-import { PlataformaDTO } from '../../service/PlataformaService';
+import { PlataformaDTO } from '../PlataformaService';
 import { NotAllowedException } from '../../error/NotAllowedException';
 import { NotFoundException } from '../../error/NotFoundException';
 import { InvalidTitleException } from '../../error/InvalidTitleException';

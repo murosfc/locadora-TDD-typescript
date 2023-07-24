@@ -1,6 +1,6 @@
 import { Plataforma } from "../../model/Plataforma";
-import { PlataformaRepository } from "../InMemoryRepository/PlataformaRepository";
-import { PlataformaDTO, PlataformaService } from "../../service/PlataformaService";
+import { PlataformaRepository } from "../../repositories/InMemoryRepository/PlataformaRepository";
+import { PlataformaDTO, PlataformaService } from "../PlataformaService";
 import { NotAllowedException } from "../../error/NotAllowedException";
 import { InvalidTitleException } from "../../error/InvalidTitleException";
 import { NotFoundException } from "../../error/NotFoundException";
@@ -53,6 +53,13 @@ describe('Testes do Use Case Plataforma', () => {
         var plat = sut.findById(1);
         plat.titulo = 'PS5';
         expect(sut.update(plat).titulo).toBe('PS5');
+    })
+
+    it('Deve gerar erro do tipo NotAllowedException ao tentar atualizar uma plataforma com título já existente', () => {
+        var plat = sut.findById(1);
+        plat.titulo = 'XBOX';
+        expect(() => sut.update(plat)).toThrowError('Título de plataforma já cadastrado');
+        expect(() => sut.update(plat)).toThrowError(NotAllowedException);
     })
 
     it('Deve gerar erro do tipo NotFoundExcelption ao tentar atualizar uma plataforma inexistente', () => {

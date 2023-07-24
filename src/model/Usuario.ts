@@ -1,3 +1,4 @@
+import { InvalidAttributeException } from "../error/InvalidAttributeException";
 import { DomainObject } from "./DomainObject";
 
 export class Usuario extends DomainObject{
@@ -8,13 +9,13 @@ export class Usuario extends DomainObject{
 
     constructor(nome: string, email: string, senha: string, cpf: string){
         super();
-        if (nome.length === 0) throw new Error('Nome inválido')
+        if (nome.length === 0) throw new InvalidAttributeException('Nome inválido')
         this._nome = nome;
-        if (email.length === 0) throw new Error('Email inválido')
+        if (email.length === 0) throw new InvalidAttributeException('Email inválido')
         this._email = email;
-        if (senha.length === 0) throw new Error('Senha inválida')
+        if (senha.length === 0) throw new InvalidAttributeException('Senha inválida')
         this._senha = senha;
-        if (cpf.length === 0) throw new Error('CPF inválido')
+        if (cpf.length === 0) throw new InvalidAttributeException('CPF inválido')
         this._cpf = cpf;
     }
 
