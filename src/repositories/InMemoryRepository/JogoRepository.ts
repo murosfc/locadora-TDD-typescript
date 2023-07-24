@@ -1,6 +1,7 @@
-import { Jogo } from "src/model/Jogo";
+import { Jogo } from "../../model/Jogo";
 import { JogoRepositoryInterface } from "../contracts/JogoRepositoryInterface";
-import { Plataforma } from "src/model/Plataforma";
+import { Plataforma } from "../../model/Plataforma";
+import { InvalidAttributeException } from "../../error/InvalidAttributeException";
 
 
 export class JogoRepository implements JogoRepositoryInterface {  
@@ -55,14 +56,21 @@ export class JogoRepository implements JogoRepositoryInterface {
     }
     
     save(object: Object): Object{        
-        const jogo = object as Jogo;        
+        const jogo = object as Jogo;
+        if (this.findByTitulo(jogo.titulo)) {
+            throw new InvalidAttributeException('Jogo já cadastrado');
+        }        
         jogo.id = this.getNewId();
         this.lista.push(jogo);
         return jogo;
     }
     
     update(object: Object): Object{
-        const jogo = object as Jogo;        
+        const jogo = object as Jogo;
+        const jogoTitulo = this.findByTitulo(jogo.titulo);
+        if (jogoTitulo != undefined && jogoTitulo.id !== jogo.id) {
+            throw new InvalidAttributeException('Novo título informado já cadastrado');
+        }        
         this.lista[jogo.id] = jogo; 
         return this.lista[jogo.id];    
     }

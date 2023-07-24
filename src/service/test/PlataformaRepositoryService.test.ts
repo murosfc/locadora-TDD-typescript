@@ -58,7 +58,7 @@ describe('Testes do Use Case Plataforma', () => {
     it('Deve gerar erro do tipo NotAllowedException ao tentar atualizar uma plataforma com título já existente', () => {
         var plat = sut.findById(1);
         plat.titulo = 'XBOX';
-        expect(() => sut.update(plat)).toThrowError('Título de plataforma já cadastrado');
+        expect(() => sut.update(plat)).toThrowError('Novo título já cadastrado');
         expect(() => sut.update(plat)).toThrowError(NotAllowedException);
     })
 

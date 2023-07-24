@@ -13,7 +13,7 @@ export class PlataformaRepository implements PlataformaRepositoryInterface {
 
     static getInstance(): PlataformaRepository {
         if (!this.soleInstance) {
-            this.soleInstance = new PlataformaRepository();            
+            this.soleInstance = new PlataformaRepository();
         }
         return this.soleInstance;
     }
@@ -31,17 +31,18 @@ export class PlataformaRepository implements PlataformaRepositoryInterface {
     }
 
     save(plataforma: Plataforma): Plataforma {
+        if (this.findByTitulo(plataforma.titulo)) {
+            throw new NotAllowedException("Plataforma já cadastrada");
+        }
         plataforma.id = this.getNewId();
         this.lista.push(plataforma);
         return plataforma;
     }
 
     update(plataforma: Plataforma): Plataforma {
-        const plat = this.findById(plataforma.id);      
-        if (plat.titulo !== plataforma.titulo) {
-            if (this.findByTitulo(plataforma.titulo)) {
-                throw new NotAllowedException("Título de plataforma já cadastrado");
-            }
+        const platByTitulo = this.findByTitulo(plataforma.titulo);
+        if (platByTitulo !== undefined && platByTitulo.id !== plataforma.id) {
+            throw new NotAllowedException("Novo título já cadastrado");
         }
         return this.lista[this.lista.findIndex(p => p.id === plataforma.id)] = plataforma;
     }
@@ -51,8 +52,8 @@ export class PlataformaRepository implements PlataformaRepositoryInterface {
         if (plat instanceof Plataforma) {
             this.lista.splice(this.lista.findIndex(p => p.id === id), 1);
             return true;
-        }  
-        return false;      
+        }
+        return false;
     }
 
     private getNewId(): number {
