@@ -2,6 +2,8 @@ import { DomainObject } from "../model/DomainObject";
 import { UsuarioServiceInterface } from "./contracts/UsuarioServiceInterface";
 import { Usuario } from "../model/Usuario";
 import { UsuarioRepositoryInterface } from "../repositories/contracts/UsuarioRepositoryInterface";
+import { InvalidAttributeException } from "../error/InvalidAttributeException";
+import { NotAllowedException } from "../error/NotAllowedException";
 
 export class UsuarioDTO extends DomainObject{
     private _nome: string;  
@@ -74,15 +76,28 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         throw new Error("Method not implemented.");
     }
     save(entity: UsuarioDTO): UsuarioDTO {
+        this.validaUsuario(entity, true);
         const user = UsuarioDTO.dtoToUsuario(entity);
         const savedUser = this.repo.save(user) as Usuario;
         return UsuarioDTO.usuarioToDTO(savedUser);
     }
     update(entity: UsuarioDTO): UsuarioDTO {
-        throw new Error("Method not implemented.");
+        this.validaUsuario(entity, false);
+        const user = UsuarioDTO.dtoToUsuario(entity);
+        const updatedUser = this.repo.update(entity) as Usuario;
+        return UsuarioDTO.usuarioToDTO(updatedUser);
     }
     delete(id: number): boolean {
         throw new Error("Method not implemented.");
+    }
+
+    private validaUsuario(entity: UsuarioDTO, save: boolean){
+        if (entity.nome.length <= 0 || entity.nome == undefined) throw new InvalidAttributeException("Nome inválido");
+        if (entity.cpf.length <=0 || entity.cpf == undefined) throw new InvalidAttributeException("CPF inválido");
+        if (save && entity.id >0) throw new NotAllowedException("Novo usuário não pode te id informada");
+        if (save && this.repo.findByCpf(entity.cpf)) throw new NotAllowedException("CPF já cadastrado");
+        if (save && this.repo.findByEmail(entity.email)) throw new NotAllowedException("e-mail informado já está em uso");
+        if (!save && entity.id<=0) throw new NotAllowedException("Tentativa de atualização de usuário com id inválida");
     }
 
 }

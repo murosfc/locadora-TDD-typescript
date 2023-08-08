@@ -22,7 +22,11 @@ describe('UsuarioService', () => {
 
     it('Deve atualizar um usuário', () => {
         const user = new UsuarioDTO('João da Silva', 'joao@gmail.com', '123456', '12345678910');
-        
+        user.id = 1;
+        const updatedUser = sut.update(user);
+        expect(updatedUser.nome).toBe(user.nome);
+    });
+
 
 
 
