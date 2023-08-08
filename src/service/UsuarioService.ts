@@ -4,6 +4,7 @@ import { Usuario } from "../model/Usuario";
 import { UsuarioRepositoryInterface } from "../repositories/contracts/UsuarioRepositoryInterface";
 import { InvalidAttributeException } from "../error/InvalidAttributeException";
 import { NotAllowedException } from "../error/NotAllowedException";
+import { NotFoundException } from "../error/NotFoundException";
 
 export class UsuarioDTO extends DomainObject{
     private _nome: string;  
@@ -64,17 +65,31 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
     }
 
     findByEmail(email: string): UsuarioDTO {
-        throw new Error("Method not implemented.");
+        const user = this.repo.findByEmail(email) as Usuario;
+        if (!user) throw new NotFoundException("Usuário não encontrado");
+        return UsuarioDTO.usuarioToDTO(user);
     }
+
     findByCpf(cpf: string): UsuarioDTO {
-        throw new Error("Method not implemented.");
+        const user = this.repo.findByCpf(cpf) as Usuario;
+        if (!user) throw new NotFoundException("Usuário não encontrado");
+        return UsuarioDTO.usuarioToDTO(user);
     }
     findAll(): UsuarioDTO[] {
-        throw new Error("Method not implemented.");
+        const users = this.repo.findAll() as Usuario[];
+        var usersDTO: UsuarioDTO[] = [];
+        users.forEach(user => {
+            usersDTO.push(UsuarioDTO.usuarioToDTO(user));
+        });
+        return usersDTO;
     }
+
     findById(id: number): UsuarioDTO {
-        throw new Error("Method not implemented.");
+        const user = this.repo.findById(id) as Usuario;
+        if (!user) throw new NotFoundException("Usuário não encontrado");
+        return UsuarioDTO.usuarioToDTO(user);
     }
+
     save(entity: UsuarioDTO): UsuarioDTO {
         this.validaUsuario(entity, true);
         const user = UsuarioDTO.dtoToUsuario(entity);
@@ -88,11 +103,12 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         return UsuarioDTO.usuarioToDTO(updatedUser);
     }
     delete(id: number): boolean {
-        throw new Error("Method not implemented.");
+        return this.repo.delete(id);
     }
 
     private validaUsuario(entity: UsuarioDTO, save: boolean){
         if (entity.nome.length <= 0 || entity.nome == undefined) throw new InvalidAttributeException("Nome inválido");
+        if (entity.email.length <=0 || entity.email == undefined) throw new InvalidAttributeException("e-mail inválido");
         if (entity.cpf.length <=0 || entity.cpf == undefined) throw new InvalidAttributeException("CPF inválido");
         if (save && entity.id >0) throw new NotAllowedException("Novo usuário não pode te id informada");
         if (save && this.repo.findByCpf(entity.cpf)) throw new NotAllowedException("CPF já cadastrado");
