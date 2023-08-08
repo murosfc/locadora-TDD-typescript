@@ -24,7 +24,6 @@ describe('UsuarioService', () => {
         expect(user.cpf).toBe('123456999999');
         expect(user.senha).toBe('123456789');
     });
-    
 
 
     it('Deve adicionar um usuário', () => {
@@ -138,7 +137,4 @@ describe('UsuarioService', () => {
         expect(() => sut.findById(id)).toThrowError('Usuário não encontrado');
         expect(() => sut.findById(id)).toThrowError(NotFoundException);
     });
-
-
-
 });
