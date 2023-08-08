@@ -59,6 +59,4 @@ export class PlataformaController implements PlataformaControllerInterface{
             return resp.status(400).json({mensagem: "Erro ao tentar excluir a plataforma, verifique se ela está cadastrada"}).end();
     }
     
-   
-    
 }

@@ -11,9 +11,9 @@ export class JogoController implements JogoControllerInterface{
         this.service = service;
     }
 
-    save(req: Request, resp: Response){
-        const jogoDTO = new JogoDTO(req.body.nome, req.body.plataformas, req.body.preco, req.body.urlImagem);
+    save(req: Request, resp: Response){        
         try{
+            const jogoDTO = new JogoDTO(req.body.nome, req.body.plataformas, req.body.preco, req.body.urlImagem);
             const jogo = this.service.save(jogoDTO);
             resp.status(201).json(jogo);
         }catch(error){
@@ -39,10 +39,10 @@ export class JogoController implements JogoControllerInterface{
         }
     }
 
-    update(req: Request, resp: Response){
-        const jogoDTO = new JogoDTO(req.body.nome, req.body.plataformas, req.body.preco, req.body.urlImagem);
-        jogoDTO.id = Number(req.params.id);
-        try{    
+    update(req: Request, resp: Response){        
+        try{ 
+            const jogoDTO = new JogoDTO(req.body.nome, req.body.plataformas, req.body.preco, req.body.urlImagem);
+            jogoDTO.id = Number(req.params.id);   
             const jogo = this.service.update(jogoDTO);
             return resp.status(200).json(jogo).end();
         }catch(error){
@@ -53,9 +53,9 @@ export class JogoController implements JogoControllerInterface{
         }
     }    
 
-    findByPlataforma(req: Request, resp: Response){
-        const plataforma = new PlataformaDTO(JSON.parse(req.body).titulo);   
+    findByPlataforma(req: Request, resp: Response){         
         try{
+            const plataforma = new PlataformaDTO(JSON.parse(req.body).titulo);  
             return resp.status(200).json(this.service.findByPlataforma(plataforma)).end();
         }catch(error){
             if (error instanceof Error)
