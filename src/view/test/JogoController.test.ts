@@ -60,7 +60,7 @@ describe('Testes do Controller para Jogos', () => {
         const req = { params: { id: 0}};
         sut.findById(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-    })
+    })    
 
     it("Deve retornar 200 ao atualizar um jogo", () => {
         const req = { body: { nome: "Fifa 2023", plataformas: [PLAT_XBOX], valor: 20, urlImagem: ""}, params: {id: 1}};
