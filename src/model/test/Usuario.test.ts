@@ -12,6 +12,12 @@ describe('Teste da entidade Usuario', () => {
         expect(usuario.cpf).toBe('12345678910');
     });
 
+    it('Deve atribuir um id 1 ao usuário e obter a mesma', () => {
+        const usuario = new Usuario('João', 'joao@gmail.com', '123456', '12345678910');
+        usuario.id = 1;
+        expect(usuario.id).toBe(1);
+    });
+
     it('Deve lançar uma exceção to tipo InvalidAttributeException quando o nome for vazio', () => {
         expect(() => new Usuario('', 'joao@gmail.com', '123456', '12345678910')).toThrowError('Nome inválido');        
     });

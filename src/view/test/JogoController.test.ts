@@ -7,7 +7,7 @@ function criaSut() {
     const repo = JogoRepository.getInstance();
     const service = new JogoService(repo);
     const sut = new JogoController(service);
-    return sut;
+    return {sut, service};
 }
 
 function newSpy() {
@@ -19,7 +19,7 @@ function newSpy() {
 }
 
 describe('Testes do Controller para Jogos', () => {
-    const sut = criaSut();
+    const {sut, service} = criaSut();
     const resp_spy = newSpy();
     const PLAT_XBOX = new PlataformaDTO("Xbox X/S");
     const PLAT_PS5 = new PlataformaDTO("PS5");
@@ -115,4 +115,42 @@ describe('Testes do Controller para Jogos', () => {
         sut.delete(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })    
+
+    it('Deve receber status 500 ao tentar salvar um jogo com erro interno', () => {
+        const plataformas: PlataformaDTO[] = [PLAT_XBOX, PLAT_PS5, PLAT_SWITCH];
+        const req = { body: { nome: "Fifa 2023", plataformas: plataformas, valor: 15, urlImagem: ""}};        
+        jest.spyOn(service, 'save').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.save(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
+    it('Deve receber status 500 ao tentar buscar jogo por id com erro interno', () => {
+        const req = { params: { id: 1}};
+        jest.spyOn(service, 'findById').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.findById(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
+    it('Deve receber status 500 ao tentar atualizar um jogo com erro interno', () => {
+        const req = { body: { nome: "Fifa 2023", plataformas: [PLAT_XBOX], valor: 20, urlImagem: ""}, params: {id: 1}};
+        jest.spyOn(service, 'update').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.update(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
+    it('Deve receber status 500 ao tentar buscar jogo por plataforma com erro interno', () => {
+        const json = JSON.stringify({titulo: 'Xbox X/S'});
+        jest.spyOn(service, 'findByPlataforma').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.findByPlataforma({body: json} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
+    it('Deve receber status 500 ao tentar buscar jogo por valor em um range com erro interno', () => {
+        const req = {params: {min: 10, max: 20}};
+        jest.spyOn(service, 'findByRangeValor').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.findByRangeValor(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
+
 })

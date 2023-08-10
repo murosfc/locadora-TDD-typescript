@@ -50,11 +50,11 @@ describe("Teste do UsuarioRepository", () => {
         expect(usuarioAtualizado).toHaveProperty('senha', usuario.senha);
     });
 
-    it('Deve gerar exceção do tipo NotAllowedException ao tentar atualizar CPF', () => {
+    it('Deve obter CPF anterior ao tentar atualizar CPF', () => {
         var usuario = new Usuario('João da Silva', 'jsilva@gmail.com', '123456','555555555555');  
         usuario.id = 1;    
-        expect(() => sut.update(usuario)).toThrowError('CPF não pode ser alterado');
-        expect(() => sut.update(usuario)).toThrowError(NotAllowedException);
+        const updatedUser = sut.update(usuario) as Usuario;
+        expect(updatedUser.cpf).toBe('12345678901');
     });
 
     it('Deve gerar exceção do tipo NotAllowedException ao tentar atualizar email com um já em uso', () => {

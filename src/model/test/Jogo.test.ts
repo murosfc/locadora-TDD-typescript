@@ -24,6 +24,11 @@ describe('Testes da endidade Jogo', () => {
     expect(jogoGof.id).toBeUndefined(); //id é undefined pois ainda não foi salvo no repositório
     })
 
+    it('Deve atribuir id 1 a um jogo e obter a mesma', () => {
+        jogoGof.id = 1;
+        expect(jogoGof.id).toBe(1);
+    })
+
     it('Deve colocar a imgagem padrão quando url da imagem for vazia', () => {
         const jogo = new Jogo('God of War', [PlataformaDTO.dtoToPlataforma(PLAT_PS4)], 15, "");
         expect(jogo.urlImagem).toBe(jogo.DEFAULT_IMAGE_URL);

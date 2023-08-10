@@ -2,6 +2,7 @@ import { PlataformaDTO } from "../service/PlataformaService";
 import { PlataformaControllerInterface } from "./contracts/PlataformaControllerInterface";
 import { PlataformaServiceInterface } from "../service/contracts/PlataformaServiceInterface";
 import { Request, Response } from "express";
+import { DomainError } from "../error/DomainError";
 
 export class PlataformaController implements PlataformaControllerInterface{
     private service: PlataformaServiceInterface<PlataformaDTO>;
@@ -9,17 +10,30 @@ export class PlataformaController implements PlataformaControllerInterface{
     constructor(service: PlataformaServiceInterface<PlataformaDTO>){
         this.service = service;
     }
+    
+    findByTitulo(req: Request, resp: Response) {
+        try{
+            const titulo = JSON.parse(req.body).titulo;
+            const resultado = this.service.findByTitulo(titulo);
+            resp.status(200).json(resultado).end();
+        }catch(error){
+            if (error instanceof DomainError)
+                resp.status(400).json({mensagem: error.message}).end();
+            else    
+                resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
+        }
+    }
 
     findAll(resp: Response){        
-        return resp.status(200).json(this.service.findAll()).end();
+        resp.status(200).json(this.service.findAll()).end();
     } 
 
     findById(req: Request, resp: Response){
         try{
             const resultado = this.service.findById(Number(req.params.id));
-            return resp.status(200).json(resultado).end();
+            resp.status(200).json(resultado).end();
         }catch(error){
-            if (error instanceof Error)
+            if (error instanceof DomainError)
                 resp.status(400).json({mensagem: error.message}).end();
             else    
                 resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
@@ -29,9 +43,9 @@ export class PlataformaController implements PlataformaControllerInterface{
         try{            
             const plataforma = new PlataformaDTO(JSON.parse(req.body).titulo);            
             const saved = this.service.save(plataforma);
-            return resp.status(201).json(saved).end();
+            resp.status(201).json(saved).end();
         }catch(error){
-            if (error instanceof Error)
+            if (error instanceof DomainError)
                 resp.status(400).json({mensagem: error.message}).end();
             else    
                 resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
@@ -45,7 +59,7 @@ export class PlataformaController implements PlataformaControllerInterface{
             const updated = this.service.update(plataforma);
             return resp.status(200).json(updated).end();
         }catch(error){
-            if (error instanceof Error)
+            if (error instanceof DomainError)
                 resp.status(400).json({mensagem: error.message}).end();
             else    
                 resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
@@ -54,9 +68,9 @@ export class PlataformaController implements PlataformaControllerInterface{
     delete(req: Request, resp: Response){
         const id = Number(req.params.id);
         if (this.service.delete(id))
-            return resp.status(200).json({mensagem: "Plataforma removida com sucesso"}).end();
+            resp.status(200).json({mensagem: "Plataforma removida com sucesso"}).end();
         else
-            return resp.status(400).json({mensagem: "Erro ao tentar excluir a plataforma, verifique se ela está cadastrada"}).end();
+            resp.status(400).json({mensagem: "Erro ao tentar excluir a plataforma, verifique se ela está cadastrada"}).end();
     }
     
 }

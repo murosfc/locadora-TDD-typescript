@@ -97,8 +97,7 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         return UsuarioDTO.usuarioToDTO(savedUser);
     }
     update(entity: UsuarioDTO): UsuarioDTO {
-        this.validaUsuario(entity, false);
-        const user = UsuarioDTO.dtoToUsuario(entity);
+        this.validaUsuario(entity, false);        
         const updatedUser = this.repo.update(entity) as Usuario;
         return UsuarioDTO.usuarioToDTO(updatedUser);
     }
@@ -109,11 +108,13 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
     private validaUsuario(entity: UsuarioDTO, save: boolean){
         if (entity.nome.length <= 0 || entity.nome == undefined) throw new InvalidAttributeException("Nome inválido");
         if (entity.email.length <=0 || entity.email == undefined) throw new InvalidAttributeException("e-mail inválido");
-        if (entity.cpf.length <=0 || entity.cpf == undefined) throw new InvalidAttributeException("CPF inválido");
-        if (save && entity.id >0) throw new NotAllowedException("Novo usuário não pode te id informada");
-        if (save && this.repo.findByCpf(entity.cpf)) throw new NotAllowedException("CPF já cadastrado");
-        if (save && this.repo.findByEmail(entity.email)) throw new NotAllowedException("e-mail informado já está em uso");
-        if (!save && entity.id<=0) throw new NotAllowedException("Tentativa de atualização de usuário com id inválida");
+        if(save){
+            if (entity.senha.length <=0 || entity.senha == undefined) throw new InvalidAttributeException("Senha inválida");
+            if (entity.cpf.length <=0 || entity.cpf == undefined) throw new InvalidAttributeException("CPF inválido");
+            if (entity.id >0) throw new NotAllowedException("Novo usuário não pode te id informada");
+            if (this.repo.findByCpf(entity.cpf)) throw new NotAllowedException("CPF já cadastrado");
+            if (this.repo.findByEmail(entity.email)) throw new NotAllowedException("e-mail informado já está em uso");
+        }else if (entity.id<=0) throw new NotAllowedException("Tentativa de atualização de usuário com id inválida");
     }
 
 }

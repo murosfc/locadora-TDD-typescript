@@ -77,4 +77,44 @@ describe('Testes do controller da plataforma', () => {
         sut.delete({params: {id: 0}} as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(400);        
     });
+
+    it('Deve encontrar uma plataforma por titulo', () => {
+        const jsonPlat = JSON.stringify({titulo: "Nintendo Switch"});
+        sut.findByTitulo({body: jsonPlat} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
+
+    it('Deve retornar status 400 ao chamar o método findByTitulo com dados inválidos', () => {
+        const jsonPlat = JSON.stringify({titulo: ""});
+        sut.findByTitulo({body: jsonPlat} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(400);
+    });
+
+    it('Deve receber status 500 ao tentar salvar uma plataforma com erro interno', () => {
+        const jsonPlat = JSON.stringify({titulo: 'Xbox X/S'});
+        jest.spyOn(service, 'save').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.save({body: jsonPlat} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
+    it('Deve receber status 500 ao tentar buscar plataforma por id com erro interno', () => {
+        jest.spyOn(service, 'findById').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.findById({params: {id: 1}} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
+    it('Deve receber status 500 ao tentar atualizar uma plataforma com erro interno', () => {
+        const jsonPlat = JSON.stringify({titulo: "XBOX ONE S/X"});             
+        jest.spyOn(service, 'update').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.update({body: jsonPlat, params: {id: 1}} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
+    it('Deve receber status 500 ao tentar buscar plataforma por titulo com erro interno', () => {
+        const json = JSON.stringify({titulo: 'Xbox X/S'});
+        jest.spyOn(service, 'findByTitulo').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.findByTitulo({body: json} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
 });

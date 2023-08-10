@@ -57,9 +57,7 @@ export class UsuarioRepository implements UsuarioRepositoryInterface{
 
     update(usuario: Usuario): Usuario {
         const usuarioEmMemoria = this.findById(usuario.id);         
-        if (usuarioEmMemoria.cpf != usuario.cpf){
-            throw new NotAllowedException("CPF não pode ser alterado");
-        }
+        usuario.cpf = usuarioEmMemoria.cpf;        
         if (usuarioEmMemoria.email != usuario.email){
             if (this.findByEmail(usuario.email)){
                 throw new NotAllowedException("Novo e-mail já está em uso por outra conta");

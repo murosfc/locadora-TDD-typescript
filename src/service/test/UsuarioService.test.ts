@@ -54,6 +54,12 @@ describe('UsuarioService', () => {
         expect(() => sut.save(user)).toThrowError(InvalidAttributeException);
     });
 
+    it('Deve gerar erro do tipo InvalidAttributeException adicionar um usuário com senha inválida', () => {
+        const user = new UsuarioDTO('João', 'joao@gmail.com', '', '99988877766');
+        expect(() => sut.save(user)).toThrowError('Senha inválida')
+        expect(() => sut.save(user)).toThrowError(InvalidAttributeException);
+    });
+
     it('Deve gerar um erro do tipo NotAllowedException ao tentat salvar um novo usuário já com id', () => {
         const user = new UsuarioDTO('João', 'joao@gmail.com', '123456', '12345678910');
         user.id = 1;
