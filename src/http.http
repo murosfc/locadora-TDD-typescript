@@ -1,0 +1,5 @@
+@endereco = http://localhost:3333
+
+GET {{endereco}}/
+Content-Type: text/plain
+
