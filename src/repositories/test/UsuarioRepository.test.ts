@@ -115,7 +115,4 @@ describe("Teste do UsuarioRepository", () => {
         expect(usuarios).toBeInstanceOf(Array);
         expect(usuarios).toHaveLength(2);
     });
-
-
-
 });

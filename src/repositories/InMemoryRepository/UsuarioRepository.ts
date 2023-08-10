@@ -21,18 +21,20 @@ export class UsuarioRepository implements UsuarioRepositoryInterface{
         return this.lista.length + 1;
     }
 
-    findByEmail(email: string): Usuario {
-        return this.lista.find(usuario => usuario.email === email) as Usuario;;
+    findByEmail(email: string): Usuario{        
+        const user = this.lista.find(usuario => usuario.email === email) as Usuario;        
+        return user;              
     }
 
     findByCpf(cpf: string): Usuario {
         return this.lista.find(usuario => usuario.cpf === cpf) as Usuario;
     }
     findAll(): Usuario[] {
+        console.log("Quantidade de usuários cadastrados: " +this.lista.length);
         return this.lista;
     }
     findById(id: number): Usuario{
-        return this.lista.filter(usuario => usuario.id === id)[0];
+        return this.lista.find(usuario => usuario.id === id) as Usuario;
     }
 
     findByTitulo(titulo: string): Usuario {
@@ -40,7 +42,7 @@ export class UsuarioRepository implements UsuarioRepositoryInterface{
     }
 
     findByNome(nome: string): Usuario {
-        return this.lista.find(usuario => usuario.nome === nome) as Usuario;        
+        return this.lista.find(usuario => usuario.nome == nome) as Usuario;        
     }
 
     save(usuario: Usuario): Usuario {

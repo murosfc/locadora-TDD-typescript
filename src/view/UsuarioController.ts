@@ -47,17 +47,21 @@ export class UsuarioController implements UsuarioControllerInterface{
         else
             resp.status(400).json({mensagem: "Erro ao tentar excluir o usuário, verifique se ele está cadastrado"}).end();
     }
+
+    findAll(resp: Response){
+        resp.status(200).json(this.service.findAll()).end();        
+    }
     
-    findByEmail(req: Request, resp: Response): void {
+    findByEmail(req: Request, resp: Response){
         try{
-            const email = req.body.email;
+            const email = req.body.email;                      
             const user = this.service.findByEmail(email);
             resp.status(200).json(user).end();
         }catch(error){
             this.errorHandler(error, resp);  
         }
     }
-    findByCpf(req: Request, resp: Response): void {
+    findByCpf(req: Request, resp: Response){
         try{
             const cpf = req.body.cpf;
             const user = this.service.findByCpf(cpf);
@@ -67,9 +71,7 @@ export class UsuarioController implements UsuarioControllerInterface{
             this.errorHandler(error, resp);  
         }
     }
-    findAll(resp: Response<any, Record<string, any>>): void {
-        resp.status(200).json(this.service.findAll()).end();        
-    }
+    
 
     findById(req: Request, resp: Response) {
         try{
@@ -79,8 +81,6 @@ export class UsuarioController implements UsuarioControllerInterface{
         }catch(error){
             this.errorHandler(error, resp);  
         }
-    }
-
-    
+    }   
 
 }

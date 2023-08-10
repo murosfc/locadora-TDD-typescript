@@ -64,10 +64,10 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         this.repo = repo;
     }
 
-    findByEmail(email: string): UsuarioDTO {
-        const user = this.repo.findByEmail(email) as Usuario;
-        if (!user) throw new NotFoundException("Usuário não encontrado");
-        return UsuarioDTO.usuarioToDTO(user);
+    findByEmail(email: string): UsuarioDTO {                  
+        const user = this.repo.findByEmail(email) as Usuario;                         
+        if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
+        return UsuarioDTO.usuarioToDTO(user);                
     }
 
     findByCpf(cpf: string): UsuarioDTO {
@@ -86,8 +86,8 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
 
     findById(id: number): UsuarioDTO {
         const user = this.repo.findById(id) as Usuario;
-        if (!user) throw new NotFoundException("Usuário não encontrado");
-        return UsuarioDTO.usuarioToDTO(user);
+        if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
+        return UsuarioDTO.usuarioToDTO(user);  
     }
 
     save(entity: UsuarioDTO): UsuarioDTO {
