@@ -1,7 +1,7 @@
-import { NotFoundException } from "src/error/NotFoundException";
+import { NotFoundException } from "../../error/NotFoundException";
 import { Conta } from "..//../model/Conta";
 import { ContaRepositoryInterface } from "..//contracts/ContaRepositoryInterface";
-import { NotAllowedException } from "src/error/NotAllowedException";
+import { NotAllowedException } from "../../error/NotAllowedException";
 export class ContaRepository implements ContaRepositoryInterface   {
     private lista: Conta[];
     static soleInstance: ContaRepository;
@@ -16,14 +16,45 @@ export class ContaRepository implements ContaRepositoryInterface   {
         }
         return this.soleInstance;
     }
-
+    
     private getNewId(): number {
         return this.lista.length + 1;
     }
-    
-    findByEmail(email: string): Conta {
-        return this.lista.find(c => c.email === email) as Conta;
+
+    save(object: Object): Conta {
+        const objectToSave = object as Conta;
+        objectToSave.id = this.getNewId();
+        this.lista.push(objectToSave);
+        return objectToSave;
     }
+
+    update(object: Object): Conta|Error{        
+        const conta = object as Conta;
+        const contacadastrada = this.findByEmail(conta.email) as Conta;
+        if (contacadastrada.id !== conta.id) {
+            return new NotAllowedException("novo e-mail informado já cadastrado em outra conta");
+        }
+        const index = this.lista.findIndex(c => c.id === conta.id);
+        this.lista[index] = conta;
+        return this.findById(conta.id) as Conta;        
+    }
+    delete(id: number): boolean {
+        const index = this.lista.findIndex(c => c.id === id);
+        if (index === -1) {
+            return false;
+        }
+        this.lista.splice(index, 1);
+        return true;
+    }
+    
+    findByEmail(email: string): Conta|Error {
+        const conta = this.lista.find(c => c.email === email);
+        if (!conta) {
+            return new NotFoundException("conta não encontrada");
+        }
+        return conta;
+    }
+    
     findByJogo(jogo: Object): Conta[] {
         var contas: Conta[];
         contas = [];
@@ -43,28 +74,9 @@ export class ContaRepository implements ContaRepositoryInterface   {
     findById(id: number): Conta {
         return this.lista.find(c => c.id === id) as Conta;
     }
-    findByTitulo(titulo: string): Conta {
+    findByTitulo(titulo: string): Conta|Error {
         return this.findByEmail(titulo);
     }
-    save(object: Object): Conta {
-        return this.save(object);
-    }
-    update(object: Object): Conta|Error{        
-        const conta = object as Conta;
-        if (this.findByEmail(conta.email).id !== conta.id) {
-            return new NotAllowedException("novo e-amil informado já cadastrado em outra conta");
-        }
-        const index = this.lista.findIndex(c => c.id === conta.id);
-        this.lista[index] = conta;
-        return this.findById(conta.id) as Conta;        
-    }
-    delete(id: number): boolean {
-        const index = this.lista.findIndex(c => c.id === id);
-        if (index === -1) {
-            return false;
-        }
-        this.lista.splice(index, 1);
-        return true;
-    }
+    
   
 }
