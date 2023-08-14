@@ -1,3 +1,4 @@
+import { InvalidAttributeException } from "../error/InvalidAttributeException";
 import { DomainObject } from "./DomainObject";
 import { Jogo } from "./Jogo";
 
@@ -8,9 +9,9 @@ export class Conta extends DomainObject{
 
     constructor(email: string, senha: string, jogos?: Jogo[]){
         super();
-        if (email.length === 0) throw new Error('Email inválido')
+        if (email.length === 0) throw new InvalidAttributeException('Email inválido')
         this._email = email;
-        if (senha.length === 0) throw new Error('Senha inválida')
+        if (senha.length === 0) throw new InvalidAttributeException('Senha inválida')
         this._senha = senha;
         if (jogos) this._jogos = jogos;
         else this._jogos = [];

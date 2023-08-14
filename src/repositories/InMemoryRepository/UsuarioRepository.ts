@@ -22,18 +22,19 @@ export class UsuarioRepository implements UsuarioRepositoryInterface{
     }
 
     findByEmail(email: string): Usuario{        
-        const user = this.lista.find(usuario => usuario.email === email) as Usuario;        
+        const user = this.lista.find(usuario => usuario.email === email) as Usuario;            
         return user;              
     }
 
     findByCpf(cpf: string): Usuario {
         return this.lista.find(usuario => usuario.cpf === cpf) as Usuario;
     }
-    findAll(): Usuario[] {
-        console.log("Quantidade de usuários cadastrados: " +this.lista.length);
+
+    findAll(): Usuario[] {        
         return this.lista;
     }
-    findById(id: number): Usuario{
+
+    findById(id: number): Usuario{        
         return this.lista.find(usuario => usuario.id === id) as Usuario;
     }
 

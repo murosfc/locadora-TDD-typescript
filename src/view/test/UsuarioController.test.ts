@@ -9,13 +9,25 @@ function criaSut() {
     return {sut, service};
 }
 
+function newSpy() {
+    return {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+        end: jest.fn()
+    };    
+}
+
 describe('UsuarioController', () => {
     const {sut, service} = criaSut();
-    var resp_spy = { status: jest.fn().mockReturnThis(), json: jest.fn().mockReturnThis(), end: jest.fn() };
+    const resp_spy = newSpy();
 
     it('Deve salvar um usuário novo obtendo status code 200', () => {
-        const req = { body: { nome: "João", email: "joao@gmail.com", senha: "123456", cpf: "12345678901"}};        
+        var req = { body: { nome: "João", email: "joao@gmail.com", senha: "123456", cpf: "12345678901"}};        
         sut.save(req as any, resp_spy as any);
+        console.log("usuário criado: " + resp_spy.json.mock.calls[0][0].nome);
+        expect(resp_spy.status).toHaveBeenCalledWith(201);
+        req = { body: { nome: "Pedro Ribeiro", email: "pedro_ribeiro@gmail.com", senha: "123456", cpf: "28394758402"}};        
+        sut.save(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
@@ -64,61 +76,47 @@ describe('UsuarioController', () => {
         req = { params: {id: 1}};
         sut.delete(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-    });   
-    
-    it('Deve salvar um usuário novo obtendo status code 200 para seguir com demais testes', () => {
-        const req = { body: { nome: "João", email: "joao@gmail.com", senha: "123456", cpf: "12345678901"}};        
-        sut.save(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(201);
-    });
+    });     
 
     it('Deve receber 200 ao buscar por todos os usuários', () => {
-        sut.findAll(resp_spy as any);
-        console.log(resp_spy.json.mock.calls[0][0].length);
+        sut.findAll(resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
-    // it('Deve receber 200 ao buscar um usuário por e-mail', () => {                
-    //     sut.findByEmail({body: {email: "joao@gmail.com"}} as any, resp_spy as any);        
-    //     expect(resp_spy.status).toHaveBeenCalledWith(200);
-    // });
+    it('Deve receber 200 ao buscar um usuário por e-mail', () => {                
+        sut.findByEmail({body: {email: "pedro_ribeiro@gmail.com"}} as any, resp_spy as any);        
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
 
-    // it('Deve receber 400 ao buscar um usuário por e-mail inválido', () => {       
-    //     sut.findByEmail({body: {email: "naocadastrado@gmail.com"}} as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(400);
-    // });
+    it('Deve receber 400 ao buscar um usuário por e-mail inválido', () => {       
+        sut.findByEmail({body: {email: "naocadastrado@gmail.com"}} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(400);
+    });
 
-    // it('Deve receber 500 de erro interno de servidor ao buscar por e-mail', () =>{           
-    //     jest.spyOn(service, 'findByEmail').mockImplementation(() => {throw new Error("Erro interno de servidor")});
-    //     sut.findByEmail({body: {email: "GETALLPASSWORDS"}} as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(500);
-    // });
+    it('Deve receber 500 de erro interno de servidor ao buscar por e-mail', () =>{           
+        jest.spyOn(service, 'findByEmail').mockImplementation(() => {throw new Error("Erro interno de servidor")});
+        sut.findByEmail({body: {email: "GETALLPASSWORDS"}} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
 
-    // it('Deve receber 200 ao solicitar o cadastros de todos os clientes', () =>{
-    //     sut.findAll(resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(200);
-    // })
+    it('Deve receber 200 ao solicitar o cadastros de todos os clientes', () =>{
+        sut.findAll(resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    })
 
-    // it('Deve receber 200 ao buscar um usuário por id', () => {        
-    //     sut.findById({ body: { id: 1}} as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(200);
-    // });
+    it('Deve receber 200 ao buscar um usuário por id', () => {          
+        sut.findById({params: {id: 2}} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
 
-    // it('Deve receber 400 ao buscar um usuário por id inválido ou inválido', () => {        
-    //     sut.findById({ body: { id: 1}} as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(400);     
-    //     sut.findById({ body: { id: 1}} as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(400);
-    // });
+    it('Deve receber 400 ao buscar um usuário por id inválido ou inválido', () => {        
+        sut.findById({params: {id: 1}} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(400);        
+    });
 
-    // it('Deve receber 500 de erro interno de servidor ao buscar por id', () =>{        
-    //     jest.spyOn(service, 'findById').mockImplementation(() => {throw new Error("Erro interno de servidor")});
-    //     sut.findById({ body: { id: 1}} as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(500);
-    // });
-
-
-        
-
-
+    it('Deve receber 500 de erro interno de servidor ao buscar por id', () =>{        
+        jest.spyOn(service, 'findById').mockImplementation(() => {throw new Error("Erro interno de servidor")});
+        sut.findById({params: {id: 1}} as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
 });

@@ -74,7 +74,7 @@ export class UsuarioController implements UsuarioControllerInterface{
     
 
     findById(req: Request, resp: Response) {
-        try{
+        try{           
             const id = Number(req.params.id);
             const user = this.service.findById(id);
             resp.status(200).json(user).end();

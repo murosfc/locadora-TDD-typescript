@@ -84,7 +84,7 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         return usersDTO;
     }
 
-    findById(id: number): UsuarioDTO {
+    findById(id: number): UsuarioDTO {        
         const user = this.repo.findById(id) as Usuario;
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
         return UsuarioDTO.usuarioToDTO(user);  
