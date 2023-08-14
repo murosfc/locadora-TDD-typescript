@@ -73,10 +73,6 @@ export class ContaRepository implements ContaRepositoryInterface   {
     }
     findById(id: number): Conta {
         return this.lista.find(c => c.id === id) as Conta;
-    }
-    findByTitulo(titulo: string): Conta|Error {
-        return this.findByEmail(titulo);
-    }
-    
+    }  
   
 }

@@ -47,18 +47,13 @@ describe('ContaRepository', () => {
 
     it('Deve receber uma conta ao buscar por e-mail', () => {
         const conta = sut.findByEmail("conta02@ongames.com") as Conta;
-        expect(conta.id).toBe(2);
-        const conta2 = sut.findByTitulo("conta02@ongames.com") as Conta;
-        expect(conta2.id).toBe(2);
+        expect(conta.id).toBe(2);        
     });
 
     it('Deve receber um erro do tipo NotFoundException ao buscar por e-mail inexistente', () => {
         const conta = sut.findByEmail("naocadastrado@ongames.com");
         expect(conta instanceof DomainError);
-        expect((conta as DomainError).message === "conta não encontrada");
-        const conta2 = sut.findByTitulo("naocadastrado@ongames.com");
-        expect(conta2 instanceof DomainError);
-        expect((conta2 as DomainError).message === "conta não encontrada");
+        expect((conta as DomainError).message === "conta não encontrada");        
     });
 
     it('Deve encontrar contas por jogo', () => {    

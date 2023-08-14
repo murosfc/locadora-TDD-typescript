@@ -37,11 +37,6 @@ export class UsuarioRepository implements UsuarioRepositoryInterface{
     findById(id: number): Usuario{        
         return this.lista.find(usuario => usuario.id === id) as Usuario;
     }
-
-    findByTitulo(titulo: string): Usuario {
-        return this.findByNome(titulo);
-    }
-
     findByNome(nome: string): Usuario {
         return this.lista.find(usuario => usuario.nome == nome) as Usuario;        
     }

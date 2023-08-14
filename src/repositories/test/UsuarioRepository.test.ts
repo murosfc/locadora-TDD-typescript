@@ -85,11 +85,7 @@ describe("Teste do UsuarioRepository", () => {
         const usuario = sut.findByNome('Lucas Ribeiro');
         expect(usuario).not.toBeNull();
         expect(usuario).not.toBeUndefined();
-        expect(usuario).toBeInstanceOf(Usuario);
-        const usuario2 = sut.findByTitulo('Lucas Ribeiro');
-        expect(usuario2).not.toBeNull();
-        expect(usuario2).not.toBeUndefined();
-        expect(usuario2).toBeInstanceOf(Usuario);
+        expect(usuario).toBeInstanceOf(Usuario);        
     });
 
     it('Deve encontar um usuário por email', () => {
