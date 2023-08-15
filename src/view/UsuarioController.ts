@@ -29,7 +29,8 @@ export class UsuarioController implements UsuarioControllerInterface{
     
     update(req: Request, resp: Response) {
         try{    
-            const userFromDB = this.service.findById(Number(req.params.id));
+            
+            const userFromDB = this.service.findById(Number(req.params.id)) as UsuarioDTO;
             userFromDB.nome = req.body.nome;
             userFromDB.email = req.body.email;
             userFromDB.senha = req.body.senha;         
