@@ -14,7 +14,7 @@ export class JogoController implements JogoControllerInterface{
 
     save(req: Request, resp: Response){        
         try{
-            const jogoDTO = new JogoDTO(req.body.nome, req.body.plataformas, req.body.preco, req.body.urlImagem);
+            const jogoDTO = new JogoDTO(req.body.nome, req.body.plataforma, req.body.preco, req.body.urlImagem);
             const jogo = this.service.save(jogoDTO);
             resp.status(201).json(jogo);
         }catch(error){
@@ -42,7 +42,7 @@ export class JogoController implements JogoControllerInterface{
 
     update(req: Request, resp: Response){        
         try{ 
-            const jogoDTO = new JogoDTO(req.body.nome, req.body.plataformas, req.body.preco, req.body.urlImagem);
+            const jogoDTO = new JogoDTO(req.body.nome, req.body.plataforma, req.body.preco, req.body.urlImagem);
             jogoDTO.id = Number(req.params.id);   
             const jogo = this.service.update(jogoDTO);
             resp.status(200).json(jogo).end();
@@ -55,9 +55,8 @@ export class JogoController implements JogoControllerInterface{
     }    
 
     findByPlataforma(req: Request, resp: Response){         
-        try{
-            const plataforma = new PlataformaDTO(JSON.parse(req.body).titulo);  
-            resp.status(200).json(this.service.findByPlataforma(plataforma)).end();
+        try{            
+            resp.status(200).json(this.service.findByPlataforma(Number(req.params.id))).end();
         }catch(error){
             if (error instanceof DomainError)
                 resp.status(400).json({mensagem: error.message}).end();

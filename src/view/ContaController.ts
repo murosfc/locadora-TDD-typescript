@@ -1,10 +1,9 @@
-import { ContaServiceInterface } from "src/service/contracts/ContaServiceInterface";
+import { ContaServiceInterface } from "../service/contracts/ContaServiceInterface";
 import { ContaDTO } from "../service/ContaService";
 import { ContaControllerInterface } from "./contracts/ContaContollerInterface";
 import { Request, Response } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
-import { ParsedQs } from "qs";
-import { DomainError } from "src/error/DomainError";
+import { DomainError } from "../error/DomainError";
+import { NotFoundException } from "../error/NotFoundException";
 
 export class ContaController implements ContaControllerInterface{
     service: ContaServiceInterface<ContaDTO>
@@ -12,20 +11,27 @@ export class ContaController implements ContaControllerInterface{
     constructor(service: ContaServiceInterface<ContaDTO>) {
         this.service = service;        
     }
-    returnResponse(resp: Response, result: any){
-        if(result instanceof ContaDTO){
-            resp.status(201).json(result);
+    private returnResponse(resp: Response, result: any, save: boolean){  
+        if(result instanceof NotFoundException){
+            resp.status(404).json(result.message);
         }
         if(result instanceof DomainError){
             resp.status(400).json(result.message);
         }
+        if(result instanceof ContaDTO || result instanceof Array){
+            if(save){            
+                resp.status(201).json(result);
+            }else{
+                resp.status(200).json(result);
+            }
+        }        
     }
 
     save(req: Request, resp: Response){
         try{
             const conta = new ContaDTO(req.body.email, req.body.senha, req.body.jogo);
             const contaSaved = this.service.save(conta);
-            this.returnResponse(resp, contaSaved);
+            this.returnResponse(resp, contaSaved, true);
         }catch(e){
             resp.status(500).json("Erro interno de servidor");
         }
@@ -33,9 +39,9 @@ export class ContaController implements ContaControllerInterface{
     update(req: Request, resp: Response){
         try{
             const conta = new ContaDTO(req.body.email, req.body.senha, req.body.jogo);
-            conta.id = req.body.id;
+            conta.id = Number(req.params.id);
             const contaUpdated = this.service.update(conta);
-            this.returnResponse(resp, contaUpdated);
+            this.returnResponse(resp, contaUpdated, false);
         }catch(e){
             resp.status(500).json("Erro interno de servidor");
         }
@@ -55,15 +61,16 @@ export class ContaController implements ContaControllerInterface{
     findByEmail(req: Request, resp: Response){
         try{
             const conta = this.service.findByEmail(req.params.email);
-            this.returnResponse(resp, conta);
+            this.returnResponse(resp, conta, false)
         }catch(e){
             resp.status(500).json("Erro interno de servidor");            
         }
     }
-    findByJogo(req: Request, resp: Response){
-        try{
-            const conta = this.service.findByJogo(req.params.jogo);
-            this.returnResponse(resp, conta);
+    findByJogo(req: Request, resp: Response){        
+        try{  
+            const idJogo = Number(req.params.idJogo);           
+            const contas = this.service.findByJogo(idJogo) as ContaDTO[];           
+            this.returnResponse(resp, contas, false);
         }catch(e){
             resp.status(500).json("Erro interno de servidor");            
         }
@@ -78,7 +85,7 @@ export class ContaController implements ContaControllerInterface{
     findById(req: Request, resp: Response){
         try{
             const conta = this.service.findById(Number(req.params.id));
-            this.returnResponse(resp, conta);
+            this.returnResponse(resp, conta, false);
         }catch(e){
             resp.status(500).json("Erro interno de servidor");            
         }

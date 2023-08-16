@@ -5,6 +5,10 @@ import { Jogo } from "../../model/Jogo";
 import { InvalidAttributeException } from "../../error/InvalidAttributeException";
 import { NotAllowedException } from "../../error/NotAllowedException";
 
+function setIdJogo(jogo1: Jogo, jogo2: Jogo){
+    jogo1.id = 1;
+    jogo2.id = 2;    
+}
 
 describe('ContaService', () => {
     const repo = ContaRepository.getInstance();
@@ -12,8 +16,9 @@ describe('ContaService', () => {
 
     const plataforma1 = new Plataforma("PS5");
     const plataforma2 = new Plataforma("XBOX");
-    const jogo1 = new Jogo("Fifa 203", [plataforma1, plataforma2], 20,"");
-    const jogo2 = new Jogo("Call of Duty", [plataforma1, plataforma2], 10,"");
+    const jogo1 = new Jogo("Fifa 203", plataforma1, 20,"");
+    const jogo2 = new Jogo("Call of Duty", plataforma2, 10,"");
+    setIdJogo(jogo1, jogo2);
     
     it('Deve salvar uma conta com sucesso', () => {
         var conta = new ContaDTO("conta01@ongames.com", "123456", [jogo1]);
@@ -100,12 +105,12 @@ describe('ContaService', () => {
     });
 
     it('Deve econtrar conta por jogo', () => {
-        const contas = sut.findByJogo(jogo2);
+        const contas = sut.findByJogo(jogo2.id);
         expect(contas.length).toBe(1);
     });
 
     it('Deve retornar uma lista vazia ao buscar conta por jogo inexistente', () => {
-        const contas = sut.findByJogo(new Jogo("Jogo inexistente", [plataforma1], 10,""));
+        const contas = sut.findByJogo(5);
         expect(contas.length).toBe(0);
     });
 
@@ -114,7 +119,7 @@ describe('ContaService', () => {
         expect(contas.length).toBe(1);
     });
 
-    it('Deve encontarar uma conta por id', () => {
+    it('Deve encontrar uma conta por id', () => {
         const conta = sut.findById(2);
         expect((conta as ContaDTO).id).toBe(2);
     });
@@ -127,3 +132,4 @@ describe('ContaService', () => {
 
 
 });
+

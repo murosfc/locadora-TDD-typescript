@@ -23,8 +23,7 @@ describe('UsuarioController', () => {
 
     it('Deve salvar um usuário novo obtendo status code 200', () => {
         var req = { body: { nome: "João", email: "joao@gmail.com", senha: "123456", cpf: "12345678901"}};        
-        sut.save(req as any, resp_spy as any);
-        console.log("usuário criado: " + resp_spy.json.mock.calls[0][0].nome);
+        sut.save(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(201);
         req = { body: { nome: "Pedro Ribeiro", email: "pedro_ribeiro@gmail.com", senha: "123456", cpf: "28394758402"}};        
         sut.save(req as any, resp_spy as any);        
@@ -83,6 +82,23 @@ describe('UsuarioController', () => {
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
+    it('Deve receber 200 ao buscar um usuário por CPF', () => {
+        sut.findByCpf({params: {cpf: "28394758402"}} as any, resp_spy as any);        
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
+
+    it('Deve receber status 400 ao buscar um usuário por CPF inválido', () => {
+        sut.findByCpf({params: {cpf: ""}} as any, resp_spy as any);        
+        expect(resp_spy.status).toHaveBeenCalledWith(400);
+    });
+
+    it('Deve receber status 500 ao buscar um usuário por CPF com erro interno', () => {
+        const req = {params: {cpf: "98998998999"}};
+        jest.spyOn(service, 'findByCpf').mockImplementation(() => {throw new Error("Erro interno de servidor")});
+        sut.findByCpf(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
     it('Deve receber 200 ao buscar um usuário por e-mail', () => {                
         sut.findByEmail({body: {email: "pedro_ribeiro@gmail.com"}} as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(200);
@@ -95,7 +111,7 @@ describe('UsuarioController', () => {
 
     it('Deve receber 500 de erro interno de servidor ao buscar por e-mail', () =>{           
         jest.spyOn(service, 'findByEmail').mockImplementation(() => {throw new Error("Erro interno de servidor")});
-        sut.findByEmail({body: {email: "GETALLPASSWORDS"}} as any, resp_spy as any);
+        sut.findByEmail({body: {email: "no@ongames.com"}} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
     });
 

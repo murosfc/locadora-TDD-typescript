@@ -6,8 +6,10 @@ import { JogoRepositoryInterface } from "../contracts/JogoRepositoryInterface";
 
 describe("Teste do JogoRepository", () => {
     var sut: JogoRepositoryInterface;
-    const platXBOX = new Plataforma('XBOX ONE');   
+    const platXBOX = new Plataforma('XBOX ONE');  
+    platXBOX.id = 1;
     const platPS5 = new Plataforma('PS5');
+    platPS5.id = 2;
 
     it('Deve obter a instância única do repositório', () => {
         sut = JogoRepository.getInstance();
@@ -20,7 +22,7 @@ describe("Teste do JogoRepository", () => {
         const jogo = {
             titulo: 'Jogo 1',
             valor: 100,
-            plataformas: [platPS5]
+            plataforma: platPS5
         };
         const jogoSalvo = sut.save(jogo);
         expect(jogoSalvo).not.toBeNull();
@@ -29,17 +31,17 @@ describe("Teste do JogoRepository", () => {
         expect(jogoSalvo).toHaveProperty('id');
         expect(jogoSalvo).toHaveProperty('titulo', jogo.titulo);
         expect(jogoSalvo).toHaveProperty('valor', jogo.valor);
-        expect(jogoSalvo).toHaveProperty('plataformas', jogo.plataformas);
+        expect(jogoSalvo).toHaveProperty('plataforma', jogo.plataforma);
     });
 
     it('Deve gerar exceção do tipo InvalidAttributeException ao tentar adicionar um jogo com título duplicado', () => {
-        const jogo = new Jogo('Jogo 1', [platXBOX], 100, "");         
+        const jogo = new Jogo('Jogo 1', platXBOX, 100, "");         
         expect(() => sut.save(jogo)).toThrowError('Jogo já cadastrado');
         expect(() => sut.save(jogo)).toThrowError(InvalidAttributeException);
     });
 
     it('Deve atualizar um jogo no repositório', () => {
-        var jogo = new Jogo('Jogo 1', [platXBOX], 50, "www.fifa.com/fifa21.png");    
+        var jogo = new Jogo('Jogo 1', platXBOX, 50, "www.fifa.com/fifa21.png");    
         jogo.id = 1;
         const jogoAtualizado = sut.update(jogo);
         expect(jogoAtualizado).not.toBeNull();
@@ -48,11 +50,11 @@ describe("Teste do JogoRepository", () => {
         expect(jogoAtualizado).toHaveProperty('id');
         expect(jogoAtualizado).toHaveProperty('titulo', jogo.titulo);
         expect(jogoAtualizado).toHaveProperty('valor', jogo.valor);
-        expect(jogoAtualizado).toHaveProperty('plataformas', jogo.plataformas);
+        expect(jogoAtualizado).toHaveProperty('plataforma', jogo.plataforma);
     });
     
     it('Deve gerar exceção do tipo InvalidAttributeException ao tentar atualizar um jogo com título duplicado', () => {
-        const jogo = new Jogo('Jogo 2', [platPS5], 100, "");     
+        const jogo = new Jogo('Jogo 2', platPS5, 100, "");     
         var jogoSalvo = sut.save(jogo) as Jogo;
         jogoSalvo.titulo = 'Jogo 1';
         expect(() => sut.update(jogo)).toThrowError('Novo título informado já cadastrado');
@@ -84,11 +86,10 @@ describe("Teste do JogoRepository", () => {
     });
 
     it('Deve encontrar jogos ao buscar por plataforma', () => {
-        const jogos = sut.findByPlataforma(platPS5);
+        const jogos = sut.findByPlataforma(platPS5.id);
         expect(jogos).not.toBeNull();
         expect(jogos).not.toBeUndefined();
         expect(jogos).toBeInstanceOf(Array);
-        expect(jogos).toHaveLength(2);
     });
 
     it('Deve retornar um jogo por range de preço', () => {

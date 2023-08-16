@@ -12,13 +12,18 @@ function cria_sut() {
     return sut;
 }
 
+
+
 const IMG_GOF_URL = "https://sm.ign.com/t/ign_br/screenshot/default/19149244-1095370340596272-3579967127407830234-n-1_5m3p.960.jpg";
-const PLAT_PS4 = new PlataformaDTO('PS4');
 const PLAT_PS5 = new PlataformaDTO('PS5');
+PLAT_PS5.id = 1;
 const PLAT_XBOX = new PlataformaDTO('XBOX');
+PLAT_XBOX.id = 2;
 const PLAT_NSWITCH = new PlataformaDTO('NINTENDO SWITCH');
+PLAT_NSWITCH.id = 3;
 const PLAT_PC = new PlataformaDTO('PC');
-var jogoGof= new Jogo('God of War', [PlataformaDTO.dtoToPlataforma(PLAT_PS4), PlataformaDTO.dtoToPlataforma(PLAT_PS5)], 15, IMG_GOF_URL);
+PLAT_PC.id = 4;
+var jogoGof= new Jogo('God of War',  PlataformaDTO.dtoToPlataforma(PLAT_PS5), 15, IMG_GOF_URL);
 
 describe('Testes do Use Case Jogo', () => {
     const sut = cria_sut();
@@ -31,40 +36,41 @@ describe('Testes do Use Case Jogo', () => {
     })
 
     it('Deve gerar erro do tipo NotAllowedException ao tentar adicionar um jogo no repositorio com título duplicado', () => {
-        const jogo = new JogoDTO('God of War', [PLAT_XBOX], 20, IMG_GOF_URL);    
+        const jogo = new JogoDTO('God of War', PLAT_XBOX, 20, IMG_GOF_URL);    
         expect(() => sut.save(jogo)).toThrowError('Jogo já cadastrado');
         expect(() => sut.save(jogo)).toThrowError(NotAllowedException);
     })
 
     it('Deve gerar erro tipo InvalidTitleException ao tenta adicionar jogo no repositorio com título inválido', () => {    
-        const jogo = new JogoDTO('', [PLAT_XBOX], 20, "");    
+        const jogo = new JogoDTO('', PLAT_XBOX, 20, "");    
         expect(() => sut.save(jogo)).toThrowError('Título inválido');
         expect(() => sut.save(jogo)).toThrowError(InvalidTitleException);
     })    
 
     it('Deve gerar erro do tipo NotAllowedException ao tentar forçar adição de um jogo com id repetido', () => {
-        const jogo = new JogoDTO('Gears of War', [PLAT_XBOX], 20, "");      
+        const jogo = new JogoDTO('Gears of War', PLAT_XBOX, 20, "");      
         jogo.id = 1;
         expect(() => sut.save(jogo)).toThrowError('Jogo já cadastrado');
         expect(() => sut.save(jogo)).toThrowError(NotAllowedException);
     })
 
     it('Deve gerar um erro do tipo NotAllowedException ao tentar adicionar um jogo com valor negativo', () => {
-        const jogo = new JogoDTO('Gears of War', [PLAT_XBOX], -20, "");
+        const jogo = new JogoDTO('Gears of War', PLAT_XBOX, -20, "");
         expect(() => sut.save(jogo)).toThrowError('Valor deve ser maior que zero');
         expect(() => sut.save(jogo)).toThrowError(NotAllowedException);
     })
 
     it('Deve gerar um erro do tipo NotAllowedException ao tentar adicionar um jogo sem plataforma', () => {
-        const jogo = new JogoDTO('Gears of War', [], 20, "");
-        expect(() => sut.save(jogo)).toThrowError('Jogo deve ter pelo menos uma plataforma');
+        const plat = undefined as unknown as PlataformaDTO;
+        const jogo = new JogoDTO('Gears of War', plat, 20, "");
+        expect(() => sut.save(jogo)).toThrowError('Jogo deve ter uma plataforma');
         expect(() => sut.save(jogo)).toThrowError(NotAllowedException);
     })
 
     it('Deve receber todos os jogos cadastrados', () => {    
         var jogo1 = sut.findById(1);
-        var jogo2 = sut.save(new JogoDTO('Gears of War', [PLAT_XBOX], 20, ""));
-        var jogo3 = sut.save(new JogoDTO('Mario Kart 8', [PLAT_NSWITCH], 20, ""));        
+        var jogo2 = sut.save(new JogoDTO('Gears of War', PLAT_XBOX, 20, ""));
+        var jogo3 = sut.save(new JogoDTO('Mario Kart 8', PLAT_NSWITCH, 20, ""));        
         expect(sut.findAll()).toEqual([jogo1, jogo2, jogo3]);
         expect(jogo1.id).toBe(1);
         expect(jogo2.id).toBe(2);
@@ -78,7 +84,7 @@ describe('Testes do Use Case Jogo', () => {
     })
 
     it('Deve gerar erro do tipo NotFoundException ao tentar atualizar um jogo inexistente', () => {
-        var plat = new JogoDTO('Fifa 2023', [PLAT_XBOX], 20, "");
+        var plat = new JogoDTO('Fifa 2023', PLAT_XBOX, 20, "");
         expect(() => sut.update(plat)).toThrowError('Jogo não encontrado');
         expect(() => sut.update(plat)).toThrowError(NotFoundException);
     })
@@ -110,13 +116,13 @@ describe('Testes do Use Case Jogo', () => {
     })
 
     it('Deve encontrar um jogo por plataforma', () => {
-        var jogos = sut.findByPlataforma(PLAT_NSWITCH);
+        var jogos = sut.findByPlataforma(PLAT_NSWITCH.id);
         expect(jogos.length).toBeGreaterThan(0);        
     })
 
     it ('Deve gerar erro do tipo NotFoundException ao tentar buscar um jogo por plataforma não cadastrada', () => {
-        expect(() => sut.findByPlataforma(PLAT_PC)).toThrowError('Nenhum jogo encontrado para a plataforma informada');
-        expect(() => sut.findByPlataforma(PLAT_PC)).toThrowError(NotFoundException);
+        expect(() => sut.findByPlataforma(PLAT_PC.id)).toThrowError('Nenhum jogo encontrado para a plataforma informada');
+        expect(() => sut.findByPlataforma(PLAT_PC.id)).toThrowError(NotFoundException);
     })
 
     it('Deve encontrar um jogo por range de valor', () => {

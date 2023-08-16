@@ -6,8 +6,8 @@ import { Plataforma } from "../Plataforma";
 describe('Conta', () => {
     const plataforma1 = new Plataforma("PS5");
     const plataforma2 = new Plataforma("XBOX");
-    const jogo1 = new Jogo("Fifa 203", [plataforma1, plataforma2], 20,"");
-    const jogo2 = new Jogo("Call of Duty", [plataforma1, plataforma2], 10,"");
+    const jogo1 = new Jogo("Fifa 203", plataforma1, 20,"");
+    const jogo2 = new Jogo("Call of Duty", plataforma2, 10,"");
 
     it('Deve criar uma conta com email e senha', () => {
         const sut = new Conta('conta1@ongames.com', '123456', [jogo1, jogo2]);

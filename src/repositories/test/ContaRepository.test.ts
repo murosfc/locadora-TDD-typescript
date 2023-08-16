@@ -4,12 +4,18 @@ import { ContaRepository } from "../InMemoryRepository/ContaRepository";
 import { Jogo } from "../../model/Jogo";
 import { DomainError } from "../../error/DomainError";
 
+function setIdJogo(jogo1: Jogo, jogo2: Jogo){
+    jogo1.id = 1;
+    jogo2.id = 2;
+}
+
 describe('ContaRepository', () => {
     const sut = ContaRepository.getInstance();
     const plataforma1 = new Plataforma("PS5");
     const plataforma2 = new Plataforma("XBOX");
-    const jogo1 = new Jogo("Fifa 203", [plataforma1, plataforma2], 20,"");
-    const jogo2 = new Jogo("Call of Duty", [plataforma1, plataforma2], 10,"");
+    const jogo1 = new Jogo("Fifa 203", plataforma1, 20,"");
+    const jogo2 = new Jogo("Call of Duty", plataforma2, 10,"");
+    setIdJogo(jogo1, jogo2);
 
     it('Deve salvar uma conta no repositório', () => {
         var conta = new Conta("conta01@ongames.com", "123456", [jogo1]);
@@ -57,9 +63,9 @@ describe('ContaRepository', () => {
     });
 
     it('Deve encontrar contas por jogo', () => {    
-        var contas = sut.findByJogo(jogo1);
+        var contas = sut.findByJogo(jogo1.id);
         expect(contas.length === 1);
-        contas = sut.findByJogo(jogo2);
+        contas = sut.findByJogo(jogo2.id);
         expect(contas.length === 0);
     });
 
@@ -75,3 +81,4 @@ describe('ContaRepository', () => {
 
 
 });
+

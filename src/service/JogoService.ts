@@ -11,31 +11,27 @@ import { InvalidTitleException } from "../error/InvalidTitleException";
 export class JogoDTO extends DomainObject{
     
     titulo: string;
-    plataformas: PlataformaDTO[];
+    plataforma: PlataformaDTO;
     valor: number;
     urlImagem: string;       
     DEFAULT_IMAGE_URL = 'https://www.ongames.com.br/imagens/default.jpg';
     
-    constructor(titulo: string, plataformas: PlataformaDTO[], valor: number, urlImagem: string){ 
+    constructor(titulo: string, plataforma: PlataformaDTO, valor: number, urlImagem: string){ 
         super();
         this.titulo = titulo;
-        this.plataformas = plataformas;
+        this.plataforma = plataforma;
         this.valor = valor;
         this.urlImagem = urlImagem.length == 0 ? this.DEFAULT_IMAGE_URL : urlImagem;
     }
 
     static jogoToDTO(jogo: Jogo): JogoDTO {
-        var jogoDTO = new JogoDTO(jogo.titulo, jogo.plataformas, jogo.valor, jogo.urlImagem);
+        var jogoDTO = new JogoDTO(jogo.titulo, jogo.plataforma, jogo.valor, jogo.urlImagem);
         jogoDTO.id = jogo.id;
         return jogoDTO;
     }
 
-    static dtoToJogo(jogoDTO: JogoDTO): Jogo {
-        var plataformas: Plataforma[] =[];
-        jogoDTO.plataformas.forEach(plat => {
-            plataformas.push(PlataformaDTO.dtoToPlataforma(plat));
-        });
-        var jogo = new Jogo(jogoDTO.titulo, plataformas , jogoDTO.valor, jogoDTO.urlImagem);
+    static dtoToJogo(jogoDTO: JogoDTO): Jogo {        
+        var jogo = new Jogo(jogoDTO.titulo, PlataformaDTO.dtoToPlataforma(jogoDTO.plataforma) , jogoDTO.valor, jogoDTO.urlImagem);
         jogo.id = jogoDTO.id;
         return jogo;
     }
@@ -48,9 +44,8 @@ export class JogoService implements JogoServiceInterface<JogoDTO>{
         this.repo = repo;   
     }
 
-    findByPlataforma(plataforma: PlataformaDTO): JogoDTO[] {
-        const plat = PlataformaDTO.dtoToPlataforma(PlataformaDTO.dtoToPlataforma(plataforma));
-        const jogos = this.repo.findByPlataforma(plat) as Jogo[];        
+    findByPlataforma(idPlataforma: Number): JogoDTO[] {        
+        const jogos = this.repo.findByPlataforma(idPlataforma) as Jogo[];        
         if(jogos.length === 0) throw new NotFoundException('Nenhum jogo encontrado para a plataforma informada');
         var jogosDTO: JogoDTO[] = [];
         jogos.forEach(jogo => {
@@ -109,7 +104,7 @@ export class JogoService implements JogoServiceInterface<JogoDTO>{
     }
 
     private validateJogo(entity: JogoDTO, save: boolean){
-        if (entity.plataformas.length === 0) throw new NotAllowedException('Jogo deve ter pelo menos uma plataforma');
+        if (entity.plataforma === undefined) throw new NotAllowedException('Jogo deve ter uma plataforma');
         if (entity.valor <= 0) throw new NotAllowedException('Valor deve ser maior que zero');
         if (entity.titulo.length === 0) throw new InvalidTitleException('Título inválido')
         if(save) {

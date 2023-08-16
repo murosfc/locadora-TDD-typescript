@@ -27,13 +27,12 @@ export class JogoRepository implements JogoRepositoryInterface {
         return this.lista.find(j => j.titulo === titulo) as Jogo;
     }
 
-    findByPlataforma(plataforma: Object): Jogo[] {
-        const plat = plataforma as Plataforma;
+    findByPlataforma(idPlataforma: Number): Jogo[] {        
         var jogos: Jogo[] = [];
-        this.lista.forEach(jogo => {
-            if (jogo.plataformas.find(p => p.titulo === plat.titulo)) {
-                jogos.push(jogo);
-            }}) 
+        this.lista.forEach(j => {
+            if (j.plataforma.id === idPlataforma ) {
+                jogos.push(j);
+            }});
         return jogos;
     }
 

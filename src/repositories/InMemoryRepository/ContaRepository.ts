@@ -55,12 +55,12 @@ export class ContaRepository implements ContaRepositoryInterface   {
         return conta;
     }
     
-    findByJogo(jogo: Object): Conta[] {
+    findByJogo(idJogo: Number): Conta[] {
         var contas: Conta[];
         contas = [];
         this.lista.forEach(conta => {
             conta.jogos.forEach(j => {
-                if (j === jogo) {
+                if (j.id === idJogo) {
                     contas.push(conta);
                 }
             })

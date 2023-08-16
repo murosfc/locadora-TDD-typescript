@@ -79,8 +79,8 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
         }
         return ContaDTO.contaToDto(conta as Conta);
     }
-    findByJogo(jogo: Object): ContaDTO[] {
-        const contas= this.repository.findByJogo(jogo);       
+    findByJogo(idJogo: Number): ContaDTO[] {        
+        const contas= this.repository.findByJogo(idJogo);       
         const dtos: ContaDTO[] = [];
         contas.forEach(jogo => {
             dtos.push(ContaDTO.contaToDto(jogo as Conta));

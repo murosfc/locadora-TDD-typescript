@@ -25,22 +25,21 @@ describe('Testes do Controller para Jogos', () => {
     const PLAT_PS5 = new PlataformaDTO("PS5");
     const PLAT_SWITCH = new PlataformaDTO("Nintendo Switch");
 
-    it("Deve retornar 201 ao cadastrar um Jogo", () => {
-        const plataformas: PlataformaDTO[] = [PLAT_XBOX, PLAT_PS5, PLAT_SWITCH];
-        const req = { body: { nome: "Fifa 2023", plataformas: plataformas, valor: 15, urlImagem: ""}};
+    it("Deve retornar 201 ao cadastrar um Jogo", () => {       
+        const req = { body: { nome: "Fifa 2023", plataforma: PLAT_PS5, valor: 15, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
+        console.log(resp_spy.json.mock.calls[0][0].mensagem);
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
     it("Deve retornar 400 ao cadastrar um Jogo com parâmetro inválido", () => {
-        const plataformas: PlataformaDTO[] = [PLAT_XBOX, PLAT_PS5, PLAT_SWITCH];
-        var req = { body: { nome: "", plataformas: plataformas, valor: 15, urlImagem: ""}};
+        var req = { body: { nome: "", plataforma: PLAT_PS5, valor: 15, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { nome: "Zelda", plataformas: [], valor: 15, urlImagem: ""}};
+        req = { body: { nome: "Zelda", plataforma: undefined as unknown as PlataformaDTO, valor: 15, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { nome: "Zelda", plataformas: plataformas, valor: -1, urlImagem: ""}};
+        req = { body: { nome: "Zelda", plataforma: PLAT_SWITCH, valor: -1, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })
@@ -63,19 +62,19 @@ describe('Testes do Controller para Jogos', () => {
     })    
 
     it("Deve retornar 200 ao atualizar um jogo", () => {
-        const req = { body: { nome: "Fifa 2023", plataformas: [PLAT_XBOX], valor: 20, urlImagem: ""}, params: {id: 1}};
+        const req = { body: { nome: "Fifa 2023", plataforma: PLAT_XBOX, valor: 20, urlImagem: ""}, params: {id: 1}};
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     })
 
     it("Deve retornar 400 ao atualizar um jogo com parâmetro inválido", () => {
-        const req = { body: { nome: "", plataformas: [PLAT_XBOX], valor: 20, urlImagem: ""}, params: {id: 1}};
+        const req = { body: { nome: "", plataforma: PLAT_XBOX, valor: 20, urlImagem: ""}, params: {id: 1}};
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        const req2 = { body: { nome: "Fifa 2023", plataformas: [], valor: 20, urlImagem: ""}, params: {id: 1}};
+        const req2 = { body: { nome: "Fifa 2023", plataforma: undefined, valor: 20, urlImagem: ""}, params: {id: 1}};
         sut.update(req2 as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        const req3 = { body: { nome: "Fifa 2023", plataformas: [PLAT_XBOX], valor: -1, urlImagem: ""}, params: {id: 1}};
+        const req3 = { body: { nome: "Fifa 2023", plataforma: PLAT_XBOX, valor: -1, urlImagem: ""}, params: {id: 1}};
         sut.update(req3 as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })
@@ -86,9 +85,8 @@ describe('Testes do Controller para Jogos', () => {
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     })
 
-    it("Deve retornar 400 ao buscar jogo por plataforma inválida", () => {
-        const json = JSON.stringify({titulo: ''});
-        sut.findByPlataforma({body: json} as any, resp_spy as any);
+    it("Deve retornar 400 ao buscar jogo por plataforma inválida", () => {               
+        sut.findByPlataforma({params: {idJogo: '21'}} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })
 
