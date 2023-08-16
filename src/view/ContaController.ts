@@ -24,7 +24,8 @@ export class ContaController implements ContaControllerInterface{
             }else{
                 resp.status(200).json(result);
             }
-        }        
+        }
+        resp.status(500).json("Erro interno de servidor");         
     }
 
     save(req: Request, resp: Response){
@@ -68,8 +69,8 @@ export class ContaController implements ContaControllerInterface{
     }
     findByJogo(req: Request, resp: Response){        
         try{  
-            const idJogo = Number(req.params.idJogo);           
-            const contas = this.service.findByJogo(idJogo) as ContaDTO[];           
+            const idJogo = Number(req.params.idJogo);                    
+            const contas = this.service.findByJogo(idJogo);                  
             this.returnResponse(resp, contas, false);
         }catch(e){
             resp.status(500).json("Erro interno de servidor");            

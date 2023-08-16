@@ -64,8 +64,7 @@ export class UsuarioController implements UsuarioControllerInterface{
     }
     findByCpf(req: Request, resp: Response){
         try{
-            const cpf = req.params.cpf;
-            console.log("CPF buscado: " + cpf)
+            const cpf = req.params.cpf;            
             const user = this.service.findByCpf(cpf);
             resp.status(200).json(user).end();
         }

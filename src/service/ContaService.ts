@@ -79,19 +79,23 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
         }
         return ContaDTO.contaToDto(conta as Conta);
     }
-    findByJogo(idJogo: Number): ContaDTO[] {        
-        const contas= this.repository.findByJogo(idJogo);       
+    findByJogo(idJogo: Number): ContaDTO[] | Error {               
+        const contas = this.repository.findByJogo(idJogo); 
+        if (contas.length === 0) {
+            return new NotFoundException('Nenhuma conta encontada para o jogo informado');
+        }          
         const dtos: ContaDTO[] = [];
-        contas.forEach(jogo => {
-            dtos.push(ContaDTO.contaToDto(jogo as Conta));
-        });
+        contas.forEach(conta => {
+            dtos.push(ContaDTO.contaToDto(conta as Conta));
+        });       
         return dtos;
     }
     findAll(): ContaDTO[] {
         const contas = this.repository.findAll();
         const dtos: ContaDTO[] = [];
         contas.forEach(conta => {
-            dtos.push(ContaDTO.contaToDto(conta as Conta));
+            console.log ("Id do jogo na conta cadastrada: " + (conta as Conta).jogos[0].id);
+            dtos.push(ContaDTO.contaToDto(conta as Conta));            
         });
         return dtos;
     }
