@@ -93,8 +93,7 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
     findAll(): ContaDTO[] {
         const contas = this.repository.findAll();
         const dtos: ContaDTO[] = [];
-        contas.forEach(conta => {
-            console.log ("Id do jogo na conta cadastrada: " + (conta as Conta).jogos[0].id);
+        contas.forEach(conta => {            
             dtos.push(ContaDTO.contaToDto(conta as Conta));            
         });
         return dtos;

@@ -26,15 +26,17 @@ describe('Test Conta Controller', () => {
     const plataforma2 = new Plataforma("XBOX");
     plataforma2.id = 2;
     const repoJogos = JogoRepository.getInstance();
-    const jogo1 = repoJogos.save(new Jogo("Fifa 203", plataforma1, 20,"")) as Jogo;      
-    const jogo2 = repoJogos.save(new Jogo("Call of Duty", plataforma2, 10,"")) as Jogo;    
+    const jogo1 = new Jogo("Fifa 203", plataforma1, 20,""); 
+    jogo1.id = 1;     
+    const jogo2 = new Jogo("Call of Duty", plataforma2, 10,"");
+    jogo2.id = 2;   
 
-    it('Deve retornar status 201 e uma conta', () => {
-        var req = {body: {email: "conta01@ongames.com", senha: "123456", jogos: [jogo1, jogo2]}};
+    it('Deve retornar status 201 e uma conta', () => {        
+        var req = {body: {email: "conta01@ongames.com", senha: "123456", jogos: [jogo1, jogo2]}};          
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(201);
         req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1]}};
-        sut.save(req as any, resp_spy as any);
+        sut.save({body: req} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
@@ -117,25 +119,26 @@ describe('Test Conta Controller', () => {
         expect(resp_spy.status).toHaveBeenCalledWith(500);
     });
 
-    // it('Deve retornar 200 e encontrar pelo menos uma conta por jogo', () => {         
-    //     const req = {params: {idJogo: jogo1.id}};           
-    //     sut.findByJogo(req as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(200);
-    // });
+    it('Deve retornar 200 e encontrar pelo menos uma conta por jogo', () => {              
+        const req = {params: {idJogo: jogo1.id}};   
+        const conta = service.findByJogo(jogo2.id);        
+        sut.findByJogo(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
 
-    // it('Deve retornar status 404 ao buscar uma conta por jogo não encontrado', () => {
-    //     const req = {params: {idJogo: '60'}};
-    //     sut.findByJogo(req as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(404);
-    // });
+    it('Deve retornar status 404 ao buscar uma conta por jogo não encontrado', () => {
+        const req = {params: {idJogo: '60'}};
+        sut.findByJogo(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(404);
+    });
 
-    // it('Deve retornar status 500 ao buscar uma conta por jogo com erro de servidor', () => {
-    //     const serviceSpy = jest.spyOn(service, "findByJogo").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
-    //     const req = {params: {idJogo: '1'}};
-    //     sut.findByJogo(req as any, resp_spy as any);
-    //     expect(resp_spy.status).toHaveBeenCalledWith(500);
-    //     serviceSpy.mockRestore();
-    // });
+    it('Deve retornar status 500 ao buscar uma conta por jogo com erro de servidor', () => {
+        const serviceSpy = jest.spyOn(service, "findByJogo").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
+        const req = {params: {idJogo: '1'}};
+        sut.findByJogo(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+        serviceSpy.mockRestore();
+    });
 
     it("Deve retornar status 200 ao buscar todos as contas", () => { 
         sut.findAll(resp_spy as any);

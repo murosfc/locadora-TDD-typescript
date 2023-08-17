@@ -30,7 +30,7 @@ export class ContaController implements ContaControllerInterface{
 
     save(req: Request, resp: Response){
         try{
-            const conta = new ContaDTO(req.body.email, req.body.senha, req.body.jogo);
+            const conta = new ContaDTO(req.body.email, req.body.senha, req.body.jogos);
             const contaSaved = this.service.save(conta);
             this.returnResponse(resp, contaSaved, true);
         }catch(e){
@@ -39,7 +39,7 @@ export class ContaController implements ContaControllerInterface{
     }
     update(req: Request, resp: Response){
         try{
-            const conta = new ContaDTO(req.body.email, req.body.senha, req.body.jogo);
+            const conta = new ContaDTO(req.body.email, req.body.senha, req.body.jogos);
             conta.id = Number(req.params.id);
             const contaUpdated = this.service.update(conta);
             this.returnResponse(resp, contaUpdated, false);
@@ -69,7 +69,7 @@ export class ContaController implements ContaControllerInterface{
     }
     findByJogo(req: Request, resp: Response){        
         try{  
-            const idJogo = Number(req.params.idJogo);                    
+            const idJogo = Number(req.params.idJogo);                               
             const contas = this.service.findByJogo(idJogo);                  
             this.returnResponse(resp, contas, false);
         }catch(e){

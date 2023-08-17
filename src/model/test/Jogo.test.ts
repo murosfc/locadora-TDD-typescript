@@ -30,8 +30,9 @@ describe('Testes da endidade Jogo', () => {
     })
 
     it('Deve colocar a imgagem padrão quando url da imagem for vazia', () => {
+        const DEFAULT_IMAGE_URL = 'https://www.ongames.com.br/imagens/default.jpg';
         const jogo = new Jogo('God of War', PlataformaDTO.dtoToPlataforma(PLAT_PS4), 15, "");
-        expect(jogo.urlImagem).toBe(jogo.DEFAULT_IMAGE_URL);
+        expect(jogo.urlImagem).toBe(DEFAULT_IMAGE_URL);
     })
     it('Deve gerar erro do tipo InvalidTitleException ao tentar criar um jogo com título inválido', () => {
         expect(() => new Jogo('', PlataformaDTO.dtoToPlataforma(PLAT_PS4), 15, "")).toThrowError('Título inválido');

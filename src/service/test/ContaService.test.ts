@@ -13,7 +13,6 @@ function setIdJogo(jogo1: Jogo, jogo2: Jogo){
 describe('ContaService', () => {
     const repo = ContaRepository.getInstance();
     const sut = new ContaService(repo);
-
     const plataforma1 = new Plataforma("PS5");
     const plataforma2 = new Plataforma("XBOX");
     const jogo1 = new Jogo("Fifa 203", plataforma1, 20,"") as Jogo;
