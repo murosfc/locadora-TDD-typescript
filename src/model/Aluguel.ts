@@ -14,7 +14,7 @@ export class Aluguel extends DomainObject{
 
     constructor(usuario: Usuario, contas: Conta[], periodoEmSemanas: number, desconto?: number){
         super();
-        if (usuario == null) throw new InvalidAttributeException('Usuário inválido')
+        if (usuario == undefined) throw new InvalidAttributeException('Usuário inválido')
         this._usuario = usuario;
         if (contas.length === 0) throw new InvalidAttributeException('Necessário vincular pelo menos uma conta')
         this._contas = contas;

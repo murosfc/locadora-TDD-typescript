@@ -4,6 +4,7 @@ import { Conta } from "../Conta";
 import { Jogo } from "../Jogo";
 import { Plataforma } from "../Plataforma";
 import { Usuario } from "../Usuario";
+import { InvalidAttributeException } from "../../error/InvalidAttributeException";
 
 describe('Aluguel', () => {
     const usuario = new Usuario('João', 'joao@gmail.com', '123456', '12345678910');
@@ -17,7 +18,23 @@ describe('Aluguel', () => {
         expect(sut).not.toBe(undefined);       
     });
 
-    it('Valor do aluguel deve ser igual a 40 (2 períodos * 20 reais)', () => {              
+    it('Deve lançar erro tipo InvalidAttributeException ao tentar criar um aluguel usuário inválido', () => {     
+        expect( () => new Aluguel(undefined as unknown as Usuario, [conta], 2, 0 )).toThrowError('Usuário inválido');
+        expect( () => new Aluguel(undefined as unknown as Usuario, [conta], 2, 0 )).toThrowError(InvalidAttributeException);
+    });
+
+    it('Deve lançar erro tipo InvalidAttributeException ao tentar criar um aluguel sem contas', () => {        
+        expect(() => new Aluguel(usuario, [], 2, 0 )).toThrowError('Necessário vincular pelo menos uma conta');
+        expect(() => new Aluguel(usuario, [], 2, 0 )).toThrowError(InvalidAttributeException);
+    });
+
+    it('Deve lançar erro tipo InvalidAttributeException ao tentar criar um aluguel com período inválido', () => {
+        expect(() => new Aluguel(usuario, [conta], 0, 0 )).toThrowError('Período inválido');
+        expect(() => new Aluguel(usuario, [conta], 0, 0 )).toThrowError(InvalidAttributeException);
+    });
+
+    it('Valor do aluguel deve ser igual a 40 (2 períodos * 20 reais)', () => {   
+        sut = new Aluguel(usuario, [conta], 2, 0 );              
         expect(sut.valorTotal).toBe(40);       
     });
 
