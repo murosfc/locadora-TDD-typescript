@@ -58,8 +58,7 @@ export class ContaRepository implements ContaRepositoryInterface   {
     findByJogo(idJogo: Number): Conta[] {
         var contas: Conta[] = [];        
         this.lista.forEach(conta => {
-            conta.jogos.forEach(j => {
-                console.log("Id jogo cadastrado na conta: " +j.id);
+            conta.jogos.forEach(j => {                
                 if (j.id === idJogo) {
                     contas.push(conta);
                 }
