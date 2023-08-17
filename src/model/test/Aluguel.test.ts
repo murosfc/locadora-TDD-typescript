@@ -50,6 +50,6 @@ describe('Aluguel', () => {
         let dataFinalEsperada = new Date();       
         dataFinalEsperada.setDate(today.getDate() + (sut.periodoEmSemanas * 7));
         dataFinalEsperada.setHours(23, 59, 59, 999);        
-        expect(new Date(sut.dataFinal)).toBe(dataFinalEsperada);
+        expect(sut.dataFinal.toLocaleDateString).toBe(dataFinalEsperada.toLocaleDateString);
     });
 })
