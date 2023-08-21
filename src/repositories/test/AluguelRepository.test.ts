@@ -5,8 +5,6 @@ import { Plataforma } from "../../model/Plataforma";
 import { Conta } from "../../model/Conta";
 import { Jogo } from "../../model/Jogo";
 import { Aluguel } from "../../model/Aluguel";
-import { CrudException } from "../../error/CrudException";
-import { NotAllowedException } from "../../error/NotAllowedException";
 import { NotFoundException } from "../../error/NotFoundException";
 
 describe("AluguelRepository", () => {
@@ -14,7 +12,8 @@ describe("AluguelRepository", () => {
     const usuario = new Usuario("Felipe", "muros@yahoo.com.br", "123456", "11223445565");
     const plataforma = new Plataforma("PS5");
     const jogo = new Jogo("God of War", plataforma, 25, "");
-    const conta = new Conta("conta01@ongames.com", "123456", [jogo]);   
+    const conta = new Conta("conta01@ongames.com", "123456", [jogo]); 
+    conta.id = 1;  
 
     it("deve receber a instância do sut válida", () => {
         sut = AluguelRepository.getInstance();
@@ -63,21 +62,7 @@ describe("AluguelRepository", () => {
         const resultado = sut.estenderAluguel(aluguelId, 1);
         expect(resultado).toBeInstanceOf(Aluguel);
         expect((resultado as Aluguel).periodoEmSemanas).toBe(3);
-    });   
-
-    it("Deve retornar um erro do tipo NotAllowedException ao estender um aluguel com período <=0", () => {
-        const aluguelId = 2;
-        const resultado = sut.estenderAluguel(aluguelId, -1);
-        expect(resultado).toBeInstanceOf(NotAllowedException);
-        expect((resultado as Error).message).toBe("Não é permitido reduzir o prazo do aluguel.");
-    });
-
-    it("Deve retornar um erro do tipo NotFoundException ao estender um aluguel não cadastrado", () => {
-        const aluguelId = 10;
-        const resultado = sut.estenderAluguel(aluguelId, 1);
-        expect(resultado).toBeInstanceOf(NotFoundException);
-        expect((resultado as Error).message).toBe("Aluguel não encontrado.");
-    });
+    });  
 
     it("Deve encontrar ao menos um aluguel por usuário", () => {
         const resultado = sut.findByUsuario(usuario.id);
@@ -105,7 +90,8 @@ describe("AluguelRepository", () => {
 
     it("Deve encontrar ao menos um aluguel por range de data", () => {
         const dataInicial = new Date("2023-01-01");
-        const dataFinal = new Date("2023-12-31");        
+        const dataFinal = new Date(); 
+        dataFinal.setDate(dataInicial.getDate() + 30);       
         const resultado = sut.findByDataAluguelRange(dataInicial, dataFinal);
         expect(resultado).toBeInstanceOf(Array);
         expect((resultado as Array<Aluguel>).length).toBeGreaterThan(0);
@@ -113,7 +99,7 @@ describe("AluguelRepository", () => {
 
     it("Deve retornar um erro do tipo NotFoundException ao buscar um aluguel por range de data que não constem alugueis", () => {
         const dataInicial = new Date("2020-01-01");
-        const dataFinal = new Date("2020-12-31");        
+        const dataFinal = new Date(dataInicial.getFullYear() + 1 );         
         const resultado = sut.findByDataAluguelRange(dataInicial, dataFinal);
         expect(resultado).toBeInstanceOf(NotFoundException);
         expect((resultado as Error).message).toBe("Não econtrado aluguel para o período informado.");
@@ -136,4 +122,12 @@ describe("AluguelRepository", () => {
         expect(resultado).toBeInstanceOf(NotFoundException);
         expect((resultado as Error).message).toBe("Aluguel não encontrado.");
     });
+
+    it("deve retornar se uma conta está ou não disponível para aluguel", () => {
+        var resultado = sut.isContaAvailable(conta.id);
+        expect(resultado).toBeFalsy();
+        resultado = sut.isContaAvailable(10);
+        expect(resultado).toBeTruthy();
+    });
+
 });

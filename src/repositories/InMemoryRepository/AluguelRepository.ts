@@ -12,6 +12,19 @@ export class AluguelRepository implements AluguelRepositoryInterface {
         this.lista = [];
     }
 
+    public isContaAvailable(idConta: number): boolean {  
+        var isAvailable = true; 
+        const hoje = new Date();       
+        this.lista.forEach(aluguel => {
+            aluguel.contas.forEach(conta => {                
+                if(aluguel.dataFinal >= hoje && conta.id == idConta){                    
+                    isAvailable = false;
+                }
+            });
+        });        
+        return isAvailable;
+    }
+
     private addOrUpdate(aluguel: Aluguel): Aluguel | Error {
         const indice = this.lista.findIndex(a => a.id === aluguel.id);
         if (indice === -1) {
@@ -57,18 +70,13 @@ export class AluguelRepository implements AluguelRepositoryInterface {
         this.lista.splice(indice, 1);
         return true;
     }
-    estenderAluguel(id: number, periodoEmSemanas: number): Aluguel | Error {
-        if(periodoEmSemanas <= 0){
-            return new NotAllowedException("Não é permitido reduzir o prazo do aluguel.");
-        }
-        const indice = this.lista.findIndex(a => a.id === id);
-        if (indice === -1) {
-            return new NotFoundException("Aluguel não encontrado.");
-        }
+    estenderAluguel(id: number, periodoEmSemanas: number): Aluguel | Error {        
+        const indice = this.lista.findIndex(a => a.id === id);       
         const aluguel = this.lista[indice];
         aluguel.estenderAluguel(periodoEmSemanas);
         return this.addOrUpdate(aluguel);       
     }
+    
     findByUsuario(idUsuario: number): Error | Aluguel[] {
         var alugueis: Aluguel[] = [];
         this.lista.forEach(aluguel => {

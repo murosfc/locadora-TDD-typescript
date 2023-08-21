@@ -55,7 +55,13 @@ describe('Aluguel', () => {
         sut.estenderAluguel(2);
         expect(sut.periodoEmSemanas).toBe(4);
         expect(sut.valorTotal).toBe(80);       
-    } ); 
+    } );
+    
+    it("Deve lançar erro tipo InvalidAttributeException ao tentar estender o aluguel em 0 períodos", () => {
+        sut = new Aluguel(usuario, [conta], 2, 0 );
+        expect(() => sut.estenderAluguel(0)).toThrowError('Período inválido');
+        expect(() => sut.estenderAluguel(0)).toThrowError(InvalidAttributeException);
+    });
 
     it('Getters devem retornar os valores de sut', () => {
         sut = new Aluguel(usuario, [conta], 2, 0 );   

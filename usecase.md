@@ -50,6 +50,7 @@ Caso de uso 5: Alugar um jogo
 Pré condições
 É necessária que haja uma conta disponível para aluguel com o jogo e a plataforma selecionada;
 É necessário que o cliente defina o período do aluguel (semanas) sendo 1 o mínimo;
+A conta selecionada não pode estar vinculada a outro aluguel;
 Fluxo principal
 O usuário seleciona o jogo e a plataforma desejada;
 O pagamento precisa ser confirmado (apenas para ilustrar);

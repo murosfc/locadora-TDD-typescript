@@ -29,7 +29,7 @@ export class Aluguel extends DomainObject{
     }
 
     public estenderAluguel(periodoEmSemanas: number): void{
-        if (periodoEmSemanas <= 0) throw new NotAllowedException('Período inválido')
+        if (periodoEmSemanas <= 0) throw new InvalidAttributeException('Período inválido')
         this._periodoEmSemanas += periodoEmSemanas;
         this._valorTotal = this.calcularValorTotal();
         this._dataFinal = this.calcularDataFinal();

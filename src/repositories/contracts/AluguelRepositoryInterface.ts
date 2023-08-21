@@ -5,4 +5,5 @@ export interface AluguelRepositoryInterface extends CommonRepositoryInterface{
     findByUsuario(idUsuario: number): Object[]|Error;
     findByConta(idConta: number): Object[]|Error;
     findByDataAluguelRange(dataInicial: Date, dataFinal: Date): Object[]|Error;
+    isContaAvailable(idConta: number): boolean;
 }
