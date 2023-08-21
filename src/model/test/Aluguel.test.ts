@@ -38,8 +38,11 @@ describe('Aluguel', () => {
         expect(sut.valorTotal).toBe(40);       
     });
 
-    it('Data final do aluguel deve ser igual a 14 dias após a data de aluguel', () => {             
-        expect(sut.dataFinal.getDate() +sut.dataFinal.getMonth() + sut.dataFinal.getFullYear()).toBe((sut.dataAluguel.getDate() + 14) + sut.dataAluguel.getMonth() + sut.dataAluguel.getFullYear());       
+    it('Data final do aluguel deve ser igual a 14 dias após a data de aluguel', () => { 
+        let dataFinalEsperada = new Date();       
+        dataFinalEsperada.setDate(dataFinalEsperada.getDate() + (sut.periodoEmSemanas * 7));
+        dataFinalEsperada.setHours(23, 59, 59, 999);            
+        expect(sut.dataFinal.toLocaleDateString).toBe(dataFinalEsperada.toLocaleDateString);
     });
 
     it('Valor do aluguel deve ser igual a 30 aplicando cupom de desconto de 10 reais', () => {
