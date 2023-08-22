@@ -38,46 +38,49 @@ describe("Teste de unidade do controller de aluguel", () => {
     });
 
     it("deve receber 201 ao salvar um aluguel", () => {
-        var req = { body: { usuario: usuario, contas: [conta], periodoEmSemanas: 1 } };
+        var idConta = conta.id;
+        var req = { body: { idUsuario: usuario.id, contas: [idConta] , periodoEmSemanas: 1 } };
         sut.save(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(201);
-        var req = { body: { usuario: usuario, contas: [conta2], periodoEmSemanas: 2 } };
+        idConta = conta2.id;
+        req = { body: { idUsuario: usuario.id, contas: [ idConta] , periodoEmSemanas: 1 } };
         sut.save(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
     it("deve receber 400 ao salvar um aluguel com erro de atributo", () => {
-        var req = { body: { usuario: undefined as unknown as Usuario, contas: [conta], periodoEmSemanas: 1 } };
+        var idConta = conta.id;
+        var req = { body: { idUsuario: 0, contas: [idConta], periodoEmSemanas: 1 } };
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { usuario: usuario, contas: [], periodoEmSemanas: 1 } };
+        req = { body: { idUsuario: 1, contas: [], periodoEmSemanas: 1 } };
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { usuario: usuario, contas: [conta], periodoEmSemanas: 0 } };
+        req = { body: { idUsuario: 1, contas: [idConta], periodoEmSemanas: 0 } };
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     });
 
     it("Deve receber 200 ao atualizar um aluguel", () => {
-        var req = { body: { usuario: usuario, contas: [conta], periodoEmSemanas: 3 }, params: {id: 1 } };
+        var req = { body: { idUsuario: usuario.id, contas: [conta.id], periodoEmSemanas: 3 }, params: {id: 1 } };
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);        
     });
 
     it("Deve receber 400 ao tentar atualizar um aluguel com atributo inválido", () => {
-        var req = { body: { usuario: undefined as unknown as Usuario, contas: [conta], periodoEmSemanas: 3 }, params: {id: 1 } };
+        var req = { body: { idUsuario: 0, contas: [conta.id], periodoEmSemanas: 3 }, params: {id: 1 } };
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { usuario: usuario, contas: [], periodoEmSemanas: 3 }, params: {id: 1 } };
+        req = { body: { idUsuario: 1, contas: [], periodoEmSemanas: 3 }, params: {id: 1 } };
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { usuario: usuario, contas: [conta], periodoEmSemanas: 0 }, params: {id: 1 } };
+        req = { body: { idUsuario: 1, contas: [conta.id], periodoEmSemanas: 0 }, params: {id: 1 } };
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);        
     });
 
     it("Deve receber 404 ao tentar atualizar um aluguel com id inválido", () => {
-        var req = { body: { usuario: usuario, contas: [conta], periodoEmSemanas: 3 }, params: {id: 100 } };
+        var req = { body: { idUsuario: 1, contas: [conta.id], periodoEmSemanas: 3 }, params: {id: 100 } };
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(404);        
     });

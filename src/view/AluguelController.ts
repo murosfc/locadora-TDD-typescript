@@ -43,7 +43,7 @@ export class AluguelController implements AluguelControllerInterface{
     
     save(req: Request, resp: Response): void {
         try{
-            const usuario = this.usuarioRepository.findById(req.body.usuarioId);            
+            const usuario = this.usuarioRepository.findById(req.body.idUsuario);            
             const contas: Conta[] = [];
             req.body.contas.forEach((idConta: number) => {
                 contas.push(this.contaRepository.findById(idConta) as Conta);
@@ -59,7 +59,12 @@ export class AluguelController implements AluguelControllerInterface{
     }
     update(req: Request, resp: Response): void {
         try{
-            var aluguel = new Aluguel(req.body.usuario, req.body.contas, req.body.periodoEmSemanas, req.body.desconto);
+            const usuario = this.usuarioRepository.findById(req.body.idUsuario);
+            const contas: Conta[] = [];
+            req.body.contas.forEach((idConta: number) => {
+                contas.push(this.contaRepository.findById(idConta) as Conta);
+            });      
+            var aluguel = new Aluguel(usuario, contas, req.body.periodoEmSemanas, req.body.desconto);
             aluguel.id = Number(req.params.id);
             const resultado = this.service.update(aluguel);
             this.returnResponse(resp, resultado, false);
