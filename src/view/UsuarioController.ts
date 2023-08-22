@@ -50,12 +50,16 @@ export class UsuarioController implements UsuarioControllerInterface{
     }
 
     findAll(resp: Response){
-        resp.status(200).json(this.service.findAll()).end();        
+        try{
+            resp.status(200).json(this.service.findAll()).end();   
+        }catch(error){
+            resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
+        }             
     }
     
     findByEmail(req: Request, resp: Response){
         try{
-            const email = req.body.email;                      
+            const email = req.params.email;                      
             const user = this.service.findByEmail(email);
             resp.status(200).json(user).end();
         }catch(error){

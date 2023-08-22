@@ -100,18 +100,18 @@ describe('UsuarioController', () => {
     });
 
     it('Deve receber 200 ao buscar um usuário por e-mail', () => {                
-        sut.findByEmail({body: {email: "pedro_ribeiro@gmail.com"}} as any, resp_spy as any);        
+        sut.findByEmail({params: {email: "pedro_ribeiro@gmail.com"}} as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
     it('Deve receber 400 ao buscar um usuário por e-mail inválido', () => {       
-        sut.findByEmail({body: {email: "naocadastrado@gmail.com"}} as any, resp_spy as any);
+        sut.findByEmail({params: {email: "naocadastrado@gmail.com"}} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     });
 
     it('Deve receber 500 de erro interno de servidor ao buscar por e-mail', () =>{           
         jest.spyOn(service, 'findByEmail').mockImplementation(() => {throw new Error("Erro interno de servidor")});
-        sut.findByEmail({body: {email: "no@ongames.com"}} as any, resp_spy as any);
+        sut.findByEmail({params: {email: "no@ongames.com"}} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
     });
 
@@ -119,6 +119,13 @@ describe('UsuarioController', () => {
         sut.findAll(resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     })
+
+    it('Deve retornar 500 ao listar todos os jogos com erro interno', () => {
+        jest.spyOn(service, 'findAll').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.findAll(resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
 
     it('Deve receber 200 ao buscar um usuário por id', () => {          
         sut.findById({params: {id: 2}} as any, resp_spy as any);

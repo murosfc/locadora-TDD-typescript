@@ -49,6 +49,12 @@ describe('Testes do Controller para Jogos', () => {
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     })
 
+    it('Deve retornar 500 ao listar todos os jogos com erro interno', () => {
+        jest.spyOn(service, 'findAll').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+        sut.findAll(resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+    });
+
     it("Deve retornar 200 ao buscar jogo por id", () => {
         const req = { params: { id: 1}};
         sut.findById(req as any, resp_spy as any);

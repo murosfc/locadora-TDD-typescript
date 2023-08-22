@@ -1,20 +1,27 @@
-// import express from 'express';
-import express, { Router } from 'express';
+import express, { Express } from 'express';
+import PlataformaRouter from './routes/PlataformaRouter';
+import JogoRouter from './routes/JogoRouter';
+import ContaRouter from './routes/ContaRouter';
+import AluguelRouter from './routes/AluguelRouter';
+import UsuarioRouter from './routes/UsuarioRouter';
 
-const app = express()
-const route = Router();
+const app: Express = express();
+const port = 3000; // You can change this to the desired port number
 
-route.get('/api/ola/:info', () => { console.log('ola') });
-
-route.get('/', (request, response) => {
-    return response.json({ message: 'Hello World' });
-});
-
+// Middleware to parse incoming JSON data
 app.use(express.json());
-app.use(route);
 
-app.listen(3333, () => {
-    console.log('Server started on port 3333!');
+// Mount the event routes
+app.use('/plataformas/', PlataformaRouter);
+app.use('/jogos/', JogoRouter);
+app.use('contas/', ContaRouter);
+app.use('alugueis/', AluguelRouter);
+app.use('usuarios/', UsuarioRouter);
+
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
-console.log("oi, denovo")
+

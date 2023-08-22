@@ -2,7 +2,6 @@ import { Response, Request } from "express";
 import { JogoControllerInterface } from "./contracts/JogoControllerInterface";
 import { JogoServiceInterface } from "../service/contracts/JogoServiceInterface";
 import { JogoDTO } from "../service/JogoService";
-import { PlataformaDTO } from "../service/PlataformaService";
 import { DomainError } from "../error/DomainError";
 
 export class JogoController implements JogoControllerInterface{
@@ -25,8 +24,13 @@ export class JogoController implements JogoControllerInterface{
         }
     }
     findAll(resp: Response) {
-        resp.status(200).json(this.service.findAll()).end();
-    }
+        try{           
+            resp.status(200).json(JSON.stringify(this.service.findAll())).end();
+        }
+        catch(error){
+            resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
+        }       
+    }   
 
     findById(req: Request, resp: Response){
         try{

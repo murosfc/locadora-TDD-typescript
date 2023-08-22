@@ -1,7 +1,7 @@
 import { PlataformaDTO } from "../service/PlataformaService";
 import { PlataformaControllerInterface } from "./contracts/PlataformaControllerInterface";
 import { PlataformaServiceInterface } from "../service/contracts/PlataformaServiceInterface";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { DomainError } from "../error/DomainError";
 
 export class PlataformaController implements PlataformaControllerInterface{
@@ -23,8 +23,8 @@ export class PlataformaController implements PlataformaControllerInterface{
                 resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
         }
     }
-
-    findAll(resp: Response){        
+    
+    async findAll(resp: Response){        
         resp.status(200).json(this.service.findAll()).end();
     } 
 

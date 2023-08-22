@@ -39,12 +39,12 @@ describe("Teste de unidade do controller de aluguel", () => {
 
     it("deve receber 201 ao salvar um aluguel", () => {
         var idConta = conta.id;
-        var req = { body: { idUsuario: usuario.id, contas: [idConta] , periodoEmSemanas: 1 } };
+        const req = { body: { idUsuario: usuario.id, contas: [idConta] , periodoEmSemanas: 1 } };
         sut.save(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(201);
         idConta = conta2.id;
-        req = { body: { idUsuario: usuario.id, contas: [ idConta] , periodoEmSemanas: 1 } };
-        sut.save(req as any, resp_spy as any);        
+        const req2 = { body: { idUsuario: usuario.id, contas: [ idConta] , periodoEmSemanas: 1, desconto: 5} };
+        sut.save(req2 as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
