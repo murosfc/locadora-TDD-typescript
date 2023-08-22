@@ -54,6 +54,16 @@ describe("AluguelService", () => {
         expect((resultado as Error).message).toBe("Conta não informada");
     });
 
+    it("Deve gerar um erro do tipo NotAllowedException ao tentar atualizar um aluguel encerrado", () => {
+        const serviceSpy = jest.spyOn(repo, "findById").mockReturnValue({id: 3, usuario: usuario, contas: [conta], periodoEmSemanas: 1, dataFinal: new Date("2023-08-21")});
+        const aluguel = new Aluguel(usuario, [conta], 1);
+        aluguel.id = 3;
+        const resultado = sut.update(aluguel);
+        expect(resultado).toBeInstanceOf(NotAllowedException);
+        expect((resultado as Error).message).toBe("Não é possível alterar um aluguel encerrado");
+        serviceSpy.mockRestore();
+    });
+
     it("deve gerar uma exceção do tipo InvalidAttributeException ao tentar salvar um aluguel com período de aluguel inválido", () => {        
         const fakeAluguel = jest.fn().mockImplementation(() => {
             return {
@@ -149,14 +159,6 @@ describe("AluguelService", () => {
         expect(resultado).toBeInstanceOf(NotFoundException);
         expect((resultado as Error).message).toBe("Aluguel não encontrado.");
     });
-
-    // it("Deve receber um erro do tipo CrudException ao tentar estender um aluguel com erro no repositório", () => {
-    //     const aluguelId = 2;
-    //     jest.spyOn(repo, 'estenderAluguel').mockImplementation(() => {return new CrudException("Erro ao salvar aluguel")} );
-    //     const resultado = sut.estenderAluguel(aluguelId, 1);
-    //     expect(resultado).toBeInstanceOf(CrudException);
-    //     expect((resultado as Error).message).toBe("Erro ao salvar aluguel");
-    // });
 
     it("Deve encontrar um aluguel por usuário", () => {
         const resultado = sut.findByUsuario(usuario.id);

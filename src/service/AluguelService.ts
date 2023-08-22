@@ -46,12 +46,15 @@ export class AluguelService implements AluguelServiceInterface<Aluguel>{
         return this.exportDto(aluguel as Aluguel);
     }
     
-    update(entity: Aluguel): Aluguel | Error {
-        const aluguelDB = this.repository.findById(entity.id);    
+    update(entity: Aluguel): Aluguel | Error {             
+        const aluguelDB = this.repository.findById(entity.id);         
         if (aluguelDB instanceof Error) {
             return aluguelDB;
         }
-        const aluguel = aluguelDB as Aluguel;   
+        const aluguel = aluguelDB as Aluguel;
+        if(aluguel.dataFinal < new Date()){
+            return new NotAllowedException("Não é possível alterar um aluguel encerrado");
+        }     
         const periodoAExtender = entity.periodoEmSemanas - aluguel.periodoEmSemanas; 
         return this.estenderAluguel(entity.id, periodoAExtender); 
     }
