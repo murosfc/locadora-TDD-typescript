@@ -1,5 +1,3 @@
-import { NotAllowedException } from "../../error/NotAllowedException";
-import { CrudException } from "../../error/CrudException";
 import { NotFoundException } from "../../error/NotFoundException";
 import { Aluguel } from "../../model/Aluguel";
 import { AluguelRepositoryInterface } from "../contracts/AluguelRepositoryInterface";
@@ -25,16 +23,13 @@ export class AluguelRepository implements AluguelRepositoryInterface {
         return isAvailable;
     }
 
-    private addOrUpdate(aluguel: Aluguel): Aluguel | Error {
+    private addOrUpdate(aluguel: Aluguel): Aluguel{
         const indice = this.lista.findIndex(a => a.id === aluguel.id);
         if (indice === -1) {
             this.lista.push(aluguel);
         } else {
             this.lista[indice] = aluguel;
-        }
-        if(this.lista.find(a => a.id === aluguel.id) === undefined){
-            return new CrudException("Erro ao salvar aluguel");
-        }
+        }       
         return aluguel;
     }
 
@@ -49,12 +44,12 @@ export class AluguelRepository implements AluguelRepositoryInterface {
         return this.lista.length + 1;
     }
     
-    save(object: Object): Aluguel | Error{
+    save(object: Object): Aluguel{
         const aluguel = object as Aluguel;
         aluguel.id = this.getNewId();
         return this.addOrUpdate(aluguel);
     }
-    update(object: Object): Aluguel | Error{
+    update(object: Object): Aluguel{
         const aluguel = object as Aluguel;
         const indice = this.lista.findIndex(a => a.id === aluguel.id);
         if(this.lista[indice].periodoEmSemanas !== aluguel.periodoEmSemanas){

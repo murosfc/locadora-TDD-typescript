@@ -38,15 +38,11 @@ export class AluguelService implements AluguelServiceInterface<Aluguel>{
     }
 
     save(entity: Aluguel): Aluguel | Error {
-        const result = this.validaAluguel(entity);
-        console.log("result: " + result);
+        const result = this.validaAluguel(entity);       
         if(result instanceof DomainError){            
             return result;
         }
-        const aluguel = this.repository.save(entity);
-        if(aluguel instanceof Error){
-            return aluguel;
-        }
+        const aluguel = this.repository.save(entity);        
         return this.exportDto(aluguel as Aluguel);
     }
     
@@ -78,10 +74,7 @@ export class AluguelService implements AluguelServiceInterface<Aluguel>{
         }
         const aluguel = aluguelDB as Aluguel;
         aluguel.estenderAluguel(periodoEmSemanas);
-        const aluguelAtualizado = this.repository.update(aluguel);
-        if(aluguelAtualizado instanceof Error){
-            return aluguelAtualizado;
-        }  
+        const aluguelAtualizado = this.repository.update(aluguel);        
         return this.exportDto(aluguelAtualizado as Aluguel); 	
     }
 

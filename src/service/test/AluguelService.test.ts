@@ -54,14 +54,6 @@ describe("AluguelService", () => {
         expect((resultado as Error).message).toBe("Conta não informada");
     });
 
-    //  it("Deve receber um erro do tipo CrudException ao tentar salvar um aluguel com erro no repositório", () => {
-    //     var aluguel = new Aluguel(usuario, [conta], 1);
-    //     jest.spyOn(repo, 'save').mockImplementation(() => {return new CrudException("Erro ao salvar aluguel")} );
-    //     const resultado = sut.save(aluguel);
-    //     expect(resultado).toBeInstanceOf(CrudException);
-    //     expect((resultado as Error).message).toBe("Erro ao salvar aluguel");
-    // });
-
     it("deve gerar uma exceção do tipo InvalidAttributeException ao tentar salvar um aluguel com período de aluguel inválido", () => {        
         const fakeAluguel = jest.fn().mockImplementation(() => {
             return {

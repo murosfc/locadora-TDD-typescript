@@ -6,6 +6,7 @@ import { Conta } from "../../model/Conta";
 import { Jogo } from "../../model/Jogo";
 import { Aluguel } from "../../model/Aluguel";
 import { NotFoundException } from "../../error/NotFoundException";
+import { CrudException } from "../../error/CrudException";
 
 describe("AluguelRepository", () => {
     var sut: AluguelRepositoryInterface;
@@ -31,7 +32,7 @@ describe("AluguelRepository", () => {
         expect(resultado).toBe(aluguel);
         expect(resultado).toBeInstanceOf(Aluguel);
         expect((resultado as Aluguel).id).toBe(2);
-    });
+    }); 
 
     it("deve atualizar um aluguel", () => {
         const aluguel = new Aluguel(usuario, [conta], 2);
