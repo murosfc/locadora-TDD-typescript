@@ -5,7 +5,6 @@ import { AluguelController } from "../AluguelController";
 import { Jogo } from "../../model/Jogo";
 import { Conta } from "../../model/Conta";
 import { Usuario } from "../../model/Usuario";
-import { Aluguel } from "../../model/Aluguel";
 import { PlataformaRepository } from "../../repositories/InMemoryRepository/PlataformaRepository";
 import { JogoRepository } from "../../repositories/InMemoryRepository/JogoRepository";
 import { ContaRepository } from "../../repositories/InMemoryRepository/ContaRepository";

@@ -4,9 +4,14 @@ import { AluguelServiceInterface } from "../service/contracts/AluguelServiceInte
 import { Aluguel } from "../model/Aluguel";
 import { DomainError } from "../error/DomainError";
 import { NotFoundException } from "../error/NotFoundException";
+import { UsuarioRepository } from "../repositories/InMemoryRepository/UsuarioRepository";
+import { ContaRepository } from "../repositories/InMemoryRepository/ContaRepository";
+import { Conta } from "../model/Conta";
 
 export class AluguelController implements AluguelControllerInterface{
     private service: AluguelServiceInterface<Aluguel>;
+    private usuarioRepository = UsuarioRepository.getInstance();
+    private contaRepository = ContaRepository.getInstance();
 
     constructor(service: AluguelServiceInterface<Aluguel>){
         this.service = service;
@@ -34,12 +39,17 @@ export class AluguelController implements AluguelControllerInterface{
             resp.status(400).json(error.message);
         }
         resp.status(500).json("Erro interno no servidor");
-    }
-        
-
+    } 
+    
     save(req: Request, resp: Response): void {
         try{
-            const aluguel = new Aluguel(req.body.usuario, req.body.contas, req.body.periodoEmSemanas, req.body.desconto);
+            const usuario = this.usuarioRepository.findById(req.body.usuarioId);            
+            const contas: Conta[] = [];
+            req.body.contas.forEach((idConta: number) => {
+                contas.push(this.contaRepository.findById(idConta) as Conta);
+            });            
+            const desconto = req.body.desconto ? req.body.desconto : 0;
+            const aluguel = new Aluguel(usuario, contas, req.body.periodoEmSemanas, desconto);
             const resultado = this.service.save(aluguel);
             this.returnResponse(resp, resultado, true);
         }
