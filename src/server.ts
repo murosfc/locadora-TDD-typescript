@@ -18,11 +18,10 @@ app.use('contas/', ContaRouter);
 app.use('alugueis/', AluguelRouter);
 app.use('usuarios/', UsuarioRouter);
 
-
 // Start the server
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-export default app;
+export default server;
 

@@ -1,7 +1,7 @@
 import { PlataformaDTO } from "../service/PlataformaService";
 import { PlataformaControllerInterface } from "./contracts/PlataformaControllerInterface";
 import { PlataformaServiceInterface } from "../service/contracts/PlataformaServiceInterface";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { DomainError } from "../error/DomainError";
 
 export class PlataformaController implements PlataformaControllerInterface{
@@ -40,10 +40,10 @@ export class PlataformaController implements PlataformaControllerInterface{
         }
     }
     async save(req: Request, resp: Response){             
-        try{            
-            const plataforma = new PlataformaDTO(JSON.parse(req.body).titulo);            
+        try{                      
+            const plataforma = new PlataformaDTO(req.body.titulo);            
             const saved = await this.service.save(plataforma);
-            resp.status(201).json(saved).end();
+            return resp.status(201).json(saved).end();
         }catch(error){
             if (error instanceof DomainError)
                 resp.status(400).json({mensagem: error.message}).end();
@@ -54,7 +54,9 @@ export class PlataformaController implements PlataformaControllerInterface{
 
     async update(req: Request, resp: Response){
         try{
-            const plataforma = new PlataformaDTO(JSON.parse(req.body).titulo);
+            console.log(req.body.titulo);
+            console.log(req.params.id);
+            const plataforma = new PlataformaDTO(req.body.titulo);
             plataforma.id = Number(req.params.id);            
             const updated = await this.service.update(plataforma);
             return resp.status(200).json(updated).end();
