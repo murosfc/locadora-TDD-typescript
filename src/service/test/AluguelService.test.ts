@@ -8,7 +8,6 @@ import { Usuario } from "../../model/Usuario";
 import { NotAllowedException } from "../../error/NotAllowedException";
 import { InvalidAttributeException } from "../../error/InvalidAttributeException";
 import { NotFoundException } from "../../error/NotFoundException";
-import { CrudException } from "../../error/CrudException";
 
 describe("AluguelService", () => {
     const repo = AluguelRepository.getInstance();

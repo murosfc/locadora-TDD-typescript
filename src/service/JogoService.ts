@@ -8,15 +8,15 @@ import { NotAllowedException } from "../error/NotAllowedException";
 import { JogoRepositoryInterface } from "../repositories/contracts/JogoRepositoryInterface";
 import { InvalidTitleException } from "../error/InvalidTitleException";
 
-export class JogoDTO extends DomainObject{
-    
+export class JogoDTO extends DomainObject {
+
     titulo: string;
     plataforma: PlataformaDTO;
     valor: number;
-    urlImagem: string;       
+    urlImagem: string;
     DEFAULT_IMAGE_URL = 'https://www.ongames.com.br/imagens/default.jpg';
-    
-    constructor(titulo: string, plataforma: PlataformaDTO, valor: number, urlImagem: string){ 
+
+    constructor(titulo: string, plataforma: PlataformaDTO, valor: number, urlImagem: string) {
         super();
         this.titulo = titulo;
         this.plataforma = plataforma;
@@ -30,8 +30,8 @@ export class JogoDTO extends DomainObject{
         return jogoDTO;
     }
 
-    static dtoToJogo(jogoDTO: JogoDTO): Jogo {        
-        var jogo = new Jogo(jogoDTO.titulo, PlataformaDTO.dtoToPlataforma(jogoDTO.plataforma) , jogoDTO.valor, jogoDTO.urlImagem);
+    static dtoToJogo(jogoDTO: JogoDTO): Jogo {
+        var jogo = new Jogo(jogoDTO.titulo, PlataformaDTO.dtoToPlataforma(jogoDTO.plataforma), jogoDTO.valor, jogoDTO.urlImagem);
         jogo.id = jogoDTO.id;
         return jogo;
     }
@@ -40,13 +40,13 @@ export class JogoDTO extends DomainObject{
 export class JogoService implements JogoServiceInterface<JogoDTO>{
     private repo: JogoRepositoryInterface;
 
-    constructor(repo: JogoRepositoryInterface){
-        this.repo = repo;   
+    constructor(repo: JogoRepositoryInterface) {
+        this.repo = repo;
     }
 
-    findByPlataforma(idPlataforma: Number): JogoDTO[] {        
-        const jogos = this.repo.findByPlataforma(idPlataforma) as Jogo[];        
-        if(jogos.length === 0) throw new NotFoundException('Nenhum jogo encontrado para a plataforma informada');
+    findByPlataforma(idPlataforma: Number): JogoDTO[] {
+        const jogos = this.repo.findByPlataforma(idPlataforma) as Jogo[];
+        if (jogos.length === 0) throw new NotFoundException('Nenhum jogo encontrado para a plataforma informada');
         var jogosDTO: JogoDTO[] = [];
         jogos.forEach(jogo => {
             jogosDTO.push(JogoDTO.jogoToDTO(jogo));
@@ -54,9 +54,9 @@ export class JogoService implements JogoServiceInterface<JogoDTO>{
         return jogosDTO;
     }
 
-    findByRangeValor(valorMin: number, valorMax: number): JogoDTO[] {
+    findByRangeValor(valorMin: number, valorMax: number): JogoDTO[] {       
         const jogos = this.repo.findByRangeValor(valorMin, valorMax) as Jogo[];
-        if(jogos.length === 0) throw new NotFoundException('Nenhum jogo encontrado para o range de valor informado');
+        if (jogos.length === 0) throw new NotFoundException('Nenhum jogo encontrado para o range de valor informado');
         var jogosDTO: JogoDTO[] = [];
         jogos.forEach(jogo => {
             jogosDTO.push(JogoDTO.jogoToDTO(jogo));
@@ -65,7 +65,7 @@ export class JogoService implements JogoServiceInterface<JogoDTO>{
     }
 
     findAll(): JogoDTO[] {
-        const jogos = this.repo.findAll() as Jogo[];        
+        const jogos = this.repo.findAll() as Jogo[];
         var jogosDTO: JogoDTO[] = [];
         jogos.forEach(jogo => {
             jogosDTO.push(JogoDTO.jogoToDTO(jogo));
@@ -75,20 +75,20 @@ export class JogoService implements JogoServiceInterface<JogoDTO>{
 
     findById(id: number): JogoDTO {
         const jogo = this.repo.findById(id) as Jogo;
-        if(!jogo) throw new NotFoundException('Jogo não encontrado');
+        if (!jogo) throw new NotFoundException('Jogo não encontrado');
         return JogoDTO.jogoToDTO(jogo);
     }
 
     findByTitulo(titulo: string): JogoDTO {
         const jogo = this.repo.findByTitulo(titulo) as Jogo;
-        if(!jogo) throw new NotFoundException('Jogo não encontrado');
+        if (!jogo) throw new NotFoundException('Jogo não encontrado');
         return JogoDTO.jogoToDTO(jogo);
     }
 
-    save(entity: JogoDTO): JogoDTO {
-        this.validateJogo(entity, true); 
+    save(entity: JogoDTO): JogoDTO {        
+        this.validateJogo(entity, true);
         const jogo = JogoDTO.dtoToJogo(entity);
-        const jogoSalvo = this.repo.save(jogo) as Jogo;       
+        const jogoSalvo = this.repo.save(jogo) as Jogo;
         return JogoDTO.jogoToDTO(jogoSalvo);
     }
 
@@ -96,22 +96,22 @@ export class JogoService implements JogoServiceInterface<JogoDTO>{
         this.validateJogo(entity, false);
         const jogo = JogoDTO.dtoToJogo(entity);
         const jogoAtualizado = this.repo.update(jogo) as Jogo;
-        return JogoDTO.jogoToDTO(jogoAtualizado);      
+        return JogoDTO.jogoToDTO(jogoAtualizado);
     }
 
-    delete(id: number): boolean {        
-        return this.repo.delete(id);        
+    delete(id: number): boolean {
+        return this.repo.delete(id);
     }
 
-    private validateJogo(entity: JogoDTO, save: boolean){
+    private validateJogo(entity: JogoDTO, save: boolean) {
         if (entity.plataforma === undefined) throw new NotAllowedException('Jogo deve ter uma plataforma');
         if (entity.valor <= 0) throw new NotAllowedException('Valor deve ser maior que zero');
         if (entity.titulo.length === 0) throw new InvalidTitleException('Título inválido')
-        if(save) {
-            if (this.repo.findById(entity.id) || this.repo.findByTitulo(entity.titulo)) throw new NotAllowedException('Jogo já cadastrado');            
-        } else { 
+        if (save) {
+            if (this.repo.findById(entity.id) || this.repo.findByTitulo(entity.titulo)) throw new NotAllowedException('Jogo já cadastrado');
+        } else {
             if (!this.repo.findById(entity.id)) throw new NotFoundException('Jogo não encontrado');
-        }         
+        }
     }
 
 }

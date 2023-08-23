@@ -29,7 +29,7 @@ export class JogoRepository implements JogoRepositoryInterface {
 
     findByPlataforma(idPlataforma: Number): Jogo[] {        
         var jogos: Jogo[] = [];
-        this.lista.forEach(j => {
+            this.lista.forEach(j => {                        
             if (j.plataforma.id === idPlataforma ) {
                 jogos.push(j);
             }});
@@ -38,11 +38,11 @@ export class JogoRepository implements JogoRepositoryInterface {
 
     findByRangeValor(valorMin: number, valorMax: number): Jogo[] {
         var jogos: Jogo[] = [];
-        for (let i = 0; i < this.lista.length; i++) {
-            if (this.lista[i].valor >= valorMin && this.lista[i].valor <= valorMax) {
-                jogos.push(this.lista[i]);
+        this.lista.forEach(j => {            
+            if (j.valor >= valorMin && j.valor <= valorMax) {
+                jogos.push(j);
             }
-        }
+        });        
         return jogos;
     }
 

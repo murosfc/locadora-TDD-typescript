@@ -3,9 +3,12 @@ import { JogoControllerInterface } from "./contracts/JogoControllerInterface";
 import { JogoServiceInterface } from "../service/contracts/JogoServiceInterface";
 import { JogoDTO } from "../service/JogoService";
 import { DomainError } from "../error/DomainError";
+import { PlataformaDTO } from "../service/PlataformaService";
+import { PlataformaRepository } from "../repositories/InMemoryRepository/PlataformaRepository";
 
 export class JogoController implements JogoControllerInterface{
     service: JogoServiceInterface<JogoDTO>;
+    repoPlataforma = PlataformaRepository.getInstance();
 
     constructor(service: JogoServiceInterface<JogoDTO>){
         this.service = service;
@@ -13,7 +16,8 @@ export class JogoController implements JogoControllerInterface{
 
     save(req: Request, resp: Response){        
         try{
-            const jogoDTO = new JogoDTO(req.body.nome, req.body.plataforma, req.body.preco, req.body.urlImagem);
+            const platDTO = this.repoPlataforma.findById(Number(req.body.idPlataforma)) as PlataformaDTO;
+            const jogoDTO = new JogoDTO(req.body.nome, platDTO, req.body.valor, req.body.urlImagem);
             const jogo = this.service.save(jogoDTO);
             resp.status(201).json(jogo);
         }catch(error){
@@ -24,8 +28,9 @@ export class JogoController implements JogoControllerInterface{
         }
     }
     findAll(resp: Response) {
-        try{           
-            resp.status(200).json(JSON.stringify(this.service.findAll())).end();
+        try{   
+            const jogos = this.service.findAll();               
+            resp.status(200).json(jogos).end();
         }
         catch(error){
             resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
@@ -59,8 +64,9 @@ export class JogoController implements JogoControllerInterface{
     }    
 
     findByPlataforma(req: Request, resp: Response){         
-        try{            
-            resp.status(200).json(this.service.findByPlataforma(Number(req.params.id))).end();
+        try{               
+            const listaJogos = this.service.findByPlataforma(Number(req.params.id));        
+            resp.status(200).json(listaJogos).end();
         }catch(error){
             if (error instanceof DomainError)
                 resp.status(400).json({mensagem: error.message}).end();
@@ -70,8 +76,9 @@ export class JogoController implements JogoControllerInterface{
     }
 
     findByRangeValor(req: Request, resp: Response){
-        try{
-            resp.status(200).json(this.service.findByRangeValor(Number(req.params.min), Number(req.params.max))).end();
+        try{            
+            const jogos = this.service.findByRangeValor(Number(req.params.min), Number(req.params.max));
+            resp.status(200).json(jogos).end();
         }catch(error){
             if (error instanceof DomainError)
                 resp.status(400).json({mensagem: error.message}).end();

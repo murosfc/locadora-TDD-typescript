@@ -2,6 +2,8 @@ import { PlataformaDTO } from "../../service/PlataformaService";
 import { JogoRepository } from "../../repositories/InMemoryRepository/JogoRepository"
 import { JogoService } from "../../service/JogoService";
 import { JogoController } from "../JogoController";
+import { PlataformaRepository } from "../../repositories/InMemoryRepository/PlataformaRepository";
+import { Plataforma } from "../../model/Plataforma";
 
 function criaSut() {
     const repo = JogoRepository.getInstance();
@@ -21,25 +23,25 @@ function newSpy() {
 describe('Testes do Controller para Jogos', () => {
     const {sut, service} = criaSut();
     const resp_spy = newSpy();
-    const PLAT_XBOX = new PlataformaDTO("Xbox X/S");
-    const PLAT_PS5 = new PlataformaDTO("PS5");
-    const PLAT_SWITCH = new PlataformaDTO("Nintendo Switch");
+
+    const PLAT_XBOX = PlataformaRepository.getInstance().save(new Plataforma("Xbox X/S"));   
+    const PLAT_PS5 = PlataformaRepository.getInstance().save(new Plataforma("PS5"));   
+    const PLAT_SWITCH = PlataformaRepository.getInstance().save(new Plataforma("Nintendo Switch"));    
 
     it("Deve retornar 201 ao cadastrar um Jogo", () => {       
-        const req = { body: { nome: "Fifa 2023", plataforma: PLAT_PS5, valor: 15, urlImagem: ""}};
-        sut.save(req as any, resp_spy as any);
-        console.log(resp_spy.json.mock.calls[0][0].mensagem);
+        const req = { body: { nome: "Fifa 2023", idPlataforma: PLAT_PS5.id, valor: 15, urlImagem: ""}};
+        sut.save(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
-    it("Deve retornar 400 ao cadastrar um Jogo com parâmetro inválido", () => {
-        var req = { body: { nome: "", plataforma: PLAT_PS5, valor: 15, urlImagem: ""}};
+    it("Deve retornar 400 ao tentar cadastrar um Jogo com parâmetro inválido", () => {
+        var req = { body: { nome: "", idPlataforma: PLAT_PS5.id, valor: 15, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { nome: "Zelda", plataforma: undefined as unknown as PlataformaDTO, valor: 15, urlImagem: ""}};
+        req = { body: { nome: "Zelda", idPlataforma: 0, valor: 15, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { nome: "Zelda", plataforma: PLAT_SWITCH, valor: -1, urlImagem: ""}};
+        req = { body: { nome: "Zelda", idPlataforma: PLAT_SWITCH.id, valor: -1, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })
@@ -53,7 +55,20 @@ describe('Testes do Controller para Jogos', () => {
         jest.spyOn(service, 'findAll').mockImplementation(() => { throw new Error("Erro interno no servidor")});
         sut.findAll(resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
+        jest.spyOn(service, 'findAll').mockRestore();
     });
+
+    it("Deve retornar 400 ao busca um jogo por valor em um range inválido", () => {
+        const req = {params: {min: 20, max: 10}};
+        sut.findByRangeValor(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(400);
+    })
+
+    it("Deve retornar 200 deletar um jogo", () => {
+        const req = {params: {id: 1}};
+        sut.delete(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    })
 
     it("Deve retornar 200 ao buscar jogo por id", () => {
         const req = { params: { id: 1}};
@@ -85,35 +100,23 @@ describe('Testes do Controller para Jogos', () => {
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })
 
-    it("Deve retornar 200 ao buscar jogo por plataforma", () => {
-        const json = JSON.stringify({titulo: 'Xbox X/S'});
-        sut.findByPlataforma({body: json} as any, resp_spy as any);
+    it("Deve retornar 200 ao buscar jogo por plataforma", () => {        
+        sut.findByPlataforma({params: {id: 2}}  as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     })
 
     it("Deve retornar 400 ao buscar jogo por plataforma inválida", () => {               
-        sut.findByPlataforma({params: {idJogo: '21'}} as any, resp_spy as any);
+        sut.findByPlataforma({params: {id: 21}} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })
 
     it("Deve retornar 200 ao busca um jogo por valor em um range válido", () => {
-        const req = {params: {min: 10, max: 20}};
+        const req = {params: {min: 10, max: 30}};
         sut.findByRangeValor(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     })
 
-    it("Deve retornar 400 ao busca um jogo por valor em um range inválido", () => {
-        const req = {params: {min: 20, max: 10}};
-        sut.findByRangeValor(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(400);
-    })
-
-    it("Deve retornar 200 deletar um jogo", () => {
-        const req = {params: {id: 1}};
-        sut.delete(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(200);
-    })
-
+    
     it("Deve retornar 400 deletar um jogo com id inválido", () => {
         const req = {params: {id: 0}};
         sut.delete(req as any, resp_spy as any);
