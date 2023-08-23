@@ -21,15 +21,27 @@ router.get('/titulo/', async (req, res) => {
 }); 
 
 //findById
-router.get('/:id', controller.findById);
+router.get('/:id', async (req, res) => {
+    await controller.findById(req, res);
+    res.send();
+});
 
 //save
-router.post('/add', controller.save);
+router.post('/add', async (req, res) => {
+    await controller.save(req, res);
+    res.send();
+});
 
 //update
-router.put('/update/:id', controller.update);
+router.put('/update/:id', async (req, res) => {
+    await controller.update(req, res);
+    res.send();
+});
 
 //delete
-router.delete('/delete/:id', controller.delete);
+router.delete('/delete/:id', async (req, res) => {
+    await controller.delete(req, res);
+    res.send();
+});
 
 export default router;
