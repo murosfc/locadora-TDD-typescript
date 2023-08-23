@@ -21,8 +21,8 @@ export class ContaDTO extends DomainObject{
 
     static contaToDto(conta: Conta): ContaDTO{
         const dto = new ContaDTO(conta.email, conta.senha, conta.jogos);
-        dto.id = conta.id;
-        dto.senha = "informação ocultada";        
+        dto.id = conta.id;  
+        dto.senha = "informação ocultada"              
         return dto;         
     }
 
@@ -49,9 +49,9 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
         }
         if (entity.senha.length === 0) {
             return new InvalidAttributeException('Você está tentando salvar uma conta com senha inválida.');
-        }
+        }        
         const conta = ContaDTO.dtoToConta(entity);
-        const savedConta = this.repository.save(conta) as Conta;
+        const savedConta = this.repository.save(conta) as Conta;        
         return ContaDTO.contaToDto(savedConta);
     }
     update(entity: ContaDTO): ContaDTO|Error {       
@@ -80,7 +80,7 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
         return ContaDTO.contaToDto(conta as Conta);
     }
     findByJogo(idJogo: Number): ContaDTO[] | Error {               
-        const contas = this.repository.findByJogo(idJogo); 
+        const contas = this.repository.findByJogo(idJogo);         
         if (contas.length === 0) {
             return new NotFoundException('Nenhuma conta encontada para o jogo informado');
         }          

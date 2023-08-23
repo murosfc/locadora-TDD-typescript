@@ -27,47 +27,47 @@ describe('Test Conta Controller', () => {
     plataforma2.id = 2;
     const repoJogos = JogoRepository.getInstance();
     const jogo1 = new Jogo("Fifa 203", plataforma1, 20,""); 
-    jogo1.id = 1;     
+    repoJogos.save(jogo1);     
     const jogo2 = new Jogo("Call of Duty", plataforma2, 10,"");
-    jogo2.id = 2;   
+    repoJogos.save(jogo2);
 
-    it('Deve retornar status 201 e uma conta', () => {        
-        var req = {body: {email: "conta01@ongames.com", senha: "123456", jogos: [jogo1, jogo2]}};          
+    it('Deve retornar status 201 ao salvar uma conta', () => {        
+        var req = {body: {email: "conta01@ongames.com", senha: "123456", jogos: [jogo1.id, jogo2.id]}};          
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(201);
-        req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1]}};
+        req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1.id]}};
         sut.save({body: req} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
     it("Deve retornar status 400 e uma mensagem de erro ao tentar salvar conta com atributo inválido", () => {
-        var req = {body: {email: "", senha: "123456", jogos: [jogo1, jogo2]}};
+        var req = {body: {email: "", senha: "123456", jogos: [jogo1.id, jogo2.id]}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1]}};
+        req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1.id]}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     });
 
     it("Deve retornar erro 500 ao tentar salvar conta com erro de servidor", () => {
         const serviceSpy = jest.spyOn(service, "save").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
-        const req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1]}};
+        const req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1.id]}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
         serviceSpy.mockRestore();
     });
 
     it("Deve retornar status 200 ao atualizar uma conta", () => {
-        var req = {body: {email: "conta02@ongames.com", senha: "1234567999", jogos: [jogo1]}, params: {id: 2}};
+        var req = {body: {email: "conta02@ongames.com", senha: "1234567999", jogos: [jogo1.id]}, params: {id: 2}};
         sut.update(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
     it("Deve retornar status 400 ao tentar atualizar uma conta com atributo inválido", () => {
-        var req = {body: {email: "", senha: "1234567999", jogos: [jogo1]}, params: {id: 2}};
+        var req = {body: {email: "", senha: "1234567999", jogos: [jogo1.id]}, params: {id: 2}};
         sut.update(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = {body: {email: "conta01@ongames.com", senha: "1234567999", jogos: [jogo1]}, params: {id: 2}};
+        req = {body: {email: "conta01@ongames.com", senha: "1234567999", jogos: [jogo1.id]}, params: {id: 2}};
         sut.update(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(400);
 
@@ -75,30 +75,10 @@ describe('Test Conta Controller', () => {
 
     it('Deve retornar status 500 ao tentar atualizar uma conta com erro de servidor', () => {
         const serviceSpy = jest.spyOn(service, "update").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
-        const req = {body: {email: "", senha: "1234567999", jogos: [jogo1]}, params: {id: 2}};
+        const req = {body: {email: "", senha: "1234567999", jogos: [jogo1.id]}, params: {id: 2}};
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
-    });
-
-    it('Deve receber 200 ao tentar excluir uma conta', () => {
-        var req = {params: {id: 1}};
-        sut.delete(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(200);
-    });
-    
-    it('Deve receber 404 ao tentar excluir uma conta com id não encontrado', () => {
-        var req = {params: {id: 5}};
-        sut.delete(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(404);
-    });
-
-    it('Deve retornar 500 ao tentar excluir uma conta com erro de servidor', () => {
-        const serviceSpy = jest.spyOn(service, "delete").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
-        var req = {params: {id: 1}};
-        sut.delete(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(500);
-        serviceSpy.mockRestore();
-    });
+    });    
 
     it('Deve receber status 200 ao buscar uma conta por email', () => {
         var req = {params: {email: "conta02@ongames.com"}};
@@ -113,28 +93,28 @@ describe('Test Conta Controller', () => {
     });
 
     it('Deve receber status 500 ao buscar uma conta por email com erro de servidor', () => {
-        jest.spyOn(service, "findByEmail").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
+        const serviceSpy = jest.spyOn(service, "findByEmail").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
         const req = {params: {email: "conta03@ongames.com"}};
         sut.findByEmail(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
+        serviceSpy.mockRestore();
     });
 
     it('Deve retornar 200 e encontrar pelo menos uma conta por jogo', () => {              
-        const req = {params: {idJogo: jogo1.id}};   
-        const conta = service.findByJogo(jogo2.id);        
+        const req = {params: {id: jogo1.id}};    
         sut.findByJogo(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
     it('Deve retornar status 404 ao buscar uma conta por jogo não encontrado', () => {
-        const req = {params: {idJogo: '60'}};
+        const req = {params: {id: '60'}};
         sut.findByJogo(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(404);
     });
 
     it('Deve retornar status 500 ao buscar uma conta por jogo com erro de servidor', () => {
         const serviceSpy = jest.spyOn(service, "findByJogo").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
-        const req = {params: {idJogo: '1'}};
+        const req = {params: {id: '1'}};
         sut.findByJogo(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
         serviceSpy.mockRestore();
@@ -166,6 +146,26 @@ describe('Test Conta Controller', () => {
         const serviceSpy = jest.spyOn(service, "findById").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
         var req = {params: {id: 2}};
         sut.findById(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+        serviceSpy.mockRestore();
+    });
+
+    it('Deve receber 200 ao tentar excluir uma conta', () => {
+        var req = {params: {id: 1}};
+        sut.delete(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
+    
+    it('Deve receber 404 ao tentar excluir uma conta com id não encontrado', () => {
+        var req = {params: {id: 5}};
+        sut.delete(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(404);
+    });
+
+    it('Deve retornar 500 ao tentar excluir uma conta com erro de servidor', () => {
+        const serviceSpy = jest.spyOn(service, "delete").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
+        var req = {params: {id: 1}};
+        sut.delete(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
         serviceSpy.mockRestore();
     });

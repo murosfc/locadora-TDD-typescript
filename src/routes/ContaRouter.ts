@@ -9,24 +9,38 @@ const service = new ContaService(repo);
 const controller = new ContaController(service);
 
 //save
-router.post('/add', controller.save);
-
-//update
-router.put('/update/:id', controller.update);
-
-//delete
-router.delete('/delete/:id', controller.delete);
+router.post('/add', async (req, res) => {
+    controller.save(req, res);
+});
 
 //findByEmail
-router.get('/email/:email', controller.findByEmail);
+router.get('/email/:email', async (req, res) => {
+    controller.findByEmail(req, res);
+});
 
 //findByJogo
-router.get('/jogo/:id', controller.findByJogo);
+router.get('/jogo/:id', async (req, res) => {
+    controller.findByJogo(req, res);
+});
 
 //findAll
-router.get('/', controller.findAll);
+router.get('/', async (req, res) => {
+    controller.findAll(res);
+});
 
 //findById
-router.get('/:id', controller.findById);
+router.get('/:id', async (req, res) => {
+    controller.findById(req, res);
+});
+
+//update
+router.put('/update/:id', async (req, res) => {
+    controller.update(req, res);
+});
+
+//delete
+router.delete('/delete/:id', async (req, res) => {
+    controller.delete(req, res);
+});
 
 export default router;

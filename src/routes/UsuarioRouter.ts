@@ -9,24 +9,38 @@ const service = new UsuarioService(repo);
 const controller = new UsuarioController(service);
 
 //save
-router.post('/add', controller.save);
-
-//update
-router.put('/update/:id', controller.update);
-
-//delete
-router.delete('/delete/:id', controller.delete);
+router.post('/add', async(req, res) => {
+    controller.save(req, res);
+});
 
 //findAll
-router.get('/', controller.findAll);
+router.get('/', async(req, res) => {
+    controller.findAll(res);
+});
 
 //findByEmail
-router.get('/email/:email', controller.findByEmail);
+router.get('/email/:email', async(req, res) => {
+    controller.findByEmail(req, res);
+});
 
 //findByCpf
-router.get('/cpf/:cpf', controller.findByCpf);
+router.get('/cpf/:cpf', async(req, res) => {
+    controller.findByCpf(req, res);
+});
 
 //findById
-router.get('/:id', controller.findById);
+router.get('/:id', async(req, res) => {
+    controller.findById(req, res);
+});
+
+//update
+router.put('/update/:id', async(req, res) => {
+    controller.update(req, res);
+});
+
+//delete
+router.delete('/delete/:id', async(req, res) => {
+    controller.delete(req, res);
+});
 
 export default router;

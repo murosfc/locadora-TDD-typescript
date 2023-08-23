@@ -9,6 +9,10 @@ const jsonPlat = JSON.stringify(plat);
 
 describe("Testes de integração da rota de Jogos", () => { 
 
+    beforeAll(() => {
+        server.close();
+    });
+    
     afterAll(() => {
         server.close();
     });

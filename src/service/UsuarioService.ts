@@ -64,7 +64,7 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         this.repo = repo;
     }
 
-    findByEmail(email: string): UsuarioDTO {                  
+    findByEmail(email: string): UsuarioDTO {                          
         const user = this.repo.findByEmail(email) as Usuario;                         
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
         return UsuarioDTO.usuarioToDTO(user);                

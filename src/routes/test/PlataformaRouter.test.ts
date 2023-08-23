@@ -4,6 +4,10 @@ import server from "../../server";
 
 describe("Testes de integração da rota de Plataformas", () => { 
 
+    beforeAll(() => {
+        server.close();
+    });
+    
     afterAll(() => {
         server.close();
     });

@@ -14,14 +14,20 @@ app.use(express.json());
 // Mount the event routes
 app.use('/plataformas/', PlataformaRouter);
 app.use('/jogos/', JogoRouter);
-app.use('contas/', ContaRouter);
-app.use('alugueis/', AluguelRouter);
-app.use('usuarios/', UsuarioRouter);
+app.use('/contas/', ContaRouter);
+app.use('/alugueis/', AluguelRouter);
+app.use('/usuarios/', UsuarioRouter);
 
+var server: any;
 // Start the server
-const server = app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+   server = app.listen(port, () => console.log(`Listening on port ${port}`))
+}
+else{
+  server = app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
 
 export default server;
 
