@@ -13,7 +13,7 @@ export class PlataformaController implements PlataformaControllerInterface{
     
     findByTitulo(req: Request, resp: Response) {
         try{
-            const titulo = JSON.parse(req.body).titulo;
+            const titulo = req.params.titulo;
             const resultado = this.service.findByTitulo(titulo);
             resp.status(200).json(resultado).end();
         }catch(error){

@@ -1,5 +1,5 @@
 {
-  "name": "aula02_2023_06_06",
+  "name": "locadora-tdd-typescript",
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {

@@ -79,21 +79,20 @@ describe('Testes do controller da plataforma', () => {
     });
 
     it('Deve encontrar uma plataforma por titulo', () => {
-        const jsonPlat = JSON.stringify({titulo: "Nintendo Switch"});
-        sut.findByTitulo({body: jsonPlat} as any, resp_spy as any);
+        sut.findByTitulo({params: {titulo: "Nintendo Switch"}} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
     it('Deve retornar status 400 ao chamar o método findByTitulo com dados inválidos', () => {
         const jsonPlat = JSON.stringify({titulo: ""});
-        sut.findByTitulo({body: jsonPlat} as any, resp_spy as any);
+        sut.findByTitulo({params: jsonPlat} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     });
 
     it('Deve receber status 500 ao tentar salvar uma plataforma com erro interno', () => {
         const jsonPlat = JSON.stringify({titulo: 'Xbox X/S'});
         jest.spyOn(service, 'save').mockImplementation(() => { throw new Error("Erro interno no servidor")});
-        sut.save({body: jsonPlat} as any, resp_spy as any);
+        sut.save({params: jsonPlat} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
     });
 

@@ -9,10 +9,16 @@ const service = new PlataformaService(repo);
 const controller = new PlataformaController(service);
 
 //findAll
-router.get('/', controller.findAll);
+router.get('/',async (req, res) => {
+    await controller.findAll(res);
+    res.send();
+});
 
 //findByTitulo
-router.get('/titulo/', controller.findByTitulo);   
+router.get('/titulo/', async (req, res) => {
+    await controller.findByTitulo(req, res);
+    res.send();
+}); 
 
 //findById
 router.get('/:id', controller.findById);
