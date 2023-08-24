@@ -42,6 +42,26 @@ describe("AluguelRepository", () => {
         expect(resultado).toBeInstanceOf(Aluguel);
         expect((resultado as Aluguel).periodoEmSemanas).toBe(2);
     });
+
+    it("Deve encontrar ao menos um aluguel por range de data", () => {
+        const anoPassado = new Date();
+        anoPassado.setFullYear(anoPassado.getFullYear() - 1);
+        const anoQueVem = new Date(); 
+        anoQueVem.setFullYear(anoQueVem.getFullYear() + 1);      
+        const resultado = sut.findByDataAluguelRange(anoPassado, anoQueVem);
+        expect(resultado).toBeInstanceOf(Array);
+        expect((resultado as Array<Aluguel>).length).toBeGreaterThan(0);
+    });
+
+    it("Deve retornar um erro do tipo NotFoundException ao buscar um aluguel por range de data que não constem alugueis", () => {
+        const anoPassado = new Date();
+        anoPassado.setFullYear(anoPassado.getFullYear() - 1); 
+        const mesPassado = new Date();
+        mesPassado.setMonth(mesPassado.getMonth() - 1);   
+        const resultado = sut.findByDataAluguelRange(anoPassado, mesPassado);
+        expect(resultado).toBeInstanceOf(NotFoundException);
+        expect((resultado as Error).message).toBe("Não econtrado aluguel para o período informado.");
+    });
     
     it("deve deletar um aluguel", () => {        
         const aluguelId = 1;
@@ -88,23 +108,7 @@ describe("AluguelRepository", () => {
         expect(resultado).toBeInstanceOf(NotFoundException);
         expect((resultado as Error).message).toBe("Não econtrado aluguel para a conta informada.");
     });
-
-    it("Deve encontrar ao menos um aluguel por range de data", () => {
-        const dataInicial = new Date("2023-01-01");
-        const dataFinal = new Date(); 
-        dataFinal.setDate(dataInicial.getDate() + 30);       
-        const resultado = sut.findByDataAluguelRange(dataInicial, dataFinal);
-        expect(resultado).toBeInstanceOf(Array);
-        expect((resultado as Array<Aluguel>).length).toBeGreaterThan(0);
-    });
-
-    it("Deve retornar um erro do tipo NotFoundException ao buscar um aluguel por range de data que não constem alugueis", () => {
-        const dataInicial = new Date("2020-01-01");
-        const dataFinal = new Date(dataInicial.getFullYear() + 1 );         
-        const resultado = sut.findByDataAluguelRange(dataInicial, dataFinal);
-        expect(resultado).toBeInstanceOf(NotFoundException);
-        expect((resultado as Error).message).toBe("Não econtrado aluguel para o período informado.");
-    });
+    
 
     it("Deve retornar todos os alugueis", () => {
         const resultado = sut.findAll();
