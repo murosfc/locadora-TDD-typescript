@@ -11,6 +11,9 @@ describe("Testes de integração da rota de Jogos", () => {
 
     beforeAll(() => {
         server.close();
+        server.listen(3002, () => {
+            console.log(`Now running on port ${3002}`);
+        });
     });
     
     afterAll(() => {

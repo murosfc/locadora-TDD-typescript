@@ -18,16 +18,9 @@ app.use('/contas/', ContaRouter);
 app.use('/alugueis/', AluguelRouter);
 app.use('/usuarios/', UsuarioRouter);
 
-var server: any;
-// Start the server
-if (process.env.NODE_ENV !== 'test') {
-   server = app.listen(port, () => console.log(`Listening on port ${port}`))
-}
-else{
-  server = app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-  });
-}
+var server = app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 export default server;
 

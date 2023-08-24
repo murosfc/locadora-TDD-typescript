@@ -53,9 +53,7 @@ export class PlataformaController implements PlataformaControllerInterface{
     }
 
     async update(req: Request, resp: Response){
-        try{
-            console.log(req.body.titulo);
-            console.log(req.params.id);
+        try{           
             const plataforma = new PlataformaDTO(req.body.titulo);
             plataforma.id = Number(req.params.id);            
             const updated = await this.service.update(plataforma);

@@ -4,6 +4,9 @@ import server from "../../server";
 
 beforeAll(async () => {
     server.close();
+    server.listen(3004, () => {
+        console.log(`Now running on port ${3004}`);
+    });
 });
 
 afterAll(async () => {

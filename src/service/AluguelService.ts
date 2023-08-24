@@ -37,11 +37,11 @@ export class AluguelService implements AluguelServiceInterface<Aluguel>{
         return constasDisponiveis? true : new NotAllowedException("Conta informada já pertence a um aluguel ativo");;
     }
 
-    save(entity: Aluguel): Aluguel | Error {
+    save(entity: Aluguel): Aluguel | Error {        
         const result = this.validaAluguel(entity);       
         if(result instanceof DomainError){            
             return result;
-        }
+        }        
         const aluguel = this.repository.save(entity);        
         return this.exportDto(aluguel as Aluguel);
     }

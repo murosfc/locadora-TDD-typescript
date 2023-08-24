@@ -12,6 +12,9 @@ describe("ContaRouter", () => {
     
     beforeAll(() => {
         server.close();
+        server.listen(3003, () => {
+            console.log(`Now running on port ${3003}`);
+        });
     });
 
     afterAll(() => {
