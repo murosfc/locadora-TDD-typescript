@@ -186,10 +186,11 @@ describe("AluguelService", () => {
     });
 
     it("Deve encontrar um aluguel por range de datas", () => {
-        const dataInicial = new Date("2023-01-01");
-        const dataFinal = new Date(); 
-        dataFinal.setDate(dataInicial.getDate() + 30);       
-        const resultado = sut.findByDataAluguelRange(dataInicial, dataFinal);
+        const anoPassado = new Date();
+        anoPassado.setFullYear(anoPassado.getFullYear() - 1);
+        const anoQueVem = new Date(); 
+        anoQueVem.setFullYear(anoQueVem.getFullYear() + 1);        
+        const resultado = sut.findByDataAluguelRange(anoPassado, anoQueVem);
         expect(resultado).toBeInstanceOf(Array);
         expect((resultado as Array<Aluguel>).length).toBe(1);
         expect((resultado as Array<Aluguel>)[0].id).toBe(2);

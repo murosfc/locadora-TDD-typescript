@@ -175,19 +175,21 @@ describe("Teste de unidade do controller de aluguel", () => {
     });
 
     it("Deve retornar 200 ao procurar um aluguel por range de data", () => {
-        const dataInicial = new Date("2023-01-01");
-        const dataFinal = new Date(); 
-        dataFinal.setDate(dataInicial.getDate() + 30);   
-        var req = { params: {dataInicial: dataInicial, dataFinal: dataFinal } };
+        const anoPassado = new Date();
+        anoPassado.setFullYear(anoPassado.getFullYear() - 1);
+        const anoQueVem = new Date(); 
+        anoQueVem.setFullYear(anoQueVem.getFullYear() + 1);
+        var req = { params: {dataInicial: anoPassado, dataFinal: anoQueVem } };
         sut.findByDataAluguelRange(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
     it("Deve retornar 500 ao procurar um aluguel por range de data com erro interno", () => {
-        const dataInicial = new Date("2023-01-01");
-        const dataFinal = new Date();
-        dataFinal.setDate(dataInicial.getDate() + 30);
-        var req = { params: {dataInicial: dataInicial, dataFinal: dataFinal } };
+        const anoPassado = new Date();
+        anoPassado.setFullYear(anoPassado.getFullYear() - 1);
+        const anoQueVem = new Date(); 
+        anoQueVem.setFullYear(anoQueVem.getFullYear() + 1);
+        var req = { params: {dataInicial: anoPassado, dataFinal: anoQueVem } };
         const serviceSpy = jest.spyOn(service, "findByDataAluguelRange").mockImplementation(() => { throw new Error("Erro interno de servidor") });
         sut.findByDataAluguelRange(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
