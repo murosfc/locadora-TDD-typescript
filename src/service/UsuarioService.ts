@@ -5,6 +5,7 @@ import { UsuarioRepositoryInterface } from "../repositories/contracts/UsuarioRep
 import { InvalidAttributeException } from "../error/InvalidAttributeException";
 import { NotAllowedException } from "../error/NotAllowedException";
 import { NotFoundException } from "../error/NotFoundException";
+import * as bcrypt from 'bcrypt';
 
 export class UsuarioDTO extends DomainObject{
     private _nome: string;  
@@ -59,23 +60,23 @@ export class UsuarioDTO extends DomainObject{
 
 export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
     private repo: UsuarioRepositoryInterface;
-
+    
     constructor(repo: UsuarioRepositoryInterface){
         this.repo = repo;
     }
 
-    findByEmail(email: string): UsuarioDTO {                          
+    async findByEmail(email: string): Promise<UsuarioDTO> {                          
         const user = this.repo.findByEmail(email) as Usuario;                         
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
         return UsuarioDTO.usuarioToDTO(user);                
     }
 
-    findByCpf(cpf: string): UsuarioDTO {
+    async findByCpf(cpf: string): Promise<UsuarioDTO> {
         const user = this.repo.findByCpf(cpf) as Usuario;
         if (!user) throw new NotFoundException("Usuário não encontrado");
         return UsuarioDTO.usuarioToDTO(user);
     }
-    findAll(): UsuarioDTO[] {
+    async findAll(): Promise<UsuarioDTO[]> {
         const users = this.repo.findAll() as Usuario[];
         var usersDTO: UsuarioDTO[] = [];
         users.forEach(user => {
@@ -84,24 +85,25 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         return usersDTO;
     }
 
-    findById(id: number): UsuarioDTO {        
+    async findById(id: number): Promise<UsuarioDTO> {        
         const user = this.repo.findById(id) as Usuario;
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
         return UsuarioDTO.usuarioToDTO(user);  
     }
-
-    save(entity: UsuarioDTO): UsuarioDTO {
+    async save(entity: UsuarioDTO): Promise<UsuarioDTO> {
         this.validaUsuario(entity, true);
-        const user = UsuarioDTO.dtoToUsuario(entity);
+        const user = UsuarioDTO.dtoToUsuario(entity);        
+        const saltRounds = 10;
+        user.senha = await bcrypt.hash(user.senha, saltRounds);
         const savedUser = this.repo.save(user) as Usuario;
         return UsuarioDTO.usuarioToDTO(savedUser);
     }
-    update(entity: UsuarioDTO): UsuarioDTO {
+    async update(entity: UsuarioDTO): Promise<UsuarioDTO> {
         this.validaUsuario(entity, false);        
         const updatedUser = this.repo.update(entity) as Usuario;
         return UsuarioDTO.usuarioToDTO(updatedUser);
     }
-    delete(id: number): boolean {
+    async delete(id: number): Promise<boolean> {
         return this.repo.delete(id);
     }
 
