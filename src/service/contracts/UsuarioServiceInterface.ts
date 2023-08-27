@@ -8,4 +8,5 @@ export interface UsuarioServiceInterface<DTO>{
     delete(id: number): Promise<boolean>;  
     findByEmail(email: string): Promise<DTO>;
     findByCpf(cpf: string): Promise<DTO>;
+    login(email: string, senha: string): Promise<DTO>;
 }

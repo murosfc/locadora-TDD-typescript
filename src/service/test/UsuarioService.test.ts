@@ -39,7 +39,7 @@ describe('UsuarioService', () => {
         expect(savedUser.senha).toBe('');
         expect(savedUser.cpf).toBe('');
         expect(savedUser.id).toBe(2);
-    });
+    });    
 
     it('Deve gerar erro do tipo InvalidAttributeException adicionar um usuário com nome inválido', async () => {
         const user = new UsuarioDTO('', 'joao@gmail.com', '123456', '12345678910');
@@ -82,7 +82,24 @@ describe('UsuarioService', () => {
         const user = new UsuarioDTO('João', 'joao@gmail.com.br', '123456', '12345678910');
         expect(async () => await sut.save(user)).rejects.toThrowError('CPF já cadastrado');
         expect(async () => await sut.save(user)).rejects.toThrowError(NotAllowedException);
-    });        
+    });   
+    
+    it("Deve fazer login com sucesso", async () => {
+        const user = await sut.login(globalUser.email, '123456');
+        expect(user.nome).toBe(globalUser.nome);    
+    });
+
+    it("Deve gerar um erro do tipo NotFoundException ao tentar fazer login com e-mail inválido", async () => {
+        const email = 'notregistered@gmail.com';
+        expect(async () => await sut.login(email, globalUser.senha)).rejects.toThrowError('Usuário não encontrado');
+        expect(async () => await sut.login(email, globalUser.senha)).rejects.toThrowError(NotFoundException);
+    });
+
+    it("Deve gerar um erro do tipo NotAllowedException ao tentar fazer login com senha inválida", async () => {
+        const senha = 'invalidpassword';
+        expect(async () => await sut.login(globalUser.email, senha)).rejects.toThrowError('Senha inválida');
+        expect(async () => await sut.login(globalUser.email, senha)).rejects.toThrowError(NotAllowedException);
+    });
 
     it('Deve retornar um usuário ao buscar por id', async () => {
         const user = await sut.findById(globalUser.id);

@@ -18,18 +18,19 @@ export class UsuarioController implements UsuarioControllerInterface {
             resp.status(500).json({ mensagem: "Erro interno no servidor" }).end();
     }
 
-    save(req: Request, resp: Response) {
+    async save(req: Request, resp: Response) {
         try {
             const user = new UsuarioDTO(req.body.nome, req.body.email, req.body.senha, req.body.cpf);
-            resp.status(201).json(this.service.save(user)).end();
+            const userSaved = await this.service.findByCpf(user.cpf);
+            resp.status(201).json(userSaved).end();
         } catch (error) {
             this.errorHandler(error, resp);
         }
     }
 
-    update(req: Request, resp: Response) {
+    async update(req: Request, resp: Response) {
         try {
-            const userFromDB = this.service.findById(Number(req.params.id)) as UsuarioDTO;
+            const userFromDB = await this.service.findById(Number(req.params.id)) as UsuarioDTO;
             userFromDB.nome = req.body.nome;
             userFromDB.email = req.body.email;
             userFromDB.senha = req.body.senha;
@@ -40,35 +41,37 @@ export class UsuarioController implements UsuarioControllerInterface {
         }
     }
 
-    delete(req: Request, resp: Response) {
+    async delete(req: Request, resp: Response) {
         const id = Number(req.params.id);
-        if (this.service.delete(id))
+        const excluido = await this.service.delete(id);
+        if (excluido)
             resp.status(200).json({ mensagem: "Usuário removido com sucesso" }).end();
         else
             resp.status(400).json({ mensagem: "Erro ao tentar excluir o usuário, verifique se ele está cadastrado" }).end();
     }
 
-    findAll(resp: Response) {
+    async findAll(resp: Response) {
         try {
-            resp.status(200).json(this.service.findAll()).end();
+            const allUsers = await this.service.findAll();
+            resp.status(200).json(allUsers).end();
         } catch (error) {
             resp.status(500).json({ mensagem: "Erro interno no servidor" }).end();
         }
     }
 
-    findByEmail(req: Request, resp: Response) {
+    async findByEmail(req: Request, resp: Response) {
         try {
             const email = req.params.email;
-            const user = this.service.findByEmail(email);
+            const user = await this.service.findByEmail(email);
             resp.status(200).json(user).end();
         } catch (error) {
             this.errorHandler(error, resp);
         }
     }
-    findByCpf(req: Request, resp: Response) {
+    async findByCpf(req: Request, resp: Response) {
         try {
             const cpf = req.params.cpf;
-            const user = this.service.findByCpf(cpf);
+            const user = await this.service.findByCpf(cpf);
             resp.status(200).json(user).end();
         }
         catch (error) {
@@ -76,10 +79,10 @@ export class UsuarioController implements UsuarioControllerInterface {
         }
     }
 
-    findById(req: Request, resp: Response) {
+    async findById(req: Request, resp: Response) {
         try {
             const id = Number(req.params.id);
-            const user = this.service.findById(id);
+            const user = await this.service.findById(id);
             resp.status(200).json(user).end();
         } catch (error) {
             this.errorHandler(error, resp);

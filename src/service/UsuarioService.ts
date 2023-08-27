@@ -119,4 +119,14 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         }else if (entity.id<=0) throw new NotAllowedException("Tentativa de atualização de usuário com id inválida");
     }
 
+    async login(email: string, senha: string): Promise<UsuarioDTO>{
+        const user = this.repo.findByEmail(email) as Usuario;
+        if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
+        console.log("Senha bd: " + user.senha + " Senha informada: " + senha);
+        if (bcrypt.compareSync(senha, user.senha)) {
+            return UsuarioDTO.usuarioToDTO(user);
+        }else{
+            throw new NotAllowedException("Senha inválida");
+        }
+    }
 }
