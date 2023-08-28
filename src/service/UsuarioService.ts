@@ -7,21 +7,24 @@ import { NotAllowedException } from "../error/NotAllowedException";
 import { NotFoundException } from "../error/NotFoundException";
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-
-const auth = require('../../config/auth.json');
+import auth from '../server';
 
 export class UsuarioDTO extends DomainObject {
     private _nome: string;
     private _email: string;
     private _senha: string;
     private _cpf: string;
-
+    private _token: string;
+    private _tipo: string;
+   
+        
     constructor(nome: string, email: string, senha: string, cpf: string) {
         super();
         this._nome = nome;
         this._email = email;
         this._senha = senha;
         this._cpf = cpf;
+        this._token = "";
     }
     public get nome(): string {
         return this._nome;
@@ -47,6 +50,18 @@ export class UsuarioDTO extends DomainObject {
     public set cpf(value: string) {
         this._cpf = value;
     }
+    public get token(): string {
+        return this._token;
+    }
+    public set token(value: string) {
+        this._token = value;
+    }
+    public get tipo(): string {
+        return this._tipo;
+    }
+    public set tipo(value: string) {
+        this._tipo = value;
+    }
 
     static dtoToUsuario(dto: UsuarioDTO): Usuario {
         var user = new Usuario(dto.nome, dto.email, dto.senha, dto.cpf);
@@ -56,7 +71,16 @@ export class UsuarioDTO extends DomainObject {
 
     static usuarioToDTO(usuario: Usuario): UsuarioDTO {
         var dto = new UsuarioDTO(usuario.nome, usuario.email, "", "");
+        dto.id = usuario.id; 
+        dto.tipo = usuario.tipo;
+        return dto;
+    }
+
+    static usuarioToDTOComToken(usuario: Usuario): UsuarioDTO {
+        var dto = new UsuarioDTO(usuario.nome, usuario.email, "", "");
         dto.id = usuario.id;
+        dto.tipo = usuario.tipo;
+        dto.token = usuario.token;
         return dto;
     }
 }
@@ -127,13 +151,18 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
         console.log("Senha bd: " + user.senha + " Senha informada: " + senha);
         if (bcrypt.compareSync(senha, user.senha)) {
-            return UsuarioDTO.usuarioToDTO(user);
+            user.token = (await this.gerarToken(user)).token;
+            return UsuarioDTO.usuarioToDTOComToken(user);
         } else {
             throw new NotAllowedException("Senha inválida");
         }
     }
 
     private async gerarToken(user: Usuario): Promise<{ token: string }> {
+        const auth = {
+            secret: String(process.env.SECRET),
+            expires: '24h',
+          };
         const token = await sign(
             {
                 id: user.id,

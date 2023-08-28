@@ -24,10 +24,14 @@ describe('UsuarioService', () => {
         user.email = 'joao_silva@gmail.com';
         user.cpf = '123456999999';
         user.senha = '123456789';
+        user.token = '123456789';
+        user.tipo = 'FUNCIONARIO';
         expect(user.nome).toBe('João da Silva');
         expect(user.email).toBe('joao_silva@gmail.com');
         expect(user.cpf).toBe('123456999999');
         expect(user.senha).toBe('123456789');
+        expect(user.token).toBe('123456789');
+        expect(user.tipo).toBe('FUNCIONARIO');
     });
 
 
@@ -86,7 +90,8 @@ describe('UsuarioService', () => {
     
     it("Deve fazer login com sucesso", async () => {
         const user = await sut.login(globalUser.email, '123456');
-        expect(user.nome).toBe(globalUser.nome);    
+        expect(user.nome).toBe(globalUser.nome); 
+        expect(user.token.length).toBeGreaterThan(0);  
     });
 
     it("Deve gerar um erro do tipo NotFoundException ao tentar fazer login com e-mail inválido", async () => {

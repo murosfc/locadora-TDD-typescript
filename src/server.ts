@@ -4,9 +4,10 @@ import JogoRouter from './routes/JogoRouter';
 import ContaRouter from './routes/ContaRouter';
 import AluguelRouter from './routes/AluguelRouter';
 import UsuarioRouter from './routes/UsuarioRouter';
+require('dotenv').config();
 
 const app: Express = express();
-const port = process.env.PORT; 
+const port = process.env.PORT || 3000; 
 
 // Middleware to parse incoming JSON data
 app.use(express.json());
@@ -21,11 +22,6 @@ app.use('/usuarios/', UsuarioRouter);
 var server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-export const auth = {
-  secret: String(process.env.SECRET),
-  expires: '24h',
-};
 
 export default server;
 
