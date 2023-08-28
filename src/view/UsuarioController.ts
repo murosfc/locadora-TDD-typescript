@@ -21,8 +21,8 @@ export class UsuarioController implements UsuarioControllerInterface {
     async save(req: Request, resp: Response) {
         try {
             const user = new UsuarioDTO(req.body.nome, req.body.email, req.body.senha, req.body.cpf);
-            const userSaved = await this.service.findByCpf(user.cpf);
-            resp.status(201).json(userSaved).end();
+            const userSaved = await this.service.save(user);
+            resp.status(201).json(userSaved).end();            
         } catch (error) {
             this.errorHandler(error, resp);
         }
@@ -34,7 +34,7 @@ export class UsuarioController implements UsuarioControllerInterface {
             userFromDB.nome = req.body.nome;
             userFromDB.email = req.body.email;
             userFromDB.senha = req.body.senha;
-            const updatedUser = this.service.update(userFromDB);
+            const updatedUser = await this.service.update(userFromDB);
             resp.status(200).json(updatedUser).end();
         } catch (error) {
             this.errorHandler(error, resp);

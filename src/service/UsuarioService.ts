@@ -148,8 +148,7 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
 
     async login(email: string, senha: string): Promise<UsuarioDTO> {
         const user = this.repo.findByEmail(email) as Usuario;
-        if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
-        console.log("Senha bd: " + user.senha + " Senha informada: " + senha);
+        if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");        
         if (bcrypt.compareSync(senha, user.senha)) {
             user.token = (await this.gerarToken(user)).token;
             return UsuarioDTO.usuarioToDTOComToken(user);

@@ -56,14 +56,11 @@ export class AluguelController implements AluguelControllerInterface {
     }
     update(req: Request, resp: Response): void {
         try {
-            console.log("ID USUARIO: " + req.body.idUsuario);
-            const usuario = this.usuarioRepository.findById(req.body.idUsuario);
-            console.log("Contas: " + req.body.contas);
+            const usuario = this.usuarioRepository.findById(req.body.idUsuario);            
             const contas: Conta[] = [];
             req.body.contas.forEach((idConta: number) => {
                 contas.push(this.contaRepository.findById(idConta) as Conta);
             });
-            console.log("Periodo em semanas: " + req.body.periodoEmSemanas);
             var aluguel = new Aluguel(usuario, contas, req.body.periodoEmSemanas, req.body.desconto);
             aluguel.id = Number(req.params.id);
             const resultado = this.service.update(aluguel);
