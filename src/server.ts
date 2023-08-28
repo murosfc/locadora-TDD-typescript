@@ -6,7 +6,7 @@ import AluguelRouter from './routes/AluguelRouter';
 import UsuarioRouter from './routes/UsuarioRouter';
 
 const app: Express = express();
-const port = 3000; // You can change this to the desired port number
+const port = process.env.PORT; 
 
 // Middleware to parse incoming JSON data
 app.use(express.json());
@@ -21,6 +21,11 @@ app.use('/usuarios/', UsuarioRouter);
 var server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+export const auth = {
+  secret: String(process.env.SECRET),
+  expires: '24h',
+};
 
 export default server;
 

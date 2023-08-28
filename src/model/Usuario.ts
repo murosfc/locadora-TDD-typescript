@@ -1,11 +1,14 @@
 import { InvalidAttributeException } from "../error/InvalidAttributeException";
 import { DomainObject } from "./DomainObject";
+import { UsuarioTipoEnum } from "./enum/UsuarioTipoEnum";
 
 export class Usuario extends DomainObject{
     private _nome: string;   
     private _email: string;    
     private _cpf: string;
     private _senha: string;
+    private _tipo: string;    
+    private _token: string; 
 
     constructor(nome: string, email: string, senha: string, cpf: string){
         super();
@@ -17,6 +20,7 @@ export class Usuario extends DomainObject{
         this._senha = senha;
         if (cpf.length === 0) throw new InvalidAttributeException('CPF inválido')
         this._cpf = cpf;
+        this._tipo = UsuarioTipoEnum.CLIENTE;
     }
 
     public get nome(): string {
@@ -45,6 +49,21 @@ export class Usuario extends DomainObject{
     }
     public set cpf(value: string) {
         this._cpf = value;
+    }
+
+    public get tipo(): string {
+        return this._tipo;
+    }
+    
+    public set tipo(value: string) {
+        this._tipo = value;
+    }
+
+    public get token(): string {
+        return this._token;
+    }
+    public set token(value: string) {
+        this._token = value;
     }
     
 }

@@ -6,14 +6,17 @@ import { InvalidAttributeException } from "../error/InvalidAttributeException";
 import { NotAllowedException } from "../error/NotAllowedException";
 import { NotFoundException } from "../error/NotFoundException";
 import * as bcrypt from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 
-export class UsuarioDTO extends DomainObject{
-    private _nome: string;  
-    private _email: string;    
-    private _senha: string;    
-    private _cpf: string;    
+const auth = require('../../config/auth.json');
 
-    constructor(nome: string, email: string, senha: string, cpf: string){
+export class UsuarioDTO extends DomainObject {
+    private _nome: string;
+    private _email: string;
+    private _senha: string;
+    private _cpf: string;
+
+    constructor(nome: string, email: string, senha: string, cpf: string) {
         super();
         this._nome = nome;
         this._email = email;
@@ -45,13 +48,13 @@ export class UsuarioDTO extends DomainObject{
         this._cpf = value;
     }
 
-    static dtoToUsuario(dto: UsuarioDTO): Usuario{
+    static dtoToUsuario(dto: UsuarioDTO): Usuario {
         var user = new Usuario(dto.nome, dto.email, dto.senha, dto.cpf);
-        user.id = dto.id; 
+        user.id = dto.id;
         return user;
     }
 
-    static usuarioToDTO(usuario: Usuario): UsuarioDTO{
+    static usuarioToDTO(usuario: Usuario): UsuarioDTO {
         var dto = new UsuarioDTO(usuario.nome, usuario.email, "", "");
         dto.id = usuario.id;
         return dto;
@@ -60,15 +63,15 @@ export class UsuarioDTO extends DomainObject{
 
 export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
     private repo: UsuarioRepositoryInterface;
-    
-    constructor(repo: UsuarioRepositoryInterface){
+
+    constructor(repo: UsuarioRepositoryInterface) {
         this.repo = repo;
     }
 
-    async findByEmail(email: string): Promise<UsuarioDTO> {                          
-        const user = this.repo.findByEmail(email) as Usuario;                         
+    async findByEmail(email: string): Promise<UsuarioDTO> {
+        const user = this.repo.findByEmail(email) as Usuario;
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
-        return UsuarioDTO.usuarioToDTO(user);                
+        return UsuarioDTO.usuarioToDTO(user);
     }
 
     async findByCpf(cpf: string): Promise<UsuarioDTO> {
@@ -85,21 +88,21 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         return usersDTO;
     }
 
-    async findById(id: number): Promise<UsuarioDTO> {        
+    async findById(id: number): Promise<UsuarioDTO> {
         const user = this.repo.findById(id) as Usuario;
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
-        return UsuarioDTO.usuarioToDTO(user);  
+        return UsuarioDTO.usuarioToDTO(user);
     }
     async save(entity: UsuarioDTO): Promise<UsuarioDTO> {
         this.validaUsuario(entity, true);
-        const user = UsuarioDTO.dtoToUsuario(entity);        
+        const user = UsuarioDTO.dtoToUsuario(entity);
         const saltRounds = 10;
         user.senha = await bcrypt.hash(user.senha, saltRounds);
         const savedUser = this.repo.save(user) as Usuario;
         return UsuarioDTO.usuarioToDTO(savedUser);
     }
     async update(entity: UsuarioDTO): Promise<UsuarioDTO> {
-        this.validaUsuario(entity, false);        
+        this.validaUsuario(entity, false);
         const updatedUser = this.repo.update(entity) as Usuario;
         return UsuarioDTO.usuarioToDTO(updatedUser);
     }
@@ -107,26 +110,44 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         return this.repo.delete(id);
     }
 
-    private validaUsuario(entity: UsuarioDTO, save: boolean){
+    private validaUsuario(entity: UsuarioDTO, save: boolean) {
         if (entity.nome.length <= 0 || entity.nome == undefined) throw new InvalidAttributeException("Nome inválido");
-        if (entity.email.length <=0 || entity.email == undefined) throw new InvalidAttributeException("e-mail inválido");
-        if(save){
-            if (entity.senha.length <=0 || entity.senha == undefined) throw new InvalidAttributeException("Senha inválida");
-            if (entity.cpf.length <=0 || entity.cpf == undefined) throw new InvalidAttributeException("CPF inválido");
-            if (entity.id >0) throw new NotAllowedException("Novo usuário não pode te id informada");
+        if (entity.email.length <= 0 || entity.email == undefined) throw new InvalidAttributeException("e-mail inválido");
+        if (save) {
+            if (entity.senha.length <= 0 || entity.senha == undefined) throw new InvalidAttributeException("Senha inválida");
+            if (entity.cpf.length <= 0 || entity.cpf == undefined) throw new InvalidAttributeException("CPF inválido");
+            if (entity.id > 0) throw new NotAllowedException("Novo usuário não pode te id informada");
             if (this.repo.findByCpf(entity.cpf)) throw new NotAllowedException("CPF já cadastrado");
             if (this.repo.findByEmail(entity.email)) throw new NotAllowedException("e-mail informado já está em uso");
-        }else if (entity.id<=0) throw new NotAllowedException("Tentativa de atualização de usuário com id inválida");
+        } else if (entity.id <= 0) throw new NotAllowedException("Tentativa de atualização de usuário com id inválida");
     }
 
-    async login(email: string, senha: string): Promise<UsuarioDTO>{
+    async login(email: string, senha: string): Promise<UsuarioDTO> {
         const user = this.repo.findByEmail(email) as Usuario;
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
         console.log("Senha bd: " + user.senha + " Senha informada: " + senha);
         if (bcrypt.compareSync(senha, user.senha)) {
             return UsuarioDTO.usuarioToDTO(user);
-        }else{
+        } else {
             throw new NotAllowedException("Senha inválida");
         }
     }
+
+    private async gerarToken(user: Usuario): Promise<{ token: string }> {
+        const token = await sign(
+            {
+                id: user.id,
+                agora: Date.now(),
+                name: user.cpf,
+            },
+            auth.secret,
+            {
+                expiresIn: auth.expires,
+            }
+        );    
+        return { token }; 
+    }
+    
+
+    
 }
