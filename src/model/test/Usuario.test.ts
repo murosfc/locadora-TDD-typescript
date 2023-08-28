@@ -1,5 +1,5 @@
-import { InvalidAttributeException } from "../../error/InvalidAttributeException";
 import { Usuario } from "../Usuario";
+import { UsuarioTipoEnum } from "../enum/UsuarioTipoEnum";
 
 
 describe('Teste da entidade Usuario', () => {
@@ -10,6 +10,7 @@ describe('Teste da entidade Usuario', () => {
         expect(usuario.email).toBe('joao@gmail.com');
         expect(usuario.senha).toBe('123456');
         expect(usuario.cpf).toBe('12345678910');
+        expect(usuario.tipo).toBe(UsuarioTipoEnum.CLIENTE);
     });
 
     it('Deve atribuir um id 1 ao usuário e obter a mesma', () => {
@@ -40,14 +41,19 @@ describe('Teste da entidade Usuario', () => {
         expect(usuario.email).toBe('joao@gmail.com');
         expect(usuario.senha).toBe('123456');
         expect(usuario.cpf).toBe('12345678910');
+        expect(usuario.tipo).toBe(UsuarioTipoEnum.CLIENTE);
         usuario.nome = 'Maria';
         usuario.email = 'mm@gmail.com';
         usuario.senha = '0000000';
         usuario.cpf = '00000000000';
+        usuario.token = '123456789';
+        usuario.tipo = UsuarioTipoEnum.FUNCIONARIO
         expect(usuario.nome).toBe('Maria');
         expect(usuario.email).toBe('mm@gmail.com');
         expect(usuario.senha).toBe('0000000');
         expect(usuario.cpf).toBe('00000000000');
+        expect(usuario.tipo).toBe(UsuarioTipoEnum.FUNCIONARIO);
+        expect(usuario.token).toBe('123456789');       
     });
 
 });
