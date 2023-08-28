@@ -87,6 +87,16 @@ describe("Teste de integração do UsuarioRouter", () => {
         }
     });
 
+    it("POST /usuarios/login", async () => {
+        try{
+            const usuario = {email: 'felipe@gmail.com', senha: '123456'};
+            const response = await request(server).post("/usuarios/login").send(usuario);
+            expect(response.status).toBe(200);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
     it("DELETE /usuarios/delete/:id", async () => {
         try {
             const response = await request(server).delete("/usuarios/delete/1");

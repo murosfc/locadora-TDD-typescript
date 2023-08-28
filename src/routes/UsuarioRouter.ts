@@ -38,6 +38,11 @@ router.put('/update/:id', async(req, res) => {
     controller.update(req, res);
 });
 
+//login
+router.post('/login', async(req, res) => {
+    controller.login(req, res);
+});
+
 //delete
 router.delete('/delete/:id', async(req, res) => {
     controller.delete(req, res);
