@@ -26,7 +26,7 @@ describe('UsuarioController', () => {
         await sut.save(req as any, resp_spy as any);   
     });
 
-    it('Deve salvar um usuário novo obtendo status code 200', async () => {              
+    it('Deve salvar um usuário novo obtendo status code 201', async () => {              
         const req = { body: { nome: "Pedro Ribeiro", email: "pedro_ribeiro@gmail.com", senha: "123456", cpf: "28394758402"}};        
         try {
             await sut.save(req as any, resp_spy as any);
@@ -49,6 +49,44 @@ describe('UsuarioController', () => {
             await sut.save(req as any, resp_spy as any);
             expect(resp_spy.status).toHaveBeenCalledWith(500);
         } catch (error) {
+            console.log(error);
+        }
+    });
+
+    it('Deve obter 200 ao fazer login', async () => {
+        try{
+            const req = { body: { email: 'joao@gmail.com', senha: '123456'}};
+            await sut.login(req as any, resp_spy as any);
+            expect(resp_spy.status).toHaveBeenCalledWith(200);
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    it('Deve obter 400 ao fazer login com dados inválidos', async () => {
+        try{
+            const req = { body: { email: 'joao@gmail.com', senha: ''}};
+            await sut.login(req as any, resp_spy as any);
+            expect(resp_spy.status).toHaveBeenCalledWith(400);
+        }catch (error) {
+            console.log(error);
+        }
+        try{
+            const req = { body: { email: '', senha: '123456'}};
+            await sut.login(req as any, resp_spy as any);
+            expect(resp_spy.status).toHaveBeenCalledWith(400);
+        }catch (error) {
+            console.log(error);
+        }
+    });
+
+    it('Deve obter 500 ao fazer login com erro interno', async () => {
+        try{
+            const req = { body: { email: 'joao@gmail.com', senha: '123456'}};
+            jest.spyOn(service, 'login').mockImplementation(() => { throw new Error("Erro interno no servidor")});
+            await sut.login(req as any, resp_spy as any);
+            expect(resp_spy.status).toHaveBeenCalledWith(500);
+        }catch (error) {
             console.log(error);
         }
     });

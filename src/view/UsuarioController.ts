@@ -89,4 +89,15 @@ export class UsuarioController implements UsuarioControllerInterface {
         }
     }
 
+    async login(req: Request, resp: Response) {
+        try {
+            const email = req.body.email;
+            const senha = req.body.senha;
+            const user = await this.service.login(email, senha);
+            resp.status(200).json(user.token).end();
+        } catch (error) {
+            this.errorHandler(error, resp);
+        }
+    }
+
 }
