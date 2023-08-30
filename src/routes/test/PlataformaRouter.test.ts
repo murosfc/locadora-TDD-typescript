@@ -1,19 +1,16 @@
 import request from "supertest";
-
-import server from "../../server";
+import { testServer } from "../../server_test";
 
 describe("Testes de integração da rota de Plataformas", () => {
+    var server: any;
 
-    beforeAll(() => {
-        server.close();
-        server.listen(3001, () => {
-            console.log(`Now running on port ${3001}`);
-        });
+    beforeAll(async () => {
+        server = testServer.init(3001);
     });
-
-    afterAll(() => {
+    
+    afterAll(async () => {
         server.close();
-    });
+    })
 
     it("GET /plataformas", async () => {
         const response = await request(server).get("/plataformas");

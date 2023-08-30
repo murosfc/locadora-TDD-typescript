@@ -5,7 +5,8 @@ import { Jogo } from "./Jogo";
 export class Conta extends DomainObject{
     private _email: string;    
     private _senha: string;   
-    private _jogos: Jogo[];  
+    private _jogos: Jogo[];
+    private _vezesAlugado: number;    
 
     constructor(email: string, senha: string, jogos?: Jogo[]){
         super();
@@ -15,6 +16,7 @@ export class Conta extends DomainObject{
         this._senha = senha;
         if (jogos) this._jogos = jogos;
         else this._jogos = [];
+        this._vezesAlugado = 0;
     }
 
     public get email(): string {
@@ -36,6 +38,12 @@ export class Conta extends DomainObject{
     }
     public set jogos(value: Jogo[]) {
         this._jogos = value;
+    }
+    public get vezesAlugado(): number {
+        return this._vezesAlugado;
+    }
+    public set vezesAlugado(value: number) {
+        this._vezesAlugado = value;
     }
 
 }

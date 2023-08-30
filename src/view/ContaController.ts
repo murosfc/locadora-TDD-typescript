@@ -7,6 +7,8 @@ import { NotFoundException } from "../error/NotFoundException";
 import { JogoRepository } from "../repositories/InMemoryRepository/JogoRepository";
 import { Jogo } from "../model/Jogo";
 
+
+
 export class ContaController implements ContaControllerInterface {
     service: ContaServiceInterface<ContaDTO>
     repoJogos = JogoRepository.getInstance();
@@ -14,21 +16,22 @@ export class ContaController implements ContaControllerInterface {
     constructor(service: ContaServiceInterface<ContaDTO>) {
         this.service = service;
     }
+
     private returnResponse(resp: Response, result: any, save: boolean) {
         if (result instanceof NotFoundException) {
             resp.status(404).json(result.message);           
         }
-        if (result instanceof DomainError) {
+        else if (result instanceof DomainError) {
             resp.status(400).json(result.message);            
         }
-        if (result instanceof ContaDTO || result instanceof Array) {
+        else if (result instanceof ContaDTO || result instanceof Array) {
             if (save) {
                 resp.status(201).json(result);
             } else {
                 resp.status(200).json(result);
             }            
         }
-        if (result instanceof Error) {
+        else if (result instanceof Error) {
             resp.status(500).json("Erro interno de servidor");
         }
     }
@@ -48,7 +51,6 @@ export class ContaController implements ContaControllerInterface {
             const contaSaved = this.service.save(conta);
             this.returnResponse(resp, contaSaved, true);
         } catch (e) {
-
             resp.status(500).json("Erro interno de servidor");
         }
     }
@@ -104,6 +106,15 @@ export class ContaController implements ContaControllerInterface {
             const conta = this.service.findById(Number(req.params.id));
             this.returnResponse(resp, conta, false);
         } catch (e) {
+            resp.status(500).json("Erro interno de servidor");
+        }
+    }
+     
+    getTop10(resp: Response) {
+        try{            
+            const contas = this.service.getTop10();            
+            this.returnResponse(resp, contas, false);
+        }catch (e) {
             resp.status(500).json("Erro interno de servidor");
         }
     }

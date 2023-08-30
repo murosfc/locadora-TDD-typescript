@@ -8,7 +8,7 @@ export class AluguelRepository implements AluguelRepositoryInterface {
     
     private constructor() { 
         this.lista = [];
-    }
+    }    
 
     public isContaAvailable(idConta: number): boolean {  
         var isAvailable = true; 

@@ -4,10 +4,12 @@ import JogoRouter from './routes/JogoRouter';
 import ContaRouter from './routes/ContaRouter';
 import AluguelRouter from './routes/AluguelRouter';
 import UsuarioRouter from './routes/UsuarioRouter';
+import loadTestDatabase from './';
 require('dotenv').config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000; 
+loadTestDatabase();
 
 // Middleware to parse incoming JSON data
 app.use(express.json());

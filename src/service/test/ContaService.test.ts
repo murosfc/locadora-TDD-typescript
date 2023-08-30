@@ -18,6 +18,12 @@ describe('ContaService', () => {
     const jogo1 = new Jogo("Fifa 203", plataforma1, 20,"") as Jogo;
     const jogo2 = new Jogo("Call of Duty", plataforma2, 10,"") as Jogo;
     setIdJogo(jogo1, jogo2);
+
+    it("Deve receber um erro do tipo NotFoundException ao tentar receber os jogos mais alugados quando ainda nã há jogos cadastrados", () => {        
+        const contas = sut.getTop10();
+        expect(contas instanceof NotAllowedException);
+        expect((contas as Error).message).toBe("Nenhuma conta encontrada");
+    });
     
     it('Deve salvar uma conta com sucesso', () => {
         var conta = new ContaDTO("conta01@ongames.com", "123456", [jogo1]);
@@ -129,6 +135,12 @@ describe('ContaService', () => {
         expect((conta as Error).message).toBe("Conta não encontrada com o id informado.");
     });
 
+    it('Deve receber os jogos mais alugados', () => {
+        const contas = sut.getTop10();
+        expect((contas as ContaDTO[]).length).toBeGreaterThan(0);
+    });
+
+    
 
 });
 

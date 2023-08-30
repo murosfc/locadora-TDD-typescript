@@ -1,19 +1,18 @@
 import request from "supertest";
+import { testServer } from "../../server_test";
 
-import server from "../../server";
 
-beforeAll(async () => {
-    server.close();
-    server.listen(3004, () => {
-        console.log(`Now running on port ${3004}`);
-    });
-});
-
-afterAll(async () => {
-    server.close();
-});
 
 describe("Teste de integração do UsuarioRouter", () => {
+    var server: any;
+
+    beforeAll(async () => {
+        server = testServer.init(3004);
+    });
+    
+    afterAll(async () => {
+        server.close();
+    })
 
     it("POST /usuarios/add", async () => {
         const novoUsuario = {

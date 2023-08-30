@@ -170,4 +170,9 @@ describe('Test Conta Controller', () => {
         serviceSpy.mockRestore();
     });
 
+    it('Deve retornar 200 ao buscar os jogos mais alugados', () => {
+        sut.getTop10(resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
+
 });

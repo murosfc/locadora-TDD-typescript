@@ -79,6 +79,10 @@ describe('ContaRepository', () => {
         expect(conta.id === 2);
     });
 
+    it('Deve receber a lista com os jogos mais alugados', () => {
+        const contas = sut.getTop10();
+        expect(contas.length > 0);
+    });
 
 });
 

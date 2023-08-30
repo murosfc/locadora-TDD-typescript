@@ -39,6 +39,18 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
     constructor(repository: ContaRepositoryInterface) {
         this.repository = repository;
     }
+
+    getTop10(): Error | ContaDTO[] {
+        const contas = this.repository.getTop10();        
+        if (contas.length === 0) {
+            return new NotFoundException('Nenhuma conta encontrada');
+        }
+        const dtos: ContaDTO[] = [];
+        contas.forEach(conta => {
+            dtos.push(ContaDTO.contaToDto(conta as Conta));
+        });
+        return dtos;
+    }
        
     save(entity: ContaDTO): ContaDTO|Error {
         if (entity.id > 0) {

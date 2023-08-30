@@ -39,9 +39,11 @@ describe('Conta', () => {
         sut.senha = '1234567';
         sut.jogos = [jogo1];
         sut.id = 5;
+        sut.vezesAlugado = 1;
         expect(sut.email).toBe('conta3@gmail.com');
         expect(sut.senha).toBe('1234567');
         expect(sut.jogos).toEqual([jogo1]);        
         expect(sut.id).toBe(5);
+        expect(sut.vezesAlugado).toBe(1);
     });
 });

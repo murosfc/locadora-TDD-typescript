@@ -13,6 +13,11 @@ router.post('/add', async (req, res) => {
     controller.save(req, res);
 });
 
+//getTop10
+router.get('/top/', async (req, res) => {    
+    controller.getTop10(res);
+});
+
 //findByEmail
 router.get('/email/:email', async (req, res) => {
     controller.findByEmail(req, res);
@@ -42,5 +47,7 @@ router.put('/update/:id', async (req, res) => {
 router.delete('/delete/:id', async (req, res) => {
     controller.delete(req, res);
 });
+
+
 
 export default router;

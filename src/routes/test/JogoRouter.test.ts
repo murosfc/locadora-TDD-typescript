@@ -1,22 +1,19 @@
 import request from "supertest";
-
-import server from "../../server";
 import { PlataformaRepository } from "../../repositories/InMemoryRepository/PlataformaRepository";
 import { Plataforma } from "../../model/Plataforma";
+import { testServer } from "../../server_test";
 
 const plat = PlataformaRepository.getInstance().save(new Plataforma('Nintendo Switch'));
 const jsonPlat = JSON.stringify(plat);
 
 describe("Testes de integração da rota de Jogos", () => { 
+    var server: any;
 
-    beforeAll(() => {
-        server.close();
-        server.listen(3002, () => {
-            console.log(`Now running on port ${3002}`);
-        });
+    beforeAll(async () => {
+        server = testServer.init(3002);
     });
     
-    afterAll(() => {
+    afterAll(async () => {
         server.close();
     });
 

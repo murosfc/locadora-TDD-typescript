@@ -26,6 +26,7 @@ export class Aluguel extends DomainObject{
         this._dataAluguel = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());  
         this._valorTotal = this.calcularValorTotal();
         this._dataFinal = this.calcularDataFinal();
+        contas.forEach(conta => conta.vezesAlugado++);
     }
 
     public estenderAluguel(periodoEmSemanas: number): void{

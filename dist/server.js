@@ -36,5 +36,4 @@ app.use(route);
 app.listen(3333, () => {
     console.log('Server started on port 3333!');
 });
-console.log("oi, denovo");
 //# sourceMappingURL=server.js.map

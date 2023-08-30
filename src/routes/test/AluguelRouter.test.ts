@@ -9,16 +9,14 @@ import { ContaRepository } from "../../repositories/InMemoryRepository/ContaRepo
 import { Conta } from "../../model/Conta";
 import { Usuario } from "../../model/Usuario";
 import { UsuarioRepository } from "../../repositories/InMemoryRepository/UsuarioRepository";
+import { testServer } from "src/server_test";
 
 beforeAll(async () => {
-    server.close();
-    server.listen(3005, () => {
-        console.log(`Now running on port ${3005}`);
-    });
+    testServer.init(3005);
 });
 
 afterAll(async () => {
-    server.close();
+    testServer.close();
 });
 
 describe("Testes de integração da rota AluguelRouter", () => {
