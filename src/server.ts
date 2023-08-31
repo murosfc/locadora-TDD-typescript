@@ -5,6 +5,7 @@ import ContaRouter from './routes/ContaRouter';
 import AluguelRouter from './routes/AluguelRouter';
 import UsuarioRouter from './routes/UsuarioRouter';
 import loadTestDatabase from './';
+const cors = require('cors');
 require('dotenv').config();
 
 const app: Express = express();
@@ -13,6 +14,8 @@ loadTestDatabase();
 
 // Middleware to parse incoming JSON data
 app.use(express.json());
+
+app.use(cors());
 
 // Mount the event routes
 app.use('/plataformas/', PlataformaRouter);
