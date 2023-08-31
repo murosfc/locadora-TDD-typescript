@@ -9,20 +9,20 @@ import { ContaRepository } from "../../repositories/InMemoryRepository/ContaRepo
 import { Conta } from "../../model/Conta";
 import { Usuario } from "../../model/Usuario";
 import { UsuarioRepository } from "../../repositories/InMemoryRepository/UsuarioRepository";
-import { testServer } from "src/server_test";
+import { testServer } from "../../server_test";
 
 beforeAll(async () => {
-    testServer.init(3005);
+    const server = testServer.init(3005);
 });
 
 afterAll(async () => {
-    testServer.close();
+    server.close();
 });
 
 describe("Testes de integração da rota AluguelRouter", () => {
-    const plat = PlataformaRepository.getInstance().save(new Plataforma("PS5"));
-    const jogo = JogoRepository.getInstance().save(new Jogo("God of War", plat, 25, "")) as Jogo;
-    const conta = ContaRepository.getInstance().save(new Conta("conta01@ongames.com", "123456", [jogo])) as Conta;
+    const plat = PlataformaRepository.getInstance().save(new Plataforma("PS4"));
+    const jogo = JogoRepository.getInstance().save(new Jogo("God of War: Ghost of Sparta ", plat, 10, "")) as Jogo;
+    const conta = ContaRepository.getInstance().save(new Conta("conta05@ongames.com", "123456", [jogo])) as Conta;
     const usuario = UsuarioRepository.getInstance().save(new Usuario ("Usuario 01", "user1@gmail.com", "123456", "12345678901"));
 
     it("POST /alugueis/add", async () => {
