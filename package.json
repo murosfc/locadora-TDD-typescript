@@ -1,7 +1,7 @@
 {
   "name": "locadora-tdd-typescript",
   "version": "1.0.0",
-  "main": "src/index.ts",  
+  "main": "src/index.ts",   
   "scripts": {
     "test": "jest",
     "build_ruim": "tsc src/*.ts --outDir dist",
@@ -39,5 +39,8 @@
   "directories": {
     "test": "test"
   },
-  "description": ""
+  "description": "",
+  "engines": {
+    "node": "18.16.1"
+  }
 }
