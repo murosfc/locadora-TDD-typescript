@@ -8,7 +8,7 @@ export class UsuarioRepository implements UsuarioRepositoryInterface{
 
     private constructor(){
         this.lista = [];
-    }
+    }    
 
     public static getInstance(): UsuarioRepository{
         if (!this.soleInstance){
@@ -19,6 +19,11 @@ export class UsuarioRepository implements UsuarioRepositoryInterface{
 
     private getNewId(): number{
         return this.lista.length + 1;
+    }
+
+    getUserByToken(token: string): Usuario {
+        const user = this.lista.find(usuario => usuario.token === token) as Usuario;
+        return user;
     }
 
     findByEmail(email: string): Usuario{        

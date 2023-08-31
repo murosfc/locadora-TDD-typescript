@@ -3,12 +3,24 @@ import { UsuarioControllerInterface } from "./contracts/UsuarioControllerInterfa
 import { UsuarioServiceInterface } from "../service/contracts/UsuarioServiceInterface";
 import { UsuarioDTO } from "../service/UsuarioService";
 import { DomainError } from "../error/DomainError";
+import { ParamsDictionary } from "express-serve-static-core";
+import { ParsedQs } from "qs";
 
 export class UsuarioController implements UsuarioControllerInterface {
     service: UsuarioServiceInterface<UsuarioDTO>;
 
     constructor(service: UsuarioServiceInterface<UsuarioDTO>) {
         this.service = service;
+    }
+    
+    async getUserbyToken(req: Request, resp: Response) {
+        try{
+            const token = req.body.token;
+            const user = await this.service.getUserbyToken(token);
+            resp.status(200).json(user).end();
+        } catch (error) {
+            this.errorHandler(error, resp);
+        }
     }
 
     private errorHandler(error: any, resp: Response) {

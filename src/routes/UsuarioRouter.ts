@@ -48,4 +48,9 @@ router.delete('/delete/:id', async(req, res) => {
     controller.delete(req, res);
 });
 
+//getUserbyToken
+router.get('/token', async(req, res) => {
+    controller.getUserbyToken(req, res);
+});
+
 export default router;
