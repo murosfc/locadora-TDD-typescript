@@ -117,7 +117,7 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
         return UsuarioDTO.usuarioToDTO(user);
     }
-    async save(entity: UsuarioDTO): Promise<UsuarioDTO> {
+    async save(entity: UsuarioDTO): Promise<UsuarioDTO> {        
         this.validaUsuario(entity, true);
         const user = UsuarioDTO.dtoToUsuario(entity);
         const saltRounds = 10;
@@ -137,7 +137,7 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
     private validaUsuario(entity: UsuarioDTO, save: boolean) {
         if (entity.nome.length <= 0 || entity.nome == undefined) throw new InvalidAttributeException("Nome inválido");
         if (entity.email.length <= 0 || entity.email == undefined) throw new InvalidAttributeException("e-mail inválido");
-        if (save) {
+        if (save) {            
             if (entity.senha.length <= 0 || entity.senha == undefined) throw new InvalidAttributeException("Senha inválida");
             if (entity.cpf.length <= 0 || entity.cpf == undefined) throw new InvalidAttributeException("CPF inválido");
             if (entity.id > 0) throw new NotAllowedException("Novo usuário não pode te id informada");
@@ -147,7 +147,7 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
     }
 
     async login(email: string, senha: string): Promise<UsuarioDTO> {
-        const user = this.repo.findByEmail(email) as Usuario;
+        const user = this.repo.findByEmail(email) as Usuario;        
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");        
         if (bcrypt.compareSync(senha, user.senha)) {
             user.token = (await this.gerarToken(user)).token;
