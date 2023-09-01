@@ -14,8 +14,13 @@ router.post('/add', async(req, res) => {
 });
 
 //findAll
-router.get('/', async(req, res) => {
+router.get('/', async(req, res) => {    
     controller.findAll(res);
+});
+
+//getUserbyToken
+router.get('/token/', async(req, res) => {    
+    controller.getUserbyToken(req, res);
 });
 
 //findByEmail
@@ -29,7 +34,7 @@ router.get('/cpf/:cpf', async(req, res) => {
 });
 
 //findById
-router.get('/:id', async(req, res) => {
+router.get('/:id', async(req, res) => {    
     controller.findById(req, res);
 });
 
@@ -39,7 +44,7 @@ router.put('/update/:id', async(req, res) => {
 });
 
 //login
-router.post('/login', async(req, res) => {
+router.post('/login', async(req, res) => {    
     controller.login(req, res);
 });
 
@@ -48,9 +53,6 @@ router.delete('/delete/:id', async(req, res) => {
     controller.delete(req, res);
 });
 
-//getUserbyToken
-router.get('/token', async(req, res) => {
-    controller.getUserbyToken(req, res);
-});
+
 
 export default router;

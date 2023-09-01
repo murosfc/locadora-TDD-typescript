@@ -66,6 +66,7 @@ export class UsuarioDTO extends DomainObject {
     static dtoToUsuario(dto: UsuarioDTO): Usuario {
         var user = new Usuario(dto.nome, dto.email, dto.senha, dto.cpf);
         user.id = dto.id;
+        user.tipo = dto.tipo;
         return user;
     }
 
@@ -154,10 +155,13 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
 
     async login(email: string, senha: string): Promise<UsuarioDTO> {
         const user = this.repo.findByEmail(email) as Usuario;        
-        if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");        
-        if (bcrypt.compareSync(senha, user.senha)) {
+        if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");             
+        if (bcrypt.compareSync(senha, user.senha)) {            
             user.token = (await this.gerarToken(user)).token;
-            return UsuarioDTO.usuarioToDTOComToken(user);
+            const userDTO = UsuarioDTO.usuarioToDTOComToken(user);
+            userDTO.senha = user.senha;
+            this.repo.update(userDTO);
+            return this.repo.update(userDTO) as UsuarioDTO;
         } else {
             throw new NotAllowedException("Senha inválida");
         }
