@@ -51,7 +51,7 @@ export class ContaController implements ContaControllerInterface {
             const contaSaved = this.service.save(conta);
             this.returnResponse(resp, contaSaved, true);
         } catch (e) {
-            resp.status(500).json("Erro interno de servidor");
+            this.returnResponse(resp, e, true);
         }
     }
     update(req: Request, resp: Response) {
@@ -62,7 +62,7 @@ export class ContaController implements ContaControllerInterface {
             const contaUpdated = this.service.update(conta);
             this.returnResponse(resp, contaUpdated, false);
         } catch (e) {
-            resp.status(500).json("Erro interno de servidor");
+            this.returnResponse(resp, e, false);
         }
     }
     delete(req: Request, resp: Response) {
@@ -74,7 +74,7 @@ export class ContaController implements ContaControllerInterface {
                 resp.status(404).json("Conta não encontrada");
             }
         } catch (e) {
-            resp.status(500).json("Erro interno de servidor");
+            this.returnResponse(resp, e, false);
         }
     }
     findByEmail(req: Request, resp: Response) {
@@ -82,7 +82,7 @@ export class ContaController implements ContaControllerInterface {
             const conta = this.service.findByEmail(req.params.email);
             this.returnResponse(resp, conta, false)
         } catch (e) {
-            resp.status(500).json("Erro interno de servidor");
+            this.returnResponse(resp, e, false);
         }
     }
     findByJogo(req: Request, resp: Response) {
@@ -91,14 +91,14 @@ export class ContaController implements ContaControllerInterface {
             const contas = this.service.findByJogo(idJogo);
             this.returnResponse(resp, contas, false);
         } catch (e) {
-            resp.status(500).json("Erro interno de servidor");
+            this.returnResponse(resp, e, false);
         }
     }
     findAll(resp: Response) {
         try {
             resp.status(200).json(this.service.findAll());
         } catch (e) {
-            resp.status(500).json("Erro interno de servidor");
+            this.returnResponse(resp, e, false);
         }
     }
     findById(req: Request, resp: Response) {
@@ -106,7 +106,7 @@ export class ContaController implements ContaControllerInterface {
             const conta = this.service.findById(Number(req.params.id));
             this.returnResponse(resp, conta, false);
         } catch (e) {
-            resp.status(500).json("Erro interno de servidor");
+            this.returnResponse(resp, e, false);
         }
     }
      
@@ -115,7 +115,7 @@ export class ContaController implements ContaControllerInterface {
             const contas = this.service.getTop10();            
             this.returnResponse(resp, contas, false);
         }catch (e) {
-            resp.status(500).json("Erro interno de servidor");
+            this.returnResponse(resp, e, false);
         }
     }
 }

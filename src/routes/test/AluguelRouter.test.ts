@@ -11,15 +11,17 @@ import { Usuario } from "../../model/Usuario";
 import { UsuarioRepository } from "../../repositories/InMemoryRepository/UsuarioRepository";
 import { testServer } from "../../server_test";
 
-beforeAll(async () => {
-    const server = testServer.init(3005);
-});
-
-afterAll(async () => {
-    server.close();
-});
-
 describe("Testes de integração da rota AluguelRouter", () => {
+    var server: any;
+
+    beforeAll(async () => {
+        server = testServer.init(3005);
+    });
+    
+    afterAll(async () => {
+        server.close();
+    });
+
     const plat = PlataformaRepository.getInstance().save(new Plataforma("PS4"));
     const jogo = JogoRepository.getInstance().save(new Jogo("God of War: Ghost of Sparta ", plat, 10, "")) as Jogo;
     const conta = ContaRepository.getInstance().save(new Conta("conta05@ongames.com", "123456", [jogo])) as Conta;
@@ -46,7 +48,7 @@ describe("Testes de integração da rota AluguelRouter", () => {
     });
 
     it("GET /alugueis/conta/:idConta", async () => {
-        const response = await request(server).get("/alugueis/conta/1");
+        const response = await request(server).get("/alugueis/conta/"+conta.id);
         expect(response.status).toBe(200);
     });
 

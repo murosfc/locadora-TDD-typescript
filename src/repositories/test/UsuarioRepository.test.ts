@@ -111,4 +111,16 @@ describe("Teste do UsuarioRepository", () => {
         expect(usuarios).toBeInstanceOf(Array);
         expect(usuarios).toHaveLength(2);
     });
+
+    it('Deve obter um usuário por token', () => {
+        const user = sut.findById(2) as Usuario;
+        user.token = '123456789';
+        sut.update(user);
+        const userByToken = sut.getUserByToken('123456789');
+        expect(userByToken).not.toBeNull();
+        expect(userByToken).not.toBeUndefined();        
+        expect(userByToken).toHaveProperty('id', user.id);     
+        expect(userByToken).toHaveProperty('token', user.token);
+    });
+    
 });

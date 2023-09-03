@@ -93,7 +93,7 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         this.repo = repo;
     }
     
-    async getUserbyToken(token: string): Promise<UsuarioDTO> {
+    async getUserByToken(token: string): Promise<UsuarioDTO> {
         const user = this.repo.getUserByToken(token) as Usuario;
         if (user == undefined || user == null) throw new NotFoundException("Usuário não encontrado");
         return UsuarioDTO.usuarioToDTO(user);

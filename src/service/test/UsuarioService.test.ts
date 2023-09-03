@@ -13,6 +13,8 @@ function cria_sut(){
 describe('UsuarioService', () => {
     const sut = cria_sut();
     var globalUser = new UsuarioDTO('João', 'joao@gmail.com', '123456', '12345678910');
+    let token: any;
+
     
     beforeAll(async () => {        
         globalUser = await sut.save(globalUser)
@@ -90,8 +92,20 @@ describe('UsuarioService', () => {
     
     it("Deve fazer login com sucesso", async () => {
         const user = await sut.login(globalUser.email, '123456');
+        token = user.token;
         expect(user.nome).toBe(globalUser.nome); 
         expect(user.token.length).toBeGreaterThan(0);  
+    });
+
+    it("Deve encontrar um usuário pelo token", async () => {
+        const user = await sut.getUserByToken(token);
+        expect(user.nome).toBe(globalUser.nome);
+    });
+
+    it("Deve gerar um erro do tipo NotFoundException ao tentar encontrar um usuário pelo token inválido", async () => {
+        const tkn = 'invalidtoken';
+        expect(async () => await sut.getUserByToken(tkn)).rejects.toThrowError('Usuário não encontrado');
+        expect(async () => await sut.getUserByToken(tkn)).rejects.toThrowError(NotFoundException);
     });
 
     it("Deve gerar um erro do tipo NotFoundException ao tentar fazer login com e-mail inválido", async () => {

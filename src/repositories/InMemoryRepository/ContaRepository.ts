@@ -9,6 +9,7 @@ export class ContaRepository implements ContaRepositoryInterface   {
     private constructor() {
         this.lista = [];
     }
+    
     getTop10(): Object[] {
         var top10Aluguadas: Conta[] = [];
         this.lista.sort((a, b) => b.vezesAlugado - a.vezesAlugado);

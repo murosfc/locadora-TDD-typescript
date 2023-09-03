@@ -175,4 +175,12 @@ describe('Test Conta Controller', () => {
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
+    it('Deve retornar 500 ao buscar os jogos mais alugados com erro de servidor', () => {
+        const serviceSpy = jest.spyOn(service, "getTop10").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
+        sut.getTop10(resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+        serviceSpy.mockRestore();
+    });
+
+   
 });

@@ -21,7 +21,7 @@ export class UsuarioController implements UsuarioControllerInterface {
     async getUserbyToken(req: Request, resp: Response) {
         try{
             const token = req.headers.authorization as string;            
-            const user = await this.service.getUserbyToken(token);
+            const user = await this.service.getUserByToken(token);
             resp.status(200).json(user).end();
         } catch (error) {
             this.errorHandler(error, resp);

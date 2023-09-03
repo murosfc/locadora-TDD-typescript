@@ -9,5 +9,5 @@ export interface UsuarioServiceInterface<DTO>{
     findByEmail(email: string): Promise<DTO>;
     findByCpf(cpf: string): Promise<DTO>;
     login(email: string, senha: string): Promise<DTO>;
-    getUserbyToken(token: string): Promise<DTO>;
+    getUserByToken(token: string): Promise<DTO>;
 }

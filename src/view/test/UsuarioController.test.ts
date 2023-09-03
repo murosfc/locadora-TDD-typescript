@@ -45,10 +45,25 @@ describe('UsuarioController', () => {
         expect(resp_spy.status).toHaveBeenCalledWith(500);
     });
 
+    var token: any;
+
     it('Deve obter 200 ao fazer login', async () => {
         const req = { body: { email: 'joao@gmail.com', senha: '123456' } };
         await sut.login(req as any, resp_spy as any);
+        token = resp_spy.json.mock.calls[0][0].token;
         expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
+
+    it('Deve obter 200 ao buscar um usuário por token', async () => {
+        const req = { headers: { authorization: token } };
+        await sut.getUserbyToken(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
+
+    it('Deve obter 400 ao buscar um usuário por token inválido', async () => {
+        const req = { headers: { authorization: "token-invalido" } };
+        await sut.getUserbyToken(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(400);
     });
 
     it('Deve obter 400 ao fazer login com dados inválidos', async () => {
@@ -66,6 +81,7 @@ describe('UsuarioController', () => {
         await sut.login(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
     });
+
 
     it('Deve atualizar um usuário obtendo status code 200', async () => {
         const req = { body: { nome: "João Oliveira", email: "joao_oliveira@gmail.com", senha: "123456", cpf: "12345678901" }, params: { id: 1 } };
