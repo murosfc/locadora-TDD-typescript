@@ -29,19 +29,19 @@ describe('Testes do Controller para Jogos', () => {
     const PLAT_SWITCH = PlataformaRepository.getInstance().save(new Plataforma("Nintendo Switch"));    
 
     it("Deve retornar 201 ao cadastrar um Jogo", () => {       
-        const req = { body: { nome: "Fifa 2023", idPlataforma: PLAT_PS5.id, valor: 15, urlImagem: ""}};
+        const req = { body: { titulo: "Fifa 2023", idPlataforma: PLAT_PS5.id, valor: 15, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
     it("Deve retornar 400 ao tentar cadastrar um Jogo com parâmetro inválido", () => {
-        var req = { body: { nome: "", idPlataforma: PLAT_PS5.id, valor: 15, urlImagem: ""}};
+        var req = { body: { titulo: "", idPlataforma: PLAT_PS5.id, valor: 15, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { nome: "Zelda", idPlataforma: 0, valor: 15, urlImagem: ""}};
+        req = { body: { titulo: "Zelda", idPlataforma: 0, valor: 15, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = { body: { nome: "Zelda", idPlataforma: PLAT_SWITCH.id, valor: -1, urlImagem: ""}};
+        req = { body: { titulo: "Zelda", idPlataforma: PLAT_SWITCH.id, valor: -1, urlImagem: ""}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })
@@ -83,25 +83,25 @@ describe('Testes do Controller para Jogos', () => {
     })    
 
     it("Deve retornar 200 ao atualizar um jogo", () => {
-        const req = { body: { nome: "Fifa 2023", plataforma: PLAT_XBOX, valor: 20, urlImagem: ""}, params: {id: 1}};
+        const req = { body: { titulo: "Fifa 2023", plataforma: PLAT_XBOX, valor: 20, urlImagem: ""}, params: {id: 1}};
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     })
 
     it("Deve retornar 400 ao atualizar um jogo com parâmetro inválido", () => {
-        const req = { body: { nome: "", plataforma: PLAT_XBOX, valor: 20, urlImagem: ""}, params: {id: 1}};
+        const req = { body: { titulo: "", plataforma: PLAT_XBOX, valor: 20, urlImagem: ""}, params: {id: 1}};
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        const req2 = { body: { nome: "Fifa 2023", plataforma: undefined, valor: 20, urlImagem: ""}, params: {id: 1}};
+        const req2 = { body: { titulo: "Fifa 2023", plataforma: undefined, valor: 20, urlImagem: ""}, params: {id: 1}};
         sut.update(req2 as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        const req3 = { body: { nome: "Fifa 2023", plataforma: PLAT_XBOX, valor: -1, urlImagem: ""}, params: {id: 1}};
+        const req3 = { body: { titulo: "Fifa 2023", plataforma: PLAT_XBOX, valor: -1, urlImagem: ""}, params: {id: 1}};
         sut.update(req3 as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     })
 
     it("Deve retornar 200 ao buscar jogo por plataforma", () => {        
-        sut.findByPlataforma({params: {id: 2}}  as any, resp_spy as any);
+        sut.findByPlataforma({params: {id: PLAT_XBOX.id}}  as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     })
 
@@ -125,7 +125,7 @@ describe('Testes do Controller para Jogos', () => {
 
     it('Deve receber status 500 ao tentar salvar um jogo com erro interno', () => {
         const plataformas: PlataformaDTO[] = [PLAT_XBOX, PLAT_PS5, PLAT_SWITCH];
-        const req = { body: { nome: "Fifa 2023", plataformas: plataformas, valor: 15, urlImagem: ""}};        
+        const req = { body: { titulo: "Fifa 2023", plataformas: plataformas, valor: 15, urlImagem: ""}};        
         jest.spyOn(service, 'save').mockImplementation(() => { throw new Error("Erro interno no servidor")});
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
@@ -139,7 +139,7 @@ describe('Testes do Controller para Jogos', () => {
     });
 
     it('Deve receber status 500 ao tentar atualizar um jogo com erro interno', () => {
-        const req = { body: { nome: "Fifa 2023", plataformas: [PLAT_XBOX], valor: 20, urlImagem: ""}, params: {id: 1}};
+        const req = { body: { titulo: "Fifa 2023", plataformas: [PLAT_XBOX], valor: 20, urlImagem: ""}, params: {id: 1}};
         jest.spyOn(service, 'update').mockImplementation(() => { throw new Error("Erro interno no servidor")});
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);

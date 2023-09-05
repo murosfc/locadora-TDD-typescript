@@ -66,12 +66,13 @@ export class JogoRepository implements JogoRepositoryInterface {
     
     update(object: Object): Object{
         const jogo = object as Jogo;
+        const index = this.lista.findIndex(j => j.id === jogo.id);
         const jogoTitulo = this.findByTitulo(jogo.titulo);
         if (jogoTitulo != undefined && jogoTitulo.id !== jogo.id) {
             throw new InvalidAttributeException('Novo título informado já cadastrado');
         }        
-        this.lista[jogo.id] = jogo; 
-        return this.lista[jogo.id];    
+        this.lista[index] = jogo; 
+        return jogo;    
     }
     
     delete (id: number): boolean {

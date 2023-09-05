@@ -15,9 +15,10 @@ export class JogoController implements JogoControllerInterface{
     }
 
     save(req: Request, resp: Response){        
-        try{
-            const platDTO = this.repoPlataforma.findById(Number(req.body.idPlataforma)) as PlataformaDTO;
-            const jogoDTO = new JogoDTO(req.body.nome, platDTO, req.body.valor, req.body.urlImagem);
+        try{            
+            const platDTO = this.repoPlataforma.findById(Number(req.body.idPlataforma)) as PlataformaDTO;  
+                   
+            const jogoDTO = new JogoDTO(req.body.titulo, platDTO, req.body.valor, req.body.urlImagem);
             const jogo = this.service.save(jogoDTO);
             resp.status(201).json(jogo);
         }catch(error){
@@ -51,12 +52,15 @@ export class JogoController implements JogoControllerInterface{
 
     update(req: Request, resp: Response){        
         try{ 
-            const jogoDTO = new JogoDTO(req.body.nome, req.body.plataforma, req.body.preco, req.body.urlImagem);
+            const platDTO = this.repoPlataforma.findById(Number(req.body.plataforma.id)) as PlataformaDTO; 
+            console.log("id plata : "+req.body.plataforma.id);                   
+            const jogoDTO = new JogoDTO(req.body.titulo, platDTO, req.body.valor, req.body.urlImagem);            
             jogoDTO.id = Number(req.params.id);   
-            const jogo = this.service.update(jogoDTO);
+            const jogo = this.service.update(jogoDTO);           
             resp.status(200).json(jogo).end();
         }catch(error){
-            if (error instanceof DomainError)
+            console.log((error as Error).message);
+            if (error instanceof DomainError)            
                 resp.status(400).json({mensagem: error.message}).end();
             else    
                 resp.status(500).json({mensagem: "Erro interno no servidor"}).end();       
