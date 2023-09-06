@@ -11,24 +11,28 @@ export class ContaDTO extends DomainObject{
     email: string;
     senha: string;
     jogos: Jogo[];
+    vezesAlugado: number; 
     
     constructor(email: string, senha: string, jogos: Jogo[]) {
         super();        
         this.email = email;
         this.senha = senha;
         this.jogos = jogos;
+        this.vezesAlugado = 0;
     }
 
     static contaToDto(conta: Conta): ContaDTO{
         const dto = new ContaDTO(conta.email, conta.senha, conta.jogos);
         dto.id = conta.id;  
-        dto.senha = "informação ocultada"              
+        dto.senha = conta.senha;
+        dto.vezesAlugado = conta.vezesAlugado;            
         return dto;         
     }
 
     static dtoToConta(dto: ContaDTO): Conta{
         const conta = new Conta(dto.email, dto.senha, dto.jogos);
         conta.id = dto.id;
+        conta.vezesAlugado = dto.vezesAlugado;
         return conta;        
     }
 }
