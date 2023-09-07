@@ -13,7 +13,7 @@ describe("AluguelRepository", () => {
     const usuario = new Usuario("Felipe", "muros@yahoo.com.br", "123456", "11223445565");
     const plataforma = new Plataforma("PS5");
     const jogo = new Jogo("God of War", plataforma, 25, "");
-    const conta = new Conta("conta01@ongames.com", "123456", [jogo]); 
+    const conta = new Conta("conta01@ongames.com", "123456", jogo); 
     conta.id = 1;  
 
     it("deve receber a instância do sut válida", () => {

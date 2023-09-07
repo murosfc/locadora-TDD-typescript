@@ -10,7 +10,7 @@ describe('Aluguel', () => {
     const usuario = new Usuario('João', 'joao@gmail.com', '123456', '12345678910');
     const plataforma = new Plataforma('PS5');
     const jogo = new Jogo('God of War', plataforma, 20, '');    
-    const conta = new Conta('conta01@ongames.com', '123456', [jogo]);
+    const conta = new Conta('conta01@ongames.com', '123456', jogo);
     var sut: Aluguel;
     
     it('Deve criar um aluguel', () => {

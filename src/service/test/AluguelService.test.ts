@@ -15,9 +15,9 @@ describe("AluguelService", () => {
     const plataforma = new Plataforma("PS5");
     const jogo = new Jogo("God of War", plataforma, 25, "");
     const jogo2 = new Jogo("Horizon Zero Dawn", plataforma, 20, "");
-    const conta = new Conta("conta01@ongames.com", "123456", [jogo]);
+    const conta = new Conta("conta01@ongames.com", "123456", jogo);
     conta.id = 1; 
-    const conta2 = new Conta("conta02@ongames.com", "123456", [jogo2]); 
+    const conta2 = new Conta("conta02@ongames.com", "123456", jogo2); 
     conta2.id = 2;
     const usuario = new Usuario("Felipe", "felipe@gmail.com", "123456", "11223445565");
 

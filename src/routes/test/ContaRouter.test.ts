@@ -20,7 +20,7 @@ describe("ContaRouter", () => {
     });
 
     it("POST /contas/add", async () => {        
-        const response = await request(server).post("/contas/add").send({ email: "conta01@ongames.com", senha: "123456", jogos: [jogo.id] });
+        const response = await request(server).post("/contas/add").send({ email: "conta01@ongames.com", senha: "123456", jogo: [jogo.id] });
         expect(response.status).toBe(201);
     });   
 
@@ -50,7 +50,7 @@ describe("ContaRouter", () => {
     });
 
     it("PUT /contas/update/:id", async () => {
-        const response = await request(server).put("/contas/update/1").send({ email: "conta01@ongames.com", senha: "1234567", jogos: [jogo.id] });
+        const response = await request(server).put("/contas/update/1").send({ email: "conta01@ongames.com", senha: "1234567", jogo: jogo.id});
         expect(response.status).toBe(200);
     });
 

@@ -18,16 +18,16 @@ describe('ContaRepository', () => {
     setIdJogo(jogo1, jogo2);
 
     it('Deve salvar uma conta no repositório', () => {
-        var conta = new Conta("conta01@ongames.com", "123456", [jogo1]);
+        var conta = new Conta("conta01@ongames.com", "123456", jogo1);
         var savedConta = sut.save(conta) as Conta;
         expect(savedConta.id === 1);
-        conta = new Conta("conta02@ongames.com", "654312", [jogo2]);
+        conta = new Conta("conta02@ongames.com", "654312", jogo2);
         var savedConta = sut.save(conta) as Conta;
         expect(savedConta.id === 2);
     });
 
     it('Deve atualizar uma conta no repositório', () => {
-        const conta = new Conta("conta01@ongames.com", "123456", [jogo1]);
+        const conta = new Conta("conta01@ongames.com", "123456", jogo1);
         conta.senha = "654321";
         conta.id = 1;
         const  updatedConta = sut.update(conta) as Conta;
@@ -35,7 +35,7 @@ describe('ContaRepository', () => {
     });
 
     it('Deve receber um erro do tipo NotAllowedException ao tentar atualizar uma conta com um e-mail já cadastrado', () => {
-        const conta = new Conta("conta02@ongames.com", "123456", [jogo1]);
+        const conta = new Conta("conta02@ongames.com", "123456", jogo1);
         conta.id = 1;
         const updatedConta = sut.update(conta);
         expect(updatedConta instanceof DomainError);

@@ -10,39 +10,37 @@ describe('Conta', () => {
     const jogo2 = new Jogo("Call of Duty", plataforma2, 10,"");
 
     it('Deve criar uma conta com email e senha', () => {
-        const sut = new Conta('conta1@ongames.com', '123456', [jogo1, jogo2]);
+        const sut = new Conta('conta1@ongames.com', '123456', jogo1);
         expect(sut.email).toBe('conta1@ongames.com');
         expect(sut.senha).toBe('123456');
-        expect(sut.jogos).toEqual([jogo1, jogo2]);
-    });
-
-    it('Deve criar uma conta sem jogos', () => {
-        const sut = new Conta('conta2@ongames.com', '123456');
-        expect(sut.email).toBe('conta2@ongames.com');
-        expect(sut.senha).toBe('123456');
-        expect(sut.jogos).toEqual([]);
-    });
+        expect(sut.jogo).toEqual(jogo1);
+    });    
 
     it('Deve lançar exceção do tipo InvalidAttributeException ao criar uma conta sem email', () => {
-        expect(() => new Conta('', '123456')).toThrowError('Email inválido');
-        expect(() => new Conta('', '123456')).toThrowError(InvalidAttributeException);
+        expect(() => new Conta('', '123456', jogo1)).toThrowError('Email inválido');
+        expect(() => new Conta('', '123456', jogo1)).toThrowError(InvalidAttributeException);
+    });
+
+    it('Deve lançar exceção do tipo InvalidAttributeException ao criar uma conta sem jogo', () => {
+        expect(() => new Conta('', '123456', undefined as unknown as Jogo)).toThrowError('Email inválido');
+        expect(() => new Conta('', '123456', undefined as unknown as Jogo)).toThrowError(InvalidAttributeException);
     });
 
     it('Deve lançar exceção do tipo InvalidAttributeException ao criar uma conta sem senha', () => {
-        expect(() => new Conta('conta3@gmail.com', '')).toThrowError('Senha inválida');
-        expect(() => new Conta('conta3@gmail.com', '')).toThrowError(InvalidAttributeException);
+        expect(() => new Conta('conta3@gmail.com', '', jogo1)).toThrowError('Senha inválida');
+        expect(() => new Conta('conta3@gmail.com', '', jogo1)).toThrowError(InvalidAttributeException);
     });
 
     it('Setters devem alterar os valores dos atributos e getters devem confirmar alterações', () => {
-        const sut = new Conta('conta2@ongames.com', '123456');
+        const sut = new Conta('conta2@ongames.com', '123456', jogo1);
         sut.email = 'conta3@gmail.com';
         sut.senha = '1234567';
-        sut.jogos = [jogo1];
+        sut.jogo = jogo2;
         sut.id = 5;
         sut.vezesAlugado = 1;
         expect(sut.email).toBe('conta3@gmail.com');
         expect(sut.senha).toBe('1234567');
-        expect(sut.jogos).toEqual([jogo1]);        
+        expect(sut.jogo).toEqual(jogo2);        
         expect(sut.id).toBe(5);
         expect(sut.vezesAlugado).toBe(1);
     });

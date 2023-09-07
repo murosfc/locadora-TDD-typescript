@@ -25,49 +25,67 @@ describe('Test Conta Controller', () => {
     plataforma1.id = 1;
     const plataforma2 = new Plataforma("XBOX");
     plataforma2.id = 2;
-    const repoJogos = JogoRepository.getInstance();
-    const jogo1 = new Jogo("Fifa 203", plataforma1, 20,""); 
-    repoJogos.save(jogo1);     
-    const jogo2 = new Jogo("Call of Duty", plataforma2, 10,"");
-    repoJogos.save(jogo2);
+    const repoJogos = JogoRepository.getInstance();    
+    const jogo1 = repoJogos.save(new Jogo("Fifa 203", plataforma1, 20,"")) as Jogo;     
+    const jogo2 = repoJogos.save(new Jogo("Call of Duty", plataforma2, 10,"")) as Jogo;    
 
     it('Deve retornar status 201 ao salvar uma conta', () => {        
-        var req = {body: {email: "conta01@ongames.com", senha: "123456", jogos: [jogo1.id, jogo2.id]}};          
+        var req = {body: {email: "conta01@ongames.com", senha: "123456", jogo: jogo1.id}};          
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(201);
-        req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1.id]}};
+        req = {body: {email: "conta02@ongames.com", senha: "1234567", jogo: jogo2.id}};
         sut.save({body: req} as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(201);
     });
 
     it("Deve retornar status 400 e uma mensagem de erro ao tentar salvar conta com atributo inválido", () => {
-        var req = {body: {email: "", senha: "123456", jogos: [jogo1.id, jogo2.id]}};
+        var req = {body: {email: "", senha: "123456", jogo: jogo1.id}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1.id]}};
+        req = {body: {email: "conta02@ongames.com", senha: "1234567", jogo: jogo1.id}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(400);
     });
 
     it("Deve retornar erro 500 ao tentar salvar conta com erro de servidor", () => {
         const serviceSpy = jest.spyOn(service, "save").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
-        const req = {body: {email: "conta02@ongames.com", senha: "1234567", jogos: [jogo1.id]}};
+        const req = {body: {email: "conta02@ongames.com", senha: "1234567", jogo: jogo1.id}};
         sut.save(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
         serviceSpy.mockRestore();
     });
 
+    it('Deve retornar 200 e encontrar pelo menos uma conta por jogo', () => {              
+        const req = {params: {id: jogo1.id}};    
+        sut.findByJogo(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(200);
+    });
+
+    it('Deve retornar status 404 ao buscar uma conta por jogo não encontrado', () => {
+        const req = {params: {id: '60'}};
+        sut.findByJogo(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(404);
+    });
+
+    it('Deve retornar status 500 ao buscar uma conta por jogo com erro de servidor', () => {
+        const serviceSpy = jest.spyOn(service, "findByJogo").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
+        const req = {params: {id: '1'}};
+        sut.findByJogo(req as any, resp_spy as any);
+        expect(resp_spy.status).toHaveBeenCalledWith(500);
+        serviceSpy.mockRestore();
+    });
+
     it("Deve retornar status 200 ao atualizar uma conta", () => {
-        var req = {body: {email: "conta02@ongames.com", senha: "1234567999", jogos: [jogo1.id]}, params: {id: 2}};
+        var req = {body: {email: "conta02@ongames.com", senha: "1234567999", jogo: jogo1.id}, params: {id: 2}};
         sut.update(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(200);
     });
 
     it("Deve retornar status 400 ao tentar atualizar uma conta com atributo inválido", () => {
-        var req = {body: {email: "", senha: "1234567999", jogos: [jogo1.id]}, params: {id: 2}};
+        var req = {body: {email: "", senha: "1234567999", jogo: jogo1.id}, params: {id: 2}};
         sut.update(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(400);
-        req = {body: {email: "conta01@ongames.com", senha: "1234567999", jogos: [jogo1.id]}, params: {id: 2}};
+        req = {body: {email: "conta01@ongames.com", senha: "1234567999", jogo: jogo1.id}, params: {id: 2}};
         sut.update(req as any, resp_spy as any);        
         expect(resp_spy.status).toHaveBeenCalledWith(400);
 
@@ -75,7 +93,7 @@ describe('Test Conta Controller', () => {
 
     it('Deve retornar status 500 ao tentar atualizar uma conta com erro de servidor', () => {
         const serviceSpy = jest.spyOn(service, "update").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
-        const req = {body: {email: "", senha: "1234567999", jogos: [jogo1.id]}, params: {id: 2}};
+        const req = {body: {email: "", senha: "1234567999", jogo: jogo1.id}, params: {id: 2}};
         sut.update(req as any, resp_spy as any);
         expect(resp_spy.status).toHaveBeenCalledWith(500);
     });    
@@ -100,25 +118,7 @@ describe('Test Conta Controller', () => {
         serviceSpy.mockRestore();
     });
 
-    it('Deve retornar 200 e encontrar pelo menos uma conta por jogo', () => {              
-        const req = {params: {id: jogo1.id}};    
-        sut.findByJogo(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(200);
-    });
-
-    it('Deve retornar status 404 ao buscar uma conta por jogo não encontrado', () => {
-        const req = {params: {id: '60'}};
-        sut.findByJogo(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(404);
-    });
-
-    it('Deve retornar status 500 ao buscar uma conta por jogo com erro de servidor', () => {
-        const serviceSpy = jest.spyOn(service, "findByJogo").mockImplementationOnce(() => {throw new Error("Erro de Servidor")});
-        const req = {params: {id: '1'}};
-        sut.findByJogo(req as any, resp_spy as any);
-        expect(resp_spy.status).toHaveBeenCalledWith(500);
-        serviceSpy.mockRestore();
-    });
+    
 
     it("Deve retornar status 200 ao buscar todos as contas", () => { 
         sut.findAll(resp_spy as any);

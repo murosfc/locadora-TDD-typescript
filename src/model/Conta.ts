@@ -5,17 +5,17 @@ import { Jogo } from "./Jogo";
 export class Conta extends DomainObject{
     private _email: string;    
     private _senha: string;   
-    private _jogos: Jogo[];
+    private _jogo: Jogo;    
     private _vezesAlugado: number;    
 
-    constructor(email: string, senha: string, jogos?: Jogo[]){
+    constructor(email: string, senha: string, jogo: Jogo){
         super();
         if (email.length === 0) throw new InvalidAttributeException('Email inválido')
         this._email = email;
         if (senha.length === 0) throw new InvalidAttributeException('Senha inválida')
         this._senha = senha;
-        if (jogos) this._jogos = jogos;
-        else this._jogos = [];
+        if(jogo == undefined) throw new InvalidAttributeException('Jogo inválido')
+        this._jogo = jogo;
         this._vezesAlugado = 0;
     }
 
@@ -32,13 +32,14 @@ export class Conta extends DomainObject{
     public set senha(value: string) {
         this._senha = value;
     }
-
-    public get jogos(): Jogo[] {
-        return this._jogos;
+    
+    public get jogo(): Jogo {
+        return this._jogo;
     }
-    public set jogos(value: Jogo[]) {
-        this._jogos = value;
+    public set jogo(value: Jogo) {
+        this._jogo = value;
     }
+   
     public get vezesAlugado(): number {
         return this._vezesAlugado;
     }

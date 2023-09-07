@@ -39,7 +39,7 @@ export class Aluguel extends DomainObject{
     private calcularValorTotal(): number{
         let valorTotal = 0;
         this._contas.forEach(conta => {
-            valorTotal += conta.jogos.reduce((total, jogo) => total + jogo.valor, 0);
+            valorTotal += conta.jogo.valor;
         });
         valorTotal *= this._periodoEmSemanas;
         valorTotal -= this._desconto;

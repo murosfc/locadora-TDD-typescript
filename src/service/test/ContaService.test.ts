@@ -26,30 +26,37 @@ describe('ContaService', () => {
     });
     
     it('Deve salvar uma conta com sucesso', () => {
-        var conta = new ContaDTO("conta01@ongames.com", "123456", [jogo1]);
+        var conta = new ContaDTO("conta01@ongames.com", "123456", jogo1);
         var savedConta = sut.save(conta) as ContaDTO;
         expect(savedConta.id === 1);
-        conta = new ContaDTO("conta02@ongames.com", "123456", [jogo2]);
+        conta = new ContaDTO("conta02@ongames.com", "123456", jogo2);
         savedConta = sut.save(conta) as ContaDTO;
         expect(savedConta.id === 2);
     });
 
     it('Deve gerar uma exceção do tipo IvalidAttibuteException ao tentar salvar uma conta com e-mail inválido', () => {
-        var conta = new ContaDTO("", "56505605", [jogo1,jogo2]);
+        var conta = new ContaDTO("", "56505605", jogo1);
         var savedConta = sut.save(conta);   
         expect(savedConta instanceof InvalidAttributeException);
         expect((savedConta as Error).message === "Você está tentando salvar uma conta com email inválido.");
     });
 
     it('Deve gerar uma exceção do tipo IvalidAttibuteException ao tentar salvar uma conta com senha inválida', () => {
-        var conta = new ContaDTO("conta03@ongames.com", "", [jogo1,jogo2]);
+        var conta = new ContaDTO("conta03@ongames.com", "", jogo1);
         var savedConta = sut.save(conta);   
         expect(savedConta instanceof InvalidAttributeException);
         expect((savedConta as Error).message === "Você está tentando salvar uma conta com senha inválida.");
     });
 
+    it('Deve gerar uma exceção do tipo IvalidAttibuteException ao tentar salvar uma conta com jogo inválida', () => {
+        var conta = new ContaDTO("conta03@ongames.com", "123455", undefined as unknown as Jogo);
+        var savedConta = sut.save(conta);   
+        expect(savedConta instanceof InvalidAttributeException);
+        expect((savedConta as Error).message === "VoVocê está tentando salvar uma conta com jogo inválido.");
+    });
+
     it('Deve gerar uma exceção do tipo NotAllowedExecption ao tentar salvar uma conta com id', () => {
-        const conta = new ContaDTO("conta03@ongames.com", "asdasd", [jogo1,jogo2]);
+        const conta = new ContaDTO("conta03@ongames.com", "asdasd", jogo1);
         conta.id = 5;
         const savedConta = sut.save(conta);
         expect(savedConta instanceof InvalidAttributeException);
@@ -57,15 +64,14 @@ describe('ContaService', () => {
     });
 
     it('Deve atualizar uma conta com sucesso', () => {
-        const conta = new ContaDTO("conta01@ongames.com", "905608746", [jogo1, jogo2]);
+        const conta = new ContaDTO("conta01@ongames.com", "905608746", jogo1);
         conta.id = 1; 
         const updatedConta = sut.update(conta) as ContaDTO;       
-        expect(updatedConta.senha).toBe("informação ocultada");
-        expect(updatedConta.jogos.length === 2);
+        expect(updatedConta.senha).toBe("905608746");       
     });
 
     it('Deve gerar uma exceção do tipo IvalidAttibuteException ao tentar atualizar uma conta com e-mail inválido', () => {
-        var conta = new ContaDTO("", "56505605", [jogo1,jogo2]);
+        var conta = new ContaDTO("", "56505605", jogo1);
         conta.id = 1; 
         var updatedConta = sut.update(conta);   
         expect(updatedConta instanceof InvalidAttributeException);
@@ -73,7 +79,7 @@ describe('ContaService', () => {
     });
 
     it('Deve gerar uma exceção do tipo IvalidAttibuteException ao tentar atualizar uma conta com senha inválida', () => {
-        const conta = new ContaDTO("conta01@ongames.com", "", [jogo1, jogo2]);
+        const conta = new ContaDTO("conta01@ongames.com", "", jogo1);
         conta.id = 1; 
         const updatedConta = sut.update(conta);  
         expect(updatedConta instanceof InvalidAttributeException);
@@ -81,7 +87,7 @@ describe('ContaService', () => {
     });
 
     it('Deve gerar uma exceção do tipo NotAllowedExecption ao tentar atualizar uma conta com id inexistente', () => {
-        const conta = new ContaDTO("conta01@ongames.com", "654893216", [jogo1, jogo2]);
+        const conta = new ContaDTO("conta01@ongames.com", "654893216", jogo1);
         conta.id = -1;        
         const updatedConta = sut.update(conta);
         expect(updatedConta instanceof NotAllowedException);

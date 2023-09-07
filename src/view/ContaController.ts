@@ -34,20 +34,12 @@ export class ContaController implements ContaControllerInterface {
         else if (result instanceof Error) {
             resp.status(500).json("Erro interno de servidor");
         }
-    }
-
-    private makeListOfJogos(jogos: any): Jogo[] {
-        var jogosList: Jogo[] = [];
-        jogos.forEach((idJogo: any) => {
-            jogosList.push(this.repoJogos.findById(Number(idJogo)) as Jogo);
-        });
-        return jogosList;
-    }
+    }  
 
     save(req: Request, resp: Response) {
-        try {
-            const jogos = this.makeListOfJogos(req.body.jogos);
-            const conta = new ContaDTO(req.body.email, req.body.senha, jogos);
+        try { 
+            const jogo = this.repoJogos.findById(Number(req.body.jogo)) as Jogo;           
+            const conta = new ContaDTO(req.body.email, req.body.senha, jogo);
             const contaSaved = this.service.save(conta);
             this.returnResponse(resp, contaSaved, true);
         } catch (e) {
@@ -55,11 +47,12 @@ export class ContaController implements ContaControllerInterface {
         }
     }
     update(req: Request, resp: Response) {
-        try {
-            const jogos = this.makeListOfJogos(req.body.jogos);
-            const conta = new ContaDTO(req.body.email, req.body.senha, jogos);
+        try { 
+            const jogo = this.repoJogos.findById(Number(req.body.jogo)) as Jogo;           
+            const conta = new ContaDTO(req.body.email, req.body.senha, jogo);
             conta.id = Number(req.params.id);
             const contaUpdated = this.service.update(conta);
+            console.log(contaUpdated);
             this.returnResponse(resp, contaUpdated, false);
         } catch (e) {
             this.returnResponse(resp, e, false);
@@ -86,9 +79,9 @@ export class ContaController implements ContaControllerInterface {
         }
     }
     findByJogo(req: Request, resp: Response) {
-        try {
+        try {            
             const idJogo = Number(req.params.id);
-            const contas = this.service.findByJogo(idJogo);
+            const contas = this.service.findByJogo(idJogo);            
             this.returnResponse(resp, contas, false);
         } catch (e) {
             this.returnResponse(resp, e, false);

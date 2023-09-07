@@ -10,19 +10,19 @@ import { NotFoundException } from '../error/NotFoundException';
 export class ContaDTO extends DomainObject{   
     email: string;
     senha: string;
-    jogos: Jogo[];
+    jogo: Jogo;
     vezesAlugado: number; 
     
-    constructor(email: string, senha: string, jogos: Jogo[]) {
+    constructor(email: string, senha: string, jogo: Jogo) {
         super();        
         this.email = email;
         this.senha = senha;
-        this.jogos = jogos;
+        this.jogo = jogo;
         this.vezesAlugado = 0;
     }
 
     static contaToDto(conta: Conta): ContaDTO{
-        const dto = new ContaDTO(conta.email, conta.senha, conta.jogos);
+        const dto = new ContaDTO(conta.email, conta.senha, conta.jogo);
         dto.id = conta.id;  
         dto.senha = conta.senha;
         dto.vezesAlugado = conta.vezesAlugado;            
@@ -30,7 +30,7 @@ export class ContaDTO extends DomainObject{
     }
 
     static dtoToConta(dto: ContaDTO): Conta{
-        const conta = new Conta(dto.email, dto.senha, dto.jogos);
+        const conta = new Conta(dto.email, dto.senha, dto.jogo);
         conta.id = dto.id;
         conta.vezesAlugado = dto.vezesAlugado;
         return conta;        
@@ -65,6 +65,9 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
         }
         if (entity.senha.length === 0) {
             return new InvalidAttributeException('Você está tentando salvar uma conta com senha inválida.');
+        }
+        if (entity.jogo === undefined) {
+            return new InvalidAttributeException('Você está tentando salvar uma conta com jogo inválido.')
         }        
         const conta = ContaDTO.dtoToConta(entity);
         const savedConta = this.repository.save(conta) as Conta;        
@@ -79,7 +82,10 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
         }
         if (entity.senha.length === 0) {
             return new InvalidAttributeException('Você está tentando atualizar uma conta com senha inválida.');
-        }        
+        } 
+        if (entity.jogo === undefined) {
+            return new InvalidAttributeException('Você está tentando atualizar uma conta com jogo inválido.')
+        }         
         const conta = ContaDTO.dtoToConta(entity);
         const updatedConta = this.repository.update(conta) as Conta;
         return ContaDTO.contaToDto(updatedConta);
@@ -95,7 +101,7 @@ export class ContaService implements ContaServiceInterface<ContaDTO>{
         }
         return ContaDTO.contaToDto(conta as Conta);
     }
-    findByJogo(idJogo: Number): ContaDTO[] | Error {               
+    findByJogo(idJogo: Number): ContaDTO[] | Error {                       
         const contas = this.repository.findByJogo(idJogo);         
         if (contas.length === 0) {
             return new NotFoundException('Nenhuma conta encontada para o jogo informado');
