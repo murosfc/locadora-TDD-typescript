@@ -20,9 +20,9 @@ async function loadTestDatabase(){
     jogo = JogoRepository.getInstance().save(jogo) as Jogo;
     var jogo2 = new Jogo("Horizon Zero Dawn", plataforma, 20, "https://image.api.playstation.com/vulcan/img/rnd/202009/2923/jAT7HjpL49A62bU7hLKXJ96b.png");
     jogo2 = JogoRepository.getInstance().save(jogo2) as Jogo;
-    var conta = new Conta("conta01@ongames.com", "123456", [jogo]);
+    var conta = new Conta("conta01@ongames.com", "123456", jogo);
     conta = ContaRepository.getInstance().save(conta) as Conta;
-    var conta2 = new Conta("conta02@ongames.com", "123456", [jogo2]);
+    var conta2 = new Conta("conta02@ongames.com", "123456", jogo2);
     conta2 = ContaRepository.getInstance().save(conta2) as Conta;
     const userDTO = new UsuarioDTO('Felipe', 'felipe@gmail.com', '123456', '12345678999'); 
     userDTO.tipo = UsuarioTipoEnum.ADMINISTRADOR;  
