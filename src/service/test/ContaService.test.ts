@@ -86,6 +86,14 @@ describe('ContaService', () => {
         expect((updatedConta as Error).message).toBe("Você está tentando atualizar uma conta com senha inválida.");
     });
 
+    it('Deve gerar uma exceção do tipo IvalidAttibuteException ao tentar atualizar uma conta com jogo inválida', () => {
+        const conta = new ContaDTO("conta01@ongames.com", "1234567", undefined as unknown as Jogo);
+        conta.id = 1; 
+        const updatedConta = sut.update(conta);  
+        expect(updatedConta instanceof InvalidAttributeException);
+        expect((updatedConta as Error).message).toBe("Você está tentando atualizar uma conta com jogo inválido.");
+    });
+
     it('Deve gerar uma exceção do tipo NotAllowedExecption ao tentar atualizar uma conta com id inexistente', () => {
         const conta = new ContaDTO("conta01@ongames.com", "654893216", jogo1);
         conta.id = -1;        

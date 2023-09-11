@@ -51,8 +51,7 @@ export class ContaController implements ContaControllerInterface {
             const jogo = this.repoJogos.findById(Number(req.body.jogo)) as Jogo;           
             const conta = new ContaDTO(req.body.email, req.body.senha, jogo);
             conta.id = Number(req.params.id);
-            const contaUpdated = this.service.update(conta);
-            console.log(contaUpdated);
+            const contaUpdated = this.service.update(conta);            
             this.returnResponse(resp, contaUpdated, false);
         } catch (e) {
             this.returnResponse(resp, e, false);

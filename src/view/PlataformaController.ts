@@ -51,10 +51,8 @@ export class PlataformaController implements PlataformaControllerInterface{
         return true;
     }
 
-    async save(req: Request, resp: Response){   
-        const token = req.headers.authorization as string;
-        console.log("Token: "+token);
-        if (!await this.checkPermission(resp, token)) return;       
+    async save(req: Request, resp: Response){                
+        if (!await this.checkPermission(resp, req.headers.authorization as string)) return;       
         try{                                 
             const plataforma = new PlataformaDTO(req.body.titulo);            
             const saved = await this.service.save(plataforma);
@@ -68,8 +66,7 @@ export class PlataformaController implements PlataformaControllerInterface{
     }
 
     async update(req: Request, resp: Response){
-        const token = req.headers.authorization as string;
-        if (!await this.checkPermission(resp, token)) return;  
+        if (!await this.checkPermission(resp, req.headers.authorization as string)) return;  
         try{           
             const plataforma = new PlataformaDTO(req.body.titulo);
             plataforma.id = Number(req.params.id);            
@@ -83,8 +80,7 @@ export class PlataformaController implements PlataformaControllerInterface{
         }
     }
     async delete(req: Request, resp: Response){
-        const token = req.headers.authorization as string;
-        if (!await this.checkPermission(resp, token)) return; 
+        if (!await this.checkPermission(resp, req.headers.authorization as string)) return;
         const id = Number(req.params.id);
         if (await this.service.delete(id))
             resp.status(200).json({mensagem: "Plataforma removida com sucesso"}).end();
