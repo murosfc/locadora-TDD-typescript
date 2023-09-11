@@ -3,9 +3,12 @@ import { PlataformaControllerInterface } from "./contracts/PlataformaControllerI
 import { PlataformaServiceInterface } from "../service/contracts/PlataformaServiceInterface";
 import { Request, Response } from "express";
 import { DomainError } from "../error/DomainError";
+import { UsuarioService } from "../service/UsuarioService";
+import { UsuarioRepository } from "../repositories/InMemoryRepository/UsuarioRepository";
 
 export class PlataformaController implements PlataformaControllerInterface{
     private service: PlataformaServiceInterface<PlataformaDTO>;
+    private usuarioService = new UsuarioService(UsuarioRepository.getInstance());
 
     constructor(service: PlataformaServiceInterface<PlataformaDTO>){
         this.service = service;
@@ -39,8 +42,20 @@ export class PlataformaController implements PlataformaControllerInterface{
                 resp.status(500).json({mensagem: "Erro interno no servidor"}).end();
         }
     }
-    async save(req: Request, resp: Response){             
-        try{                      
+
+    private async checkPermission(resp: Response, token: string){
+        if ( !(await this.usuarioService.usuarioAdministrador(token) || await this.usuarioService.usuarioFuncionario(token))){
+            resp.status(401).json({mensagem: "Acesso Negado"}).end();
+            return false;
+        }
+        return true;
+    }
+
+    async save(req: Request, resp: Response){   
+        const token = req.headers.authorization as string;
+        console.log("Token: "+token);
+        if (!await this.checkPermission(resp, token)) return;       
+        try{                                 
             const plataforma = new PlataformaDTO(req.body.titulo);            
             const saved = await this.service.save(plataforma);
             return resp.status(201).json(saved).end();
@@ -53,6 +68,8 @@ export class PlataformaController implements PlataformaControllerInterface{
     }
 
     async update(req: Request, resp: Response){
+        const token = req.headers.authorization as string;
+        if (!await this.checkPermission(resp, token)) return;  
         try{           
             const plataforma = new PlataformaDTO(req.body.titulo);
             plataforma.id = Number(req.params.id);            
@@ -66,6 +83,8 @@ export class PlataformaController implements PlataformaControllerInterface{
         }
     }
     async delete(req: Request, resp: Response){
+        const token = req.headers.authorization as string;
+        if (!await this.checkPermission(resp, token)) return; 
         const id = Number(req.params.id);
         if (await this.service.delete(id))
             resp.status(200).json({mensagem: "Plataforma removida com sucesso"}).end();

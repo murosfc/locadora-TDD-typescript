@@ -7,7 +7,7 @@ import { NotAllowedException } from "../error/NotAllowedException";
 import { NotFoundException } from "../error/NotFoundException";
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-import auth from '../server';
+import { UsuarioTipoEnum } from "../model/enum/UsuarioTipoEnum";
 
 export class UsuarioDTO extends DomainObject {
     private _nome: string;
@@ -186,6 +186,20 @@ export class UsuarioService implements UsuarioServiceInterface<UsuarioDTO>{
         return { token }; 
     }
     
+    async usuarioAdministrador(token: string): Promise<boolean> {
+        return await this.temPermissao(token, UsuarioTipoEnum.ADMINISTRADOR);      
+    }
 
-    
+    async usuarioFuncionario(token: string): Promise<boolean> {
+        return await this.temPermissao(token, UsuarioTipoEnum.FUNCIONARIO);
+    }
+
+    private async temPermissao(token: string, tipo: UsuarioTipoEnum): Promise<boolean> {
+        try{
+            const user = await this.getUserByToken(token);
+            return user.tipo == tipo;
+        } catch(error){
+            return false;
+        }
+    }
 }
