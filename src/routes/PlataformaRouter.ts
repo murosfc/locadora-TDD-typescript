@@ -24,8 +24,8 @@ router.get('/:id', async (req, res) => {
 });
 
 //save
-router.post('/add', (req, res) => {
-    controller.save(req, res);    
+router.post('/add', async (req, res) => {
+    await controller.save(req, res);    
 });
 
 //update

@@ -22,8 +22,8 @@ describe('Conta', () => {
     });
 
     it('Deve lançar exceção do tipo InvalidAttributeException ao criar uma conta sem jogo', () => {
-        expect(() => new Conta('', '123456', undefined as unknown as Jogo)).toThrowError('Email inválido');
-        expect(() => new Conta('', '123456', undefined as unknown as Jogo)).toThrowError(InvalidAttributeException);
+        expect(() => new Conta('conta02@ongames.com', '123456', undefined as unknown as Jogo)).toThrowError('Jogo inválido');
+        expect(() => new Conta('conta02@ongames.com', '123456', undefined as unknown as Jogo)).toThrowError(InvalidAttributeException);
     });
 
     it('Deve lançar exceção do tipo InvalidAttributeException ao criar uma conta sem senha', () => {

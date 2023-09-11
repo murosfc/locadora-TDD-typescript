@@ -108,6 +108,20 @@ describe('UsuarioService', () => {
         expect(async () => await sut.getUserByToken(tkn)).rejects.toThrowError(NotFoundException);
     });
 
+    it('Deve retornar false ao verificar se um usuário é administrador ou funcionario', async () => {
+        const isAdmin = await sut.usuarioAdministrador(token);        
+        expect(isAdmin).toBeFalsy();
+        const isFunc = await sut.usuarioFuncionario(token);
+        expect(isFunc).toBeFalsy();
+    });
+
+    it('Deve retornar false ao verificar se um usuário é administrador ou funcionario com token inválido', async () => {
+        const isAdmin = await sut.usuarioAdministrador('invalidtoken');
+        expect(isAdmin).toBeFalsy();
+        const isFunc = await sut.usuarioFuncionario('invalidtoken');
+        expect(isFunc).toBeFalsy();
+    });
+
     it("Deve gerar um erro do tipo NotFoundException ao tentar fazer login com e-mail inválido", async () => {
         const email = 'notregistered@gmail.com';
         expect(async () => await sut.login(email, globalUser.senha)).rejects.toThrowError('Usuário não encontrado');
